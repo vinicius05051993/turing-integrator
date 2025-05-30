@@ -13,7 +13,6 @@ def buscar_dados():
         resposta = requests.get(API_ORIGEM, verify=False)
         resposta.raise_for_status()
         dados = resposta.json()
-        print(dados)
         return dados
     except requests.RequestException as e:
         print('Erro ao buscar dados:', e)
@@ -32,7 +31,7 @@ def main():
     if dados:
         document = dados.get("results", {}).get("document", [])
         for doc in document:
-            print(doc['fields']['title'])
+            print(doc['fields']['id'])
 
 if __name__ == '__main__':
     main()
