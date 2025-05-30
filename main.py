@@ -30,7 +30,9 @@ def enviar_dados(dados):
 def main():
     dados = buscar_dados()
     if dados:
-        enviar_dados(dados)
+        document = dados.get("results", {}).get("document", [])
+        for doc in document:
+            print(document.get("fields", [])
 
 if __name__ == '__main__':
     main()
