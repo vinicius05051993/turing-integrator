@@ -32,7 +32,7 @@ def main():
     if dados:
         document = dados.get("results", {}).get("document", [])
         for doc in document:
-            print(doc['fields'])
+            print(doc['fields']['title'])
 
 if __name__ == '__main__':
     main()
