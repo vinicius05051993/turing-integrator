@@ -13,7 +13,7 @@ def buscar_dados():
         resposta = requests.get(API_ORIGEM, verify=False)
         resposta.raise_for_status()
         dados = resposta.json()
-        print("Dados recebidos: {dados}")
+        print(dados)
         return dados
     except requests.RequestException as e:
         print('Erro ao buscar dados:', e)
