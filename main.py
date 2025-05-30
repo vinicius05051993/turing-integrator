@@ -8,7 +8,7 @@ HEADERS_DESTINO = {
     'Content-Type': 'application/json'
 }
 
-def buscar_dados():
+def getManuals():
     try:
         resposta = requests.get(API_ORIGEM, verify=False)
         resposta.raise_for_status()
@@ -27,9 +27,9 @@ def enviar_dados(dados):
         print('Erro ao enviar dados:', e)
 
 def main():
-    dados = buscar_dados()
-    if dados:
-        document = dados.get("results", {}).get("document", [])
+    manuals = getManuals()
+    if manuals:
+        document = manuals.get("results", {}).get("document", [])
         for doc in document:
             print(doc['fields']['id'])
 
