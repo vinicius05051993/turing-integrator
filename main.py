@@ -10,7 +10,7 @@ HEADERS_DESTINO = {
 
 def buscar_dados():
     try:
-        resposta = requests.get(API_ORIGEM)
+        resposta = requests.get(API_ORIGEM, verify=False)
         resposta.raise_for_status()
         dados = resposta.json()
         print("Dados recebidos: {dados}")
