@@ -4,7 +4,6 @@ import chatvolt
 def main():
     chatVoltDatas = chatvolt.getAll()
     chatVoltDataSources = chatVoltDatas.get("datasources", {})
-    print(chatVoltDataSources)
 
     for page in range(1, 100):
         datas = turing.getAllTuring(page)
@@ -29,9 +28,6 @@ def main():
                     case 2:
                         chatvolt.delete(integration['id'])
                         chatvolt.sendPost(doc['fields'])
-
-            break
-        break
 
 if __name__ == '__main__':
     main()
