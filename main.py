@@ -38,21 +38,18 @@ def sendPostToTuring(docFields : dict):
     except requests.RequestException as e:
         print('Erro ao enviar dados:', e)
 
-def getDataChatVolt(search_id: str):
-    params = {
-        'search': search_id,
-        'limit': 10
-    }
-
+def getDataChatVolt():
     response = requests.get(
-        CHATVOLT_API_URL + "datasources/" + DATASTORE_ID,
-        params=params,
+        CHATVOLT_API_URL + "datastores/" + DATASTORE_ID,
         headers=HEADERS_DESTINO
     )
     response.raise_for_status()
     return response.json()
 
 def main():
+    chatVoltPost = getDataChatVolt()
+    print(chatVoltPost)
+
     for page in range(1, 100):
         datas = getAllTuring(page)
         queryContext = datas.get("queryContext", {})
@@ -62,8 +59,6 @@ def main():
         document = datas.get("results", {}).get("document", [])
         for doc in document:
             if doc['fields']['mbtype'] == 'post':
-                chatVoltPost = getDataChatVolt(doc['fields']['title'] + " #" + doc['fields']['id'])
-                print(chatVoltPost)
                 sendPostToTuring(doc['fields'])
 
             break
