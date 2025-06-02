@@ -4,7 +4,6 @@ import chatvolt
 def main():
     chatVoltDatas = chatvolt.getAll()
     chatVoltDataSources = chatVoltDatas.get("datasources", {})
-    print(chatVoltDataSources)
 
     for page in range(1, 100):
         datas = turing.getAllTuring(page)
@@ -15,7 +14,10 @@ def main():
         document = datas.get("results", {}).get("document", [])
         for doc in document:
             if doc['fields']['mbtype'] == 'post':
+                print(chatVoltDataSources)
                 integration = chatvolt.postIntegrationStatus(chatVoltDataSources, doc['fields'])
+                chatVoltDataSources.pop(integration["key"])
+                print(chatVoltDataSources)
                 match integration['status']:
                     case 1:
                         chatvolt.sendPost(doc['fields'])
