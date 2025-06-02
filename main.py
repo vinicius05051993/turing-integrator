@@ -26,15 +26,16 @@ def enviar_dados(dados):
         print('Erro ao enviar dados:', e)
 
 def main():
-        totalPage = 1
-        for page in range(1, totalPage + 1):
+        for page in range(1, 100):
             datas = getAllTuring(page)
-            if datas:
-                queryContext = datas.get("queryContext", {})
-                totalPage = queryContext['pageCount']
-                document = datas.get("results", {}).get("document", [])
-                for doc in document:
-                    print(str(page) + " " + doc['fields']['id'] + " - " + doc['fields']['type'])
+            queryContext = datas.get("queryContext", {})
+            if (page > queryContext['pageCount'])
+                break
+
+            document = datas.get("results", {}).get("document", [])
+            for doc in document:
+                print(str(page) + " " + doc['fields']['id'] + " - " + doc['fields']['mbtype'])
+
 
 if __name__ == '__main__':
     main()
