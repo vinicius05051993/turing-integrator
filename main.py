@@ -18,11 +18,11 @@ def getAllTuring(page):
         print('Erro ao buscar dados:', e)
         return None
 
-def sendToTuring(self, data):
+def sendToTuring(self, doc):
     try:
-        data["datastoreId"] = self.DATASTORE_ID
+        doc["datastoreId"] = self.DATASTORE_ID
 
-        resposta = requests.post(self.CHATVOLT_API_URL + "datasources", json=data, headers=HEADERS_DESTINO)
+        resposta = requests.post(self.CHATVOLT_API_URL + "datasources", json=doc, headers=HEADERS_DESTINO)
         resposta.raise_for_status()
         print('Dados enviados com sucesso:', resposta.status_code)
     except requests.RequestException as e:
