@@ -34,7 +34,7 @@ def main():
                 totalPage = queryContext['pageCount']
                 document = datas.get("results", {}).get("document", [])
                 for doc in document:
-                    print(page + " " + doc['fields']['id'] + " - " + doc['fields']['type'])
+                    print(str(page) + " " + doc['fields']['id'] + " - " + doc['fields']['type'])
 
 if __name__ == '__main__':
     main()
