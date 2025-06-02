@@ -27,7 +27,7 @@ def sendPostToTuring(docFields : dict):
            "type": "file",
            "config": {
                "tags": docFields.get('tags', []),
-               "source_url": docFields.get('source_url', ''),
+               "source_url": docFields.get('url', ''),
                "mime_type": "text/plain"
            }
         }
