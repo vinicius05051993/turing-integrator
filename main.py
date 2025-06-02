@@ -62,7 +62,7 @@ def main():
         document = datas.get("results", {}).get("document", [])
         for doc in document:
             if doc['fields']['mbtype'] == 'post':
-                chatVoltPost = getDataChatVolt(doc['fields']['id'])
+                chatVoltPost = getDataChatVolt(doc['fields']['title'] + " #" + doc['fields']['id'])
                 print(chatVoltPost)
                 sendPostToTuring(doc['fields'])
 
