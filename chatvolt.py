@@ -55,5 +55,5 @@ def postIntegrationStatus(chatVoltData, post):
             if dateChatVolt < datePost:
                 return {"status": 2, "id": data["id"]}
             else:
-                return {"status": 3, "id": data["id"]}
+                return {"status": 4, "id": data["id"]}
     return {"status": 1, "id": 0}
