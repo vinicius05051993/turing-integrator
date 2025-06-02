@@ -2,9 +2,9 @@ import turing
 import chatvolt
 
 def main():
-    chatVoltPost = chatvolt.get()
-    print(chatVoltPost)
-    chatVoltDataSources = chatVoltPost.get("datasources", {})
+    chatVoltDatas = chatvolt.getAll()
+    chatVoltDataSources = chatVoltDatas.get("datasources", {})
+    print(chatVoltDataSources)
 
     for page in range(1, 100):
         datas = turing.getAllTuring(page)
@@ -18,9 +18,10 @@ def main():
                 integration = chatvolt.postIntegrationStatus(chatVoltDataSources, doc['fields'])
                 match integration['status']:
                     case 1:
-                        chatvolt.send(doc['fields'])
+                        chatvolt.sendPost(doc['fields'])
                     case 2:
-                        print('Necessario atualizar')
+                        chatvolt.delete(integration['id'])
+                        chatvolt.sendPost(doc['fields'])
                     case 3:
                         print('Nenhuma ação')
                     case 4:

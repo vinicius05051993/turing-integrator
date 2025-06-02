@@ -9,7 +9,7 @@ HEADERS_DESTINO = {
     'Authorization': 'Bearer 3f157bd4-64ae-4ecb-ac8d-ffe0f89b2149'
 }
 
-def send(docFields : dict):
+def sendPost(docFields : dict):
     try:
         payload = {
            "name": getIdPostName(docFields),
@@ -29,7 +29,7 @@ def send(docFields : dict):
     except requests.RequestException as e:
         print('Erro ao enviar dados:', e)
 
-def get():
+def getAll():
     response = requests.get(
         CHATVOLT_API_URL + "datastores/" + DATASTORE_ID,
         headers=HEADERS_DESTINO
@@ -56,5 +56,5 @@ def postIntegrationStatus(chatVoltData, post):
             if dateChatVolt < datePost:
                 return {"status": 2, "id": data["id"]}
             else:
-                return {"status": 4, "id": data["id"]}
+                return {"status": 3, "id": data["id"]}
     return {"status": 1, "id": 0}
