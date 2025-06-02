@@ -30,7 +30,7 @@ def sendToTuring(doc : dict):
                 "source_url": doc.get('source_url', ''),
                 "mime_type": "text/plain"
             }
-        }
+         }
 
         resposta = requests.post(CHATVOLT_API_URL + "datasources", json=payload, headers=HEADERS_DESTINO)
         resposta.raise_for_status()
