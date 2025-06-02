@@ -29,7 +29,7 @@ def main():
                         case 'post':
                             chatvolt.sendPost(doc['fields'])
 
-    for key, source in chatVoltDataSources.items():
+    for source in chatVoltDataSources:
         chatvolt.delete(source['id'])
 
 if __name__ == '__main__':
