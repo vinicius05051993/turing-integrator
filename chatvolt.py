@@ -14,7 +14,27 @@ def sendPost(docFields : dict):
         payload = {
            "name": getIdName(docFields),
            "datastoreId": DATASTORE_ID,
-           "datasourceText": docFields.get('text', ''),
+           "datasourceText": "[post] " + docFields.get('text', ''),
+           "type": "file",
+           "config": {
+               "tags": docFields.get('tags', []),
+               "source_url": docFields.get('url', ''),
+               "mime_type": "text/plain"
+           }
+        }
+
+        resposta = requests.post(CHATVOLT_API_URL + "datasources", json=payload, headers=HEADERS_DESTINO)
+        resposta.raise_for_status()
+        print('Dados enviados com sucesso:', resposta.status_code)
+    except requests.RequestException as e:
+        print('Erro ao enviar dados:', e)
+
+def sendEvent(docFields : dict):
+    try:
+        payload = {
+           "name": getIdName(docFields),
+           "datastoreId": DATASTORE_ID,
+           "datasourceText": "[event] " + docFields.get('title', ''),
            "type": "file",
            "config": {
                "tags": docFields.get('tags', []),
