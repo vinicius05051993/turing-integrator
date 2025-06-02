@@ -16,6 +16,8 @@ def main():
         for doc in document:
             if doc['fields']['mbtype'] == 'post':
                 integration = chatvolt.postIntegrationStatus(chatVoltDataSources, doc['fields'])
+
+                if integration["key"] != None:
                 chatVoltDataSources.pop(integration["key"])
 
                 for source in chatVoltDataSources:
