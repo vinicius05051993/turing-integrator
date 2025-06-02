@@ -18,12 +18,12 @@ def getAllTuring(page):
         print('Erro ao buscar dados:', e)
         return None
 
-def sendToTuring(docFields : dict):
+def sendPostToTuring(docFields : dict):
     try:
         payload = {
            "name": f"{docFields.get('title', '')} #{docFields.get('id', '')}",
            "datastoreId": DATASTORE_ID,
-           "datasourceText": docFields.get('abstract', ''),
+           "datasourceText": docFields.get('text', ''),
            "type": "file",
            "config": {
                "tags": docFields.get('tags', []),
