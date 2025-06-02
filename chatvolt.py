@@ -49,12 +49,12 @@ def getIdPostName(post : dict):
     return post["title"] + " #" + post["id"]
 
 def postIntegrationStatus(chatVoltData, post):
-    for key, data in chatVoltData.items():
+    for index, data in enumerate(chatVoltData):
         if data["name"] == getIdPostName(post):
             dateChatVolt = parser.isoparse(data["updatedAt"])
             datePost = parser.isoparse(post["modification_date"])
             if dateChatVolt < datePost:
-                return {"status": 2, "id": data["id"], "key" : key}
+                return {"status": 2, "id": data["id"], "key" : index}
             else:
-                return {"status": 3, "id": data["id"], "key" : key}
-    return {"status": 1, "id": 0}
+                return {"status": 3, "id": data["id"], "key" : index}
+    return {"status": 1, "id": None}
