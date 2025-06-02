@@ -57,4 +57,4 @@ def postIntegrationStatus(chatVoltData, post):
                 return {"status": 2, "id": data["id"], "key" : index}
             else:
                 return {"status": 3, "id": data["id"], "key" : index}
-    return {"status": 1, "id": None}
+    return {"status": 1, "id": None, "key" : None}
