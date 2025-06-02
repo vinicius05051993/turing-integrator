@@ -1,7 +1,6 @@
 import requests
 import os
 
-API_ORIGEM =
 API_DESTINO = 'https://api.destino.com/receber'
 
 HEADERS_DESTINO = {
