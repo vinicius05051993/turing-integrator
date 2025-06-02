@@ -5,7 +5,7 @@ import chatvolt
 def main():
     chatVoltPost = chatvolt.get()
     print(chatVoltPost)
-    chatVoltData = chatVoltPost.get("datasources", {})
+    chatVoltDataSources = chatVoltPost.get("datasources", {})
 
     for page in range(1, 100):
         datas = turing.getAllTuring(page)
@@ -16,13 +16,16 @@ def main():
         document = datas.get("results", {}).get("document", [])
         for doc in document:
             if doc['fields']['mbtype'] == 'post':
-                match chatvolt.postIntegrationStatus(chatVoltData, doc['fields']):
+                integration = chatvolt.postIntegrationStatus(chatVoltDataSources, doc['fields'])
+                match integration['status']:
                     case 1:
                         chatvolt.send(doc['fields'])
                     case 2:
                         print('Necessario atualizar')
                     case 3:
                         print('Nenhuma ação')
+                    case 4:
+                        chatvolt.delete(integration['id'])
 
             break
         break

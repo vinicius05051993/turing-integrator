@@ -36,6 +36,14 @@ def get():
     response.raise_for_status()
     return response.json()
 
+def delete(datasource):
+    resposta = requests.delete(
+        CHATVOLT_API_URL + "datasources/" + datasource,
+        headers=HEADERS_DESTINO
+    )
+    resposta.raise_for_status()
+    print('Dados deletados com sucesso:', resposta.status_code)
+
 def getIdPostName(post : dict):
     return post["title"] + " #" + post["id"]
 
@@ -45,7 +53,7 @@ def postIntegrationStatus(chatVoltData, post):
             dateChatVolt = parser.isoparse(data["updatedAt"])
             datePost = parser.isoparse(post["modification_date"])
             if dateChatVolt < datePost:
-                return 2
+                return {"status": 2, "id": data["id"]}
             else:
-                return 3
-    return 1
+                return {"status": 3, "id": data["id"]}
+    return {"status": 1, "id": 0}
