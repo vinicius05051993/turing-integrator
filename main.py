@@ -45,7 +45,7 @@ def getDataChatVolt(search_id: str):
         'limit': 10
     }
 
-    response = request.get(
+    response = requests.get(
         CHATVOLT_API_URL + "datasources",
         params=params
     )
