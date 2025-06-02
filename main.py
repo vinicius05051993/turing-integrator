@@ -9,7 +9,7 @@ HEADERS_DESTINO = {
 
 def getAllTuring(page):
     try:
-        resposta = requests.get('https://busca.maplebear.com.br/api/sn/maplebear-prd-publish/search?p='+ page +'&rows=100&_setlocale=pt_BR&nfpr=0&q=', verify=False)
+        resposta = requests.get("https://busca.maplebear.com.br/api/sn/maplebear-prd-publish/search?p="+ page +"&rows=100&_setlocale=pt_BR&nfpr=0&q=", verify=False)
         resposta.raise_for_status()
         dados = resposta.json()
         return dados
