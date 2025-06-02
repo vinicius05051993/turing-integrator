@@ -13,21 +13,24 @@ def main():
 
         document = datas.get("results", {}).get("document", [])
         for doc in document:
-            if doc['fields']['mbtype'] == 'post':
-                integration = chatvolt.postIntegrationStatus(chatVoltDataSources, doc['fields'])
+            integration = chatvolt.integrationStatus(chatVoltDataSources, doc['fields'])
 
-                if integration["key"] != None:
-                    chatVoltDataSources.pop(integration["key"])
+            if integration["key"] != None:
+                chatVoltDataSources.pop(integration["key"])
 
-                for source in chatVoltDataSources:
-                    chatvolt.delete(source['id'])
+            match integration['status']:
+                case 1:
+                    match doc['fields']['mbtype']:
+                        case 'post':
+                            chatvolt.sendPost(doc['fields'])
+                case 2:
+                    chatvolt.delete(integration['id'])
+                    match doc['fields']['mbtype']:
+                        case 'post':
+                            chatvolt.sendPost(doc['fields'])
 
-                match integration['status']:
-                    case 1:
-                        chatvolt.sendPost(doc['fields'])
-                    case 2:
-                        chatvolt.delete(integration['id'])
-                        chatvolt.sendPost(doc['fields'])
+        for source in chatVoltDataSources:
+            chatvolt.delete(source['id'])
 
 if __name__ == '__main__':
     main()

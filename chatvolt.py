@@ -12,7 +12,7 @@ HEADERS_DESTINO = {
 def sendPost(docFields : dict):
     try:
         payload = {
-           "name": getIdPostName(docFields),
+           "name": getIdName(docFields),
            "datastoreId": DATASTORE_ID,
            "datasourceText": docFields.get('text', ''),
            "type": "file",
@@ -45,12 +45,12 @@ def delete(datasource):
     resposta.raise_for_status()
     print('Dados deletados com sucesso:', resposta.status_code)
 
-def getIdPostName(post : dict):
+def getIdName(post : dict):
     return post["title"] + " #" + post["id"]
 
-def postIntegrationStatus(chatVoltData, post):
+def integrationStatus(chatVoltData, post):
     for index, data in enumerate(chatVoltData):
-        if data["name"] == getIdPostName(post):
+        if data["name"] == getIdName(post):
             dateChatVolt = parser.isoparse(data["updatedAt"])
             datePost = parser.isoparse(post["modification_date"])
             if dateChatVolt < datePost:
