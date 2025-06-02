@@ -35,3 +35,17 @@ def get():
     )
     response.raise_for_status()
     return response.json()
+
+def getIdPostName(post : dict):
+    return post["title"] + " #" + post["id"]
+
+def postIntegrationStatus(chatVoltData, post):
+    for data in chatVoltData:
+        if data["name"] == getIdPostName(post):
+            dateChatVolt = parser.isoparse(data["updatedAt"])
+            datePost = parser.isoparse(post["modification_date"])
+            if dateChatVolt < datePost:
+                return 2
+            else:
+                return 3
+    return 1
