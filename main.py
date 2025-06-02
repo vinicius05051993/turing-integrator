@@ -1,6 +1,7 @@
 import requests
 import os
 from dateutil import parser
+import turing
 
 CHATVOLT_API_URL = 'https://api.chatvolt.ai/'
 DATASTORE_ID = 'cmbauo40600brx87n8gazln1j'
@@ -10,16 +11,7 @@ HEADERS_DESTINO = {
     'Authorization': 'Bearer 3f157bd4-64ae-4ecb-ac8d-ffe0f89b2149'
 }
 
-def getAllTuring(page):
-    try:
-        resposta = requests.get('https://busca.maplebear.com.br/api/sn/maplebear-prd-publish/search?p='+ str(page) +'&rows=100&_setlocale=pt_BR&nfpr=0&q=', verify=False)
-        resposta.raise_for_status()
-        return resposta.json()
-    except requests.RequestException as e:
-        print('Erro ao buscar dados:', e)
-        return None
-
-def sendPostToTuring(docFields : dict):
+def sendPostToChatVolt(docFields : dict):
     try:
         payload = {
            "name": getIdPostName(docFields),
@@ -68,7 +60,7 @@ def main():
     chatVoltData = chatVoltPost.get("datasources", {})
 
     for page in range(1, 100):
-        datas = getAllTuring(page)
+        datas = turing.getAllTuring(page)
         queryContext = datas.get("queryContext", {})
         if (page > queryContext['pageCount']):
             break
@@ -78,7 +70,7 @@ def main():
             if doc['fields']['mbtype'] == 'post':
                 match postIntegrationStatus(chatVoltData, doc['fields']):
                     case 1:
-                        sendPostToTuring(doc['fields'])
+                        sendPostToChatVolt(doc['fields'])
                     case 2:
                         print('Necessario atualizar')
                     case 3:
