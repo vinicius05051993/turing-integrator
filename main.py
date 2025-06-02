@@ -18,7 +18,7 @@ def getAllTuring(page):
         print('Erro ao buscar dados:', e)
         return None
 
-def sendToTuring(data):
+def sendToTuring(self, data):
     try:
         data["datastoreId"] = self.DATASTORE_ID
 
