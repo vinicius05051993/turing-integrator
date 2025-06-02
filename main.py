@@ -47,10 +47,10 @@ def main():
 
         document = datas.get("results", {}).get("document", [])
         for doc in document:
-            print(str(page) + " " + doc['fields']['id'] + " - " + doc['fields']['mbtype'])
-            sendToTuring(doc['fields'])
-            break
+            if doc['fields']['mbtype'] == 'post':
+                sendPostToTuring(doc['fields'])
 
+            break
         break
 
 if __name__ == '__main__':
