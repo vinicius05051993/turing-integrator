@@ -40,14 +40,14 @@ def sendPostToTuring(docFields : dict):
 
 def getDataChatVolt(search_id: str):
     params = {
-        'datastoreId': DATASTORE_ID,
         'search': search_id,
         'limit': 10
     }
 
     response = requests.get(
-        CHATVOLT_API_URL + "datasources",
-        params=params
+        CHATVOLT_API_URL + "datasources/" + DATASTORE_ID,
+        params=params,
+        HEADERS_DESTINO
     )
     response.raise_for_status()
     return response.json()
