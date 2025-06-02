@@ -1,5 +1,6 @@
 import requests
 import os
+from dateutil import parser
 
 CHATVOLT_API_URL = 'https://api.chatvolt.ai/'
 DATASTORE_ID = 'cmbauo40600brx87n8gazln1j'
@@ -21,7 +22,7 @@ def getAllTuring(page):
 def sendPostToTuring(docFields : dict):
     try:
         payload = {
-           "name": f"{docFields.get('title', '')} #{docFields.get('id', '')}",
+           "name": getIdPostName(docFields),
            "datastoreId": DATASTORE_ID,
            "datasourceText": docFields.get('text', ''),
            "type": "file",
@@ -46,9 +47,25 @@ def getDataChatVolt():
     response.raise_for_status()
     return response.json()
 
+def getIdPostName(post : dict):
+    return post["title"] + " #" + post["id"]
+
+def postIntegrationStatus(chatVoltData, post):
+    for data in chatVoltData:
+        if data["name"] == getIdPostName(post)
+            dateChatVolt = parser.isoparse(data["updatedAt"])
+            datePost = parser.isoparse(post["modification_date"])
+            if dateChatVolt < datePost:
+                return 2
+            else:
+                return 3
+    return 1
+
+
 def main():
     chatVoltPost = getDataChatVolt()
     print(chatVoltPost)
+    chatVoltData = chatVoltPost.get("datasources", {})
 
     for page in range(1, 100):
         datas = getAllTuring(page)
@@ -59,7 +76,13 @@ def main():
         document = datas.get("results", {}).get("document", [])
         for doc in document:
             if doc['fields']['mbtype'] == 'post':
-                sendPostToTuring(doc['fields'])
+                match postIntegrationStatus(chatVoltData, doc['fields']):
+                    case 1:
+                        sendPostToTuring(doc['fields'])
+                    case 2:
+                        print('Necessario atualizar')
+                    case 3:
+                        print('Nenhuma ação')
 
             break
         break
