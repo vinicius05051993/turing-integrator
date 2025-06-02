@@ -18,7 +18,7 @@ def main():
                 integration = chatvolt.postIntegrationStatus(chatVoltDataSources, doc['fields'])
 
                 if integration["key"] != None:
-                chatVoltDataSources.pop(integration["key"])
+                    chatVoltDataSources.pop(integration["key"])
 
                 for source in chatVoltDataSources:
                     chatvolt.delete(source['id'])
