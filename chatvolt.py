@@ -53,7 +53,7 @@ def postIntegrationStatus(chatVoltData, post):
         if data["name"] == getIdPostName(post):
             dateChatVolt = parser.isoparse(data["updatedAt"])
             datePost = parser.isoparse(post["modification_date"])
-            if true:
+            if True:
                 return {"status": 2, "id": data["id"]}
             else:
                 return {"status": 3, "id": data["id"]}
