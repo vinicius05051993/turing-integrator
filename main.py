@@ -49,7 +49,6 @@ def getDataChatVolt(search_id: str):
         CHATVOLT_API_URL + "datasources",
         params=params
     )
-    response.raise_for_status()
     return response.json()
 
 def main():
