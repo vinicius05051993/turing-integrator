@@ -47,7 +47,7 @@ def getDataChatVolt(search_id: str):
     response = requests.get(
         CHATVOLT_API_URL + "datasources/" + DATASTORE_ID,
         params=params,
-        HEADERS_DESTINO
+        headers=HEADERS_DESTINO
     )
     response.raise_for_status()
     return response.json()
