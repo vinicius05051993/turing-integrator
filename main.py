@@ -29,7 +29,7 @@ def main():
         for page in range(1, 100):
             datas = getAllTuring(page)
             queryContext = datas.get("queryContext", {})
-            if (page > queryContext['pageCount'])
+            if (page > queryContext['pageCount']):
                 break
 
             document = datas.get("results", {}).get("document", [])
