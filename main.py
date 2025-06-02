@@ -52,7 +52,7 @@ def getIdPostName(post : dict):
 
 def postIntegrationStatus(chatVoltData, post):
     for data in chatVoltData:
-        if data["name"] == getIdPostName(post)
+        if data["name"] == getIdPostName(post):
             dateChatVolt = parser.isoparse(data["updatedAt"])
             datePost = parser.isoparse(post["modification_date"])
             if dateChatVolt < datePost:
