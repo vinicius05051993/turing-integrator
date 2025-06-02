@@ -20,17 +20,17 @@ def getAllTuring(page):
 
 def sendToTuring(doc : dict):
     try:
-         payload = {
-            "name": f"{doc.get('title', '')} #{doc.get('id', '')}",
-            "datastoreId": DATASTORE_ID,
-            "datasourceText": doc.get('abstract', ''),
-            "type": "file",
-            "config": {
-                "tags": doc.get('tags', []),
-                "source_url": doc.get('source_url', ''),
-                "mime_type": "text/plain"
-            }
-         }
+        payload = {
+           "name": f"{doc.get('title', '')} #{doc.get('id', '')}",
+           "datastoreId": DATASTORE_ID,
+           "datasourceText": doc.get('abstract', ''),
+           "type": "file",
+           "config": {
+               "tags": doc.get('tags', []),
+               "source_url": doc.get('source_url', ''),
+               "mime_type": "text/plain"
+           }
+        }
 
         resposta = requests.post(CHATVOLT_API_URL + "datasources", json=payload, headers=HEADERS_DESTINO)
         resposta.raise_for_status()
