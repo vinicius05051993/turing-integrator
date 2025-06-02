@@ -29,8 +29,6 @@ def main():
                     case 2:
                         chatvolt.delete(integration['id'])
                         chatvolt.sendPost(doc['fields'])
-                    case 3:
-                        print('Nenhuma ação')
 
             break
         break
