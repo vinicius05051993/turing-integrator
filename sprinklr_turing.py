@@ -6,8 +6,8 @@ def main():
 
     if login.get('responseCode', False) == 'SUCCESS':
         accessToken = login.get('accessToken', False)
-        sprinklr.getPosts(accessToken)
-        print(sprinklr)
+        posts = sprinklr.getPosts(accessToken)
+        print(posts)
 
 if __name__ == '__main__':
     main()
