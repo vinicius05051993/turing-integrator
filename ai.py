@@ -9,7 +9,7 @@ class Tags:
         return self.kw_model.extract_keywords(
             texto.lower(),
             keyphrase_ngram_range=(1, 1),
-            stop_words='portuguese',
+            stop_words=None,
             top_n=n,
             use_mmr=True,
             diversity=diversity
