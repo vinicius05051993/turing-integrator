@@ -2,6 +2,7 @@ from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_community.llms import HuggingFacePipeline
 from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
+from langchain_huggingface import HuggingFacePipeline
 
 def carregar_modelo(model_id="TinyLlama/TinyLlama-1.1B-Chat-v1.0"):
     """Carrega o modelo e tokenizer DeepSeek R1"""
@@ -21,8 +22,10 @@ def criar_pipeline_llm(tokenizer, model):
         "text-generation",
         model=model,
         tokenizer=tokenizer,
-        max_new_tokens=200,
-        do_sample=False
+        device_map="auto",
+        do_sample=True,
+        top_p=0.95,
+        max_new_tokens=128
     )
     return HuggingFacePipeline(pipeline=llm_pipeline)
 
