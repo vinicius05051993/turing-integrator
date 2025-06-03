@@ -3,7 +3,7 @@ from transformers import BertModel, BertTokenizer
 
 class Tags:
     def __init__(self):
-        model_name = "neuralmind/bert-base-portuguese-cased"
+        model_name = "neuralmind/bert-large-portuguese-cased"
         self.model = BertModel.from_pretrained(model_name)
         self.kw_model = KeyBERT(model=self.model)
 
