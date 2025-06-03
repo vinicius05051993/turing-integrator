@@ -30,12 +30,12 @@ def criar_chain(llm):
     prompt = PromptTemplate(
         input_variables=["conteudo"],
         template=(
-            "Extraia as 8 palavras mais relevantes deste texto, "
-            "considerando seu significado e importância. "
-            "Retorne APENAS as 8 palavras separadas por vírgulas, "
-            "sem nenhum texto adicional ou explicação.\n\n"
-            "Texto: {conteudo}\n\n"
-            "Resposta:"
+            "### Instrução:\n"
+            "Extraia as 8 palavras mais relevantes deste texto, considerando seu significado e importância.\n"
+            "Retorne APENAS as 8 palavras separadas por vírgulas, sem explicação.\n\n"
+            "### Texto:\n"
+            "{conteudo}\n\n"
+            "### Resposta:"
         )
     )
     return prompt | llm | StrOutputParser()
