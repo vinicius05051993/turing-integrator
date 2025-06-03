@@ -1,2 +1,8 @@
 requests
 python-dateutil
+langchain
+langchain-core
+langchain-community
+transformers
+torch
+accelerate
