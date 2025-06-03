@@ -7,3 +7,5 @@ langchain-core>=0.1.0
 langchain-huggingface>=0.0.2
 accelerate>=0.24.0  # For device_map="auto" support
 protobuf>=3.20.0,<4.0.0  # Required dependency
+keybert
+sentence-transformers
