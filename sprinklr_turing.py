@@ -9,9 +9,13 @@ def main():
 
         for page in range(0, 100):
             spPosts = sprinklr.getPosts(accessToken, page)
+
+            if len(spPosts) == 0:
+                break
+
             print("Page: " + str(page))
             for spPost in spPosts:
-                print(spPost)
+                print("----")
 
 if __name__ == '__main__':
     main()
