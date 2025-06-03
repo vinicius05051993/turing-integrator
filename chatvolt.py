@@ -46,8 +46,8 @@ def sendEvent(docFields : dict):
         else:
             dataSourcetext += "Evento não é dia todo. "
 
-        dataSourcetext += "Data inicial: " docFields.get("initialDate", "") + ". "
-        dataSourcetext += "Data final: " docFields.get("finishDate", "") + ". "
+        dataSourcetext += "Data inicial: " + docFields.get("initialDate", "") + ". "
+        dataSourcetext += "Data final: " + docFields.get("finishDate", "") + ". "
 
         payload = {
            "name": getIdName(docFields),
