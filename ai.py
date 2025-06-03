@@ -7,7 +7,7 @@ class Tags:
         self.model = BertModel.from_pretrained(model_name)
         self.kw_model = KeyBERT(model=self.model)
 
-    def get(self, texto, n=8, diversity=0.7):
+    def get(self, texto, n=8, diversity=0.3):
         return self.kw_model.extract_keywords(
             texto,
             keyphrase_ngram_range=(1, 1),
