@@ -17,7 +17,8 @@ def main():
                 break
 
             for spPost in spPosts:
-                print("Titulo: " + spPost['t'] + " tags: " + extrator.extrair_palavras_chave(spPost['m']))
+                print("Titulo: " + spPost['t'] + " tags:")
+                print(extrator.extrair_palavras_chave(spPost['m']))
 
 if __name__ == '__main__':
     main()
