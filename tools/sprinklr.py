@@ -30,3 +30,37 @@ def login(token):
     response = requests.post(LOGIN_URL, headers=header)
     response.raise_for_status()
     return response.json()
+
+def getPosts(accessToken):
+    headers = [
+        'Content-Type': 'application/json',
+        'X-Community-Authorization': 'Bearer ' . accessToken
+    ]
+
+    data = {
+        "filters": [
+            {
+                "field": "mSTp",
+                "filterType": "IN",
+                "values": ["13"]
+            }
+        ],
+        "page": {
+            "page": 0,
+            "size": 2
+        },
+        "sorts": [
+            {
+                "key": "cTm",
+                "order": "DESC"
+            }
+        ]
+    }
+
+    response = requests.post(
+        URL_GET_POST,
+        headers=headers,
+        json=data
+    )
+
+    return response.json()

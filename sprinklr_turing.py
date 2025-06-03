@@ -3,7 +3,11 @@ import tools.sprinklr as sprinklr
 def main():
     token = sprinklr.getToken()
     login = sprinklr.login(token)
-    print(login)
+
+    if login.get('responseCode', False) == 'SUCCESS':
+        accessToken = login.get('accessToken', False)
+        sprinklr.getPosts(accessToken)
+        print(sprinklr)
 
 if __name__ == '__main__':
     main()
