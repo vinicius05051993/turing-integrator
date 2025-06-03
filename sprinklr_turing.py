@@ -9,7 +9,7 @@ def main():
 
         for page in range(0, 100):
             spPosts = sprinklr.getPosts(accessToken, page)
-            print("Page: " + page)
+            print("Page: " + str(page))
             for spPost in spPosts:
                 print(spPost)
 
