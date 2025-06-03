@@ -17,5 +17,4 @@ HEADERS_DESTINO = {
 def getToken():
     response = requests.post(FULL_URL_TOKEN, headers=HEADERS_DESTINO)
     response.raise_for_status()
-    print(response)
-    return response
+    return response.text
