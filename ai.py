@@ -9,6 +9,7 @@ def carregar_modelo(model_id="deepseek-ai/deepseek-coder-1.5b-base"):
     model = AutoModelForCausalLM.from_pretrained(
         model_id,
         device_map="auto",
+        offload_folder="./offload",  # ← cria pasta local p/ armazenar partes do modelo
         trust_remote_code=True,
         torch_dtype="auto"
     )
