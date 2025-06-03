@@ -10,11 +10,23 @@ LOGIN_PASSWORD = '6v2R$5OjXA.L'
 
 FULL_URL_TOKEN = UN_URL + '?requestToken=' + UN_TOKEN + '&projectId=' + PROJECT_ID
 
-HEADERS_DESTINO = {
-    'Content-Type': 'application/json'
-}
-
 def getToken():
-    response = requests.post(FULL_URL_TOKEN, headers=HEADERS_DESTINO)
+    header = {
+        'Content-Type': 'application/json'
+    }
+    response = requests.post(FULL_URL_TOKEN, headers=header)
     response.raise_for_status()
     return response.text
+
+def login(token):
+    header = {
+        'Content-Type': 'application/json',
+        'Accept: application/json',
+        'username: ' + LOGIN_USERNAME,
+        'password: ' + LOGIN_PASSWORD,
+        'X-Community-Authorization: Bearer ' + token
+    }
+
+    response = requests.post(LOGIN_URL, headers=header)
+    response.raise_for_status()
+    return response.json()
