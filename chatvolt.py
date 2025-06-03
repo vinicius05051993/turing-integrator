@@ -104,7 +104,7 @@ def delete(datasource):
     print('Dados deletados com sucesso:', resposta.status_code)
 
 def getIdName(post : dict):
-    return post["title"] + " #" + post["id"]
+    return post.get("title", "") + " #" + post["id"]
 
 def integrationStatus(chatVoltData, post):
     for index, data in enumerate(chatVoltData):
