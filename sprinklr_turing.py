@@ -1,4 +1,5 @@
 import tools.sprinklr as sprinklr
+from ai import ExtratorPalavrasChave
 
 def main():
     token = sprinklr.getToken()
@@ -7,6 +8,8 @@ def main():
     if login.get('responseCode', False) == 'SUCCESS':
         accessToken = login.get('accessToken', False)
 
+        extrator = ExtratorPalavrasChave()
+
         for page in range(0, 100):
             spPosts = sprinklr.getPosts(accessToken, page)
 
@@ -14,7 +17,7 @@ def main():
                 break
 
             for spPost in spPosts:
-                print("----")
+                print("Titulo: " + spPost['t'] + " tags: " + extrair_palavras_chave(spPost['m']))
 
 if __name__ == '__main__':
     main()
