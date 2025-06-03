@@ -8,7 +8,7 @@ def main():
         accessToken = login.get('accessToken', False)
 
         for page in range(999, 1000):
-            spPosts = sprinklr.getPosts(accessToken, 0)
+            spPosts = sprinklr.getPosts(accessToken, page)
             for spPost in spPosts:
                 print(spPost)
 
