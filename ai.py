@@ -3,7 +3,7 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_huggingface import HuggingFacePipeline
 from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
 
-def carregar_modelo(model_id="TinyLlama/TinyLlama-1.1B-Chat-v1.0"):
+def carregar_modelo(model_id="mistralai/Mistral-7B-Instruct-v0.1"):
     tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True)
     model = AutoModelForCausalLM.from_pretrained(
         model_id,
@@ -38,7 +38,7 @@ def criar_chain(llm):
             "Resposta:"
         )
     )
-    return prompt
+    return prompt | llm | StrOutputParser()
 
 def main():
     try:
