@@ -3,7 +3,7 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_huggingface import HuggingFacePipeline
 from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
 
-def carregar_modelo(model_id="google/flan-t5-base"):
+def carregar_modelo(model_id="unicamp-dl/ptt5-base-portuguese-vocab"):
     tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True)
     model = AutoModelForCausalLM.from_pretrained(
         model_id,
