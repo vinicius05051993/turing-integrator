@@ -3,7 +3,7 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_community.llms import HuggingFacePipeline
 from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
 
-def carregar_modelo(model_id="deepseek-ai/deepseek-llm-7b-base"):
+def carregar_modelo(model_id="deepseek-ai/deepseek-coder-1.5b-base"):
     """Carrega o modelo e tokenizer DeepSeek R1"""
     tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True)
     model = AutoModelForCausalLM.from_pretrained(
