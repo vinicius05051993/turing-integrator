@@ -1,45 +1,33 @@
 from keybert import KeyBERT
 from transformers import BertModel, BertTokenizer
-import torch
 
-def carregar_modelo_keybert():
-    """Carrega o modelo com configurações específicas para português"""
-    try:
-        # Modelo BERTimbau base (garantido para PT-BR)
-        model_name = "neuralmind/bert-base-portuguese-cased"
-        tokenizer = BertTokenizer.from_pretrained(model_name)
-        model = BertModel.from_pretrained(model_name)
-        return KeyBERT(model=model)
-    except Exception as e:
-        print(f"Erro ao carregar modelo: {e}")
-        return KeyBERT()  # Fallback para modelo padrão
+def main():
+    # 1. Carrega o modelo BERTimbau diretamente
+    model_name = "neuralmind/bert-base-portuguese-cased"
+    model = BertModel.from_pretrained(model_name)
+    kw_model = KeyBERT(model=model)
 
-def extrair_palavras_chave(texto, n=8):
-    """Função robusta para extração de keywords"""
-    # Pré-processamento básico
-    texto = texto.replace("\n", " ").strip()
+    # 2. Texto para análise
+    texto = """
+    O novo modelo de linguagem lançado pela DeepSeek demonstra avanços significativos
+    em processamento de linguagem natural para o português brasileiro.
+    """
 
-    # Carrega o modelo
-    kw_model = carregar_modelo_keybert()
-
-    # Extração com parâmetros otimizados
+    # 3. Extração direta das palavras-chave
     keywords = kw_model.extract_keywords(
         texto,
-        keyphrase_ngram_range=(1, 2),
-        stop_words="portuguese",
-        top_n=n,
-        use_mmr=True,
-        diversity=0.6,
-        nr_candidates=20
+        keyphrase_ngram_range=(1, 1),
+        stop_words=None,
+        top_n=8
     )
-    return ", ".join([kw[0] for kw in keywords])
 
-# Exemplo de uso
-texto = """
-A inteligência artificial está transformando radicalmente o mercado de trabalho,
-especialmente na área de tecnologia da informação. Grandes empresas como Google,
-Microsoft e OpenAI desenvolvem soluções inovadoras diariamente.
-"""
+    # 4. Exibe o retorno cru do KeyBERT
+    print("Retorno bruto do KeyBERT:")
+    print(keywords)
 
-palavras_chave = extrair_palavras_chave(texto)
-print("Palavras-chave:", palavras_chave)
+    # 5. Formatação mínima (apenas para visualização)
+    print("\nPalavras-chave formatadas:")
+    print(", ".join([kw[0] for kw in keywords]))
+
+if __name__ == "__main__":
+    main()
