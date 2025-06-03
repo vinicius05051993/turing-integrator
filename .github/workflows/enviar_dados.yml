@@ -23,4 +23,4 @@ jobs:
       - name: Executar script Python
         env:
           API_TOKEN: ${{ secrets.API_TOKEN }}
-        run: python main.py
+        run: python turing_chatvolt.py
