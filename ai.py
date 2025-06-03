@@ -38,7 +38,7 @@ def criar_chain(llm):
             "Resposta:"
         )
     )
-    return prompt | llm | StrOutputParser()
+    return prompt
 
 def main():
     try:
