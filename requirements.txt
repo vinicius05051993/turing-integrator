@@ -4,3 +4,4 @@ transformers
 langchain
 langchain-huggingface
 protobuf
+tokenizer
