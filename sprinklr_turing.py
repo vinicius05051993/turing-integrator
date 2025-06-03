@@ -10,7 +10,7 @@ def main():
 
         extrator = ExtratorPalavrasChave()
 
-        for page in range(0, 100):
+        for page in range(0, 1):
             spPosts = sprinklr.getPosts(accessToken, page)
 
             if len(spPosts) == 0:
