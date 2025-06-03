@@ -7,10 +7,10 @@ def main():
     if login.get('responseCode', False) == 'SUCCESS':
         accessToken = login.get('accessToken', False)
 
-        for page in range(1, 2):
-            posts = sprinklr.getPosts(accessToken, 0)
-            for post in posts:
-                print(post)
+        for page in range(999, 1000):
+            spPosts = sprinklr.getPosts(accessToken, 0)
+            for spPost in spPosts:
+                print(spPost)
 
 if __name__ == '__main__':
     main()
