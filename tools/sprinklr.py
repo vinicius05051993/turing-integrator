@@ -31,7 +31,7 @@ def login(token):
     response.raise_for_status()
     return response.json()
 
-def getPosts(accessToken):
+def getPosts(accessToken, page):
     headers = {
         'Content-Type': 'application/json',
         'X-Community-Authorization': 'Bearer ' + accessToken
@@ -46,7 +46,7 @@ def getPosts(accessToken):
             }
         ],
         "page": {
-            "page": 0,
+            "page": page,
             "size": 1
         },
         "sorts": [
@@ -63,4 +63,4 @@ def getPosts(accessToken):
         json=data
     )
 
-    return response.json()
+    return response.json().get("data", [])
