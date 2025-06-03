@@ -1,10 +1,5 @@
 requests
 python-dateutil
-langchain
-langchain-core
-langchain-community
 transformers
-torch
-accelerate
-safetensors
-langchain_huggingface
+langchain
+langchain-huggingface
