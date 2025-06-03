@@ -33,7 +33,7 @@ def login(token):
 
 def getPosts(accessToken):
     headers = [
-        'Content-Type': 'application/json',
+        'Content-Type' : 'application/json',
         'X-Community-Authorization': 'Bearer ' . accessToken
     ]
 
