@@ -18,7 +18,7 @@ def main():
 
             for spPost in spPosts:
                 print("Titulo: " + spPost['t'] + " tags:")
-                print(extrator.extrair_palavras_chave(spPost['m']))
+                print(extrator.extrair_palavras_chave(sprinklr.get_paragraph_texts(spPost['m'])))
 
 if __name__ == '__main__':
     main()

@@ -64,3 +64,18 @@ def getPosts(accessToken, page):
     )
 
     return response.json().get("data", [])
+
+def get_paragraph_texts(html: str) -> str:
+    text_captured = ''
+
+    # Find all text within <span> or <p> tags
+    matches = re.findall(r'<(?:span|p)[^>]*>(.*?)</(?:span|p)>', html, flags=re.IGNORECASE | re.DOTALL)
+
+    if matches:
+        text_captured = ' '.join(matches)
+
+    # Remove any remaining HTML tags and non-alphanumeric characters except spaces
+    text_captured = re.sub(r'<[^>]*>', '', text_captured)  # Remove any remaining tags
+    text_captured = re.sub(r'[^\w\s]', '', text_captured)  # Remove non-alphanumeric chars
+
+    return text_captured.strip()
