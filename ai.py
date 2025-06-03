@@ -4,7 +4,7 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_huggingface import HuggingFacePipeline
 
 def carregar_modelo(model_id="unicamp-dl/ptt5-base-portuguese-vocab"):
-    tokenizer = AutoTokenizer.from_pretrained(model_id)
+    tokenizer = AutoTokenizer.from_pretrained(model_id, use_fast=False)
     model = AutoModelForSeq2SeqLM.from_pretrained(model_id)
     return tokenizer, model
 
