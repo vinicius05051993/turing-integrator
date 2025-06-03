@@ -1,5 +1,5 @@
-import tools.turing
-import tools.chatvolt
+import tools.turing as turing
+import tools.chatvolt as chatvolt
 
 def main():
     chatVoltDatas = chatvolt.getAll()
