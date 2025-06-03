@@ -13,7 +13,6 @@ def main():
             if len(spPosts) == 0:
                 break
 
-            print("Page: " + str(page))
             for spPost in spPosts:
                 print("----")
 
