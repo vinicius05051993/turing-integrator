@@ -20,9 +20,10 @@ def criar_pipeline_llm(tokenizer, model):
         tokenizer=tokenizer,
         device_map="auto",
         do_sample=True,
-        top_p=0.95,
-        max_new_tokens=50,  # Reduzido para evitar respostas muito longas
-        temperature=0.7
+        top_p=0.9,  # Ajustado para ser mais determinístico
+        max_new_tokens=40,  # Suficiente apenas para 8 palavras
+        temperature=0.3,  # Reduzido para menos criatividade
+        repetition_penalty=1.2  # Evita repetições
     )
     return HuggingFacePipeline(pipeline=llm_pipeline)
 
@@ -30,23 +31,25 @@ def criar_chain(llm):
     prompt = PromptTemplate(
         input_variables=["conteudo"],
         template=(
-            "Extraia as 8 palavras-chave mais relevantes do texto abaixo. "
-            "Responda APENAS com 8 palavras separadas por vírgulas, SEM números, pontos ou texto adicional.\n\n"
-            "Exemplo: palavra1,palavra2,palavra3,palavra4,palavra5,palavra6,palavra7,palavra8\n\n"
-            "Texto: {conteudo}"
+            "Aqui está um texto:\n\n"
+            "{conteudo}\n\n"
+            "Palavras-chave (exatamente 8, separadas por vírgulas):"
         )
     )
     return prompt | llm | StrOutputParser()
 
-def gerar_tags(texto, chain):
-    resposta = chain.invoke({"conteudo": texto}).strip()
-    # Processamento extra para garantir exatamente 8 palavras
-    palavras = [p.strip() for p in resposta.split(",") if p.strip()]
+def processar_resposta(resposta):
+    # Extrai apenas o que vem depois dos ":" e limpa
+    palavras = resposta.split(":")[-1].strip()
+    # Remove qualquer pontuação final e divide
+    palavras = palavras.replace(".","").replace("\n","").strip()
+    palavras = [p.strip() for p in palavras.split(",") if p.strip()]
+
+    # Garante exatamente 8 palavras
     if len(palavras) > 8:
-        palavras = palavras[:8]  # Pega apenas as 8 primeiras
+        return ",".join(palavras[:8])
     elif len(palavras) < 8:
-        # Se tiver menos de 8, completa com as mais relevantes repetidas (evitando erro)
-        palavras = palavras + palavras[:8-len(palavras)]
+        return ",".join(palavras + palavras[:8-len(palavras)])
     return ",".join(palavras)
 
 def main():
@@ -61,8 +64,9 @@ def main():
         Ele é treinado com bilhões de parâmetros e mostra desempenho competitivo com os melhores modelos open-source disponíveis.
         """
 
-        resultado = gerar_tags(texto, chain)
-        print(resultado)  # Saída será exatamente 8 palavras separadas por vírgulas
+        resposta_bruta = chain.invoke({"conteudo": texto})
+        resultado = processar_resposta(resposta_bruta)
+        print(resultado)
 
     except Exception as e:
         print(f"Ocorreu um erro: {e}")
