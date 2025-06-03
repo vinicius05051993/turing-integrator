@@ -1,53 +1,45 @@
 from keybert import KeyBERT
-from transformers import AutoModel
-from sentence_transformers import SentenceTransformer
+from transformers import BertModel, BertTokenizer
 import torch
 
-# Configuration of available models
-MODELS = {
-    "portuguese": "neuralmind/bert-base-portuguese-cased",
-    "multilingual": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
-    "legal-pt": "rufimelo/Legal-BERTimbau-sts-base-pt"
-}
-
-def load_keyword_model(model_name="portuguese"):
-    """Load a keyword extraction model with proper embedding setup"""
+def carregar_modelo_keybert():
+    """Carrega o modelo com configurações específicas para português"""
     try:
-        # Method 1: Try with SentenceTransformer first
-        st_model = SentenceTransformer(MODELS[model_name])
-        return KeyBERT(model=st_model)
-
+        # Modelo BERTimbau base (garantido para PT-BR)
+        model_name = "neuralmind/bert-base-portuguese-cased"
+        tokenizer = BertTokenizer.from_pretrained(model_name)
+        model = BertModel.from_pretrained(model_name)
+        return KeyBERT(model=model)
     except Exception as e:
-        print(f"Warning: {e}\nTrying alternative loading method...")
-        try:
-            # Method 2: Fallback to direct transformer model
-            model = AutoModel.from_pretrained(MODELS[model_name])
-            return KeyBERT(model=model)
-        except:
-            # Method 3: Ultimate fallback to default model
-            print("Using default multilingual model")
-            return KeyBERT()
+        print(f"Erro ao carregar modelo: {e}")
+        return KeyBERT()  # Fallback para modelo padrão
 
-def extract_keywords(text, model, n=8):
-    """Robust keyword extraction with proper settings for Portuguese"""
-    keywords = model.extract_keywords(
-        text,
+def extrair_palavras_chave(texto, n=8):
+    """Função robusta para extração de keywords"""
+    # Pré-processamento básico
+    texto = texto.replace("\n", " ").strip()
+
+    # Carrega o modelo
+    kw_model = carregar_modelo_keybert()
+
+    # Extração com parâmetros otimizados
+    keywords = kw_model.extract_keywords(
+        texto,
         keyphrase_ngram_range=(1, 2),
         stop_words="portuguese",
         top_n=n,
         use_mmr=True,
         diversity=0.6,
-        nr_candidates=20  # Better for Portuguese
+        nr_candidates=20
     )
     return ", ".join([kw[0] for kw in keywords])
 
-# Example usage
-if __name__ == "__main__":
-    sample_text = """
-    O novo modelo de linguagem lançado pela DeepSeek demonstra avanços significativos em tarefas de compreensão
-    de linguagem natural, como resposta a perguntas, geração de texto e análise semântica.
-    """
+# Exemplo de uso
+texto = """
+A inteligência artificial está transformando radicalmente o mercado de trabalho,
+especialmente na área de tecnologia da informação. Grandes empresas como Google,
+Microsoft e OpenAI desenvolvem soluções inovadoras diariamente.
+"""
 
-    kw_model = load_keyword_model("portuguese")
-    keywords = extract_keywords(sample_text, kw_model)
-    print(f"Palavras-chave: {keywords}")
+palavras_chave = extrair_palavras_chave(texto)
+print("Palavras-chave:", palavras_chave)
