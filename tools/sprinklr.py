@@ -21,10 +21,10 @@ def getToken():
 def login(token):
     header = {
         'Content-Type': 'application/json',
-        'Accept: application/json',
-        'username: ' + LOGIN_USERNAME,
-        'password: ' + LOGIN_PASSWORD,
-        'X-Community-Authorization: Bearer ' + token
+        'Accept': 'application/json',
+        'username': LOGIN_USERNAME,
+        'password': LOGIN_PASSWORD,
+        'X-Community-Authorization': 'Bearer ' + token
     }
 
     response = requests.post(LOGIN_URL, headers=header)
