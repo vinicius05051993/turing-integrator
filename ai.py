@@ -3,7 +3,7 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_huggingface import HuggingFacePipeline
 from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
 
-def carregar_modelo(model_id="meta-llama/Meta-Llama-3-8B-Instruct"):
+def carregar_modelo(model_id="TinyLlama/TinyLlama-1.1B-Chat-v1.0"):
     tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True)
     model = AutoModelForCausalLM.from_pretrained(
         model_id,
