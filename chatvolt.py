@@ -9,6 +9,15 @@ HEADERS_DESTINO = {
     'Authorization': 'Bearer 3f157bd4-64ae-4ecb-ac8d-ffe0f89b2149'
 }
 
+def send(docFields : dict):
+    match docFields['mbtype']:
+        case 'post':
+            sendPost(docFields)
+        case 'event':
+            sendEvent(docFields)
+        case 'manual':
+            sendManual(docFields)
+
 def sendPost(docFields : dict):
     try:
         payload = {
@@ -25,16 +34,25 @@ def sendPost(docFields : dict):
 
         resposta = requests.post(CHATVOLT_API_URL + "datasources", json=payload, headers=HEADERS_DESTINO)
         resposta.raise_for_status()
-        print('Dados enviados com sucesso:', resposta.status_code)
+        print('Publicação enviada com sucesso:', resposta.status_code)
     except requests.RequestException as e:
-        print('Erro ao enviar dados:', e)
+        print('Erro ao enviar publicação:', e)
 
 def sendEvent(docFields : dict):
     try:
+        dataSourcetext = ""
+        if docFields.get("allDay", False):
+            dataSourcetext += "Evento dia todo. "
+        else:
+            dataSourcetext += "Evento não é dia todo. "
+
+        dataSourcetext += "Data inicial: " docFields.get("initialDate", "") + ". "
+        dataSourcetext += "Data final: " docFields.get("finishDate", "") + ". "
+
         payload = {
            "name": getIdName(docFields),
            "datastoreId": DATASTORE_ID,
-           "datasourceText": "[event] " + docFields.get('title', ''),
+           "datasourceText": "[event] " + dataSourcetext,
            "type": "file",
            "config": {
                "tags": docFields.get('tags', []),
@@ -45,9 +63,29 @@ def sendEvent(docFields : dict):
 
         resposta = requests.post(CHATVOLT_API_URL + "datasources", json=payload, headers=HEADERS_DESTINO)
         resposta.raise_for_status()
-        print('Dados enviados com sucesso:', resposta.status_code)
+        print('Evento enviado com sucesso:', resposta.status_code)
     except requests.RequestException as e:
-        print('Erro ao enviar dados:', e)
+        print('Erro ao enviar eventos:', e)
+
+def sendManual(docFields : dict):
+    try:
+        payload = {
+           "name": getIdName(docFields),
+           "datastoreId": DATASTORE_ID,
+           "datasourceText": "[manual] " + docFields.get('html', ''),
+           "type": "file",
+           "config": {
+               "tags": docFields.get('tags', []),
+               "source_url": docFields.get('url', ''),
+               "mime_type": "text/plain"
+           }
+        }
+
+        resposta = requests.post(CHATVOLT_API_URL + "datasources", json=payload, headers=HEADERS_DESTINO)
+        resposta.raise_for_status()
+        print('Manual enviado com sucesso:', resposta.status_code)
+    except requests.RequestException as e:
+        print('Erro ao enviar manual:', e)
 
 def getAll():
     response = requests.get(

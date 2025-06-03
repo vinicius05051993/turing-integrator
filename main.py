@@ -8,6 +8,7 @@ def main():
     for page in range(1, 100):
         datas = turing.getAllTuring(page)
         queryContext = datas.get("queryContext", {})
+
         if (page > queryContext['pageCount']):
             break
 
@@ -20,14 +21,10 @@ def main():
 
             match integration['status']:
                 case 1:
-                    match doc['fields']['mbtype']:
-                        case 'post':
-                            chatvolt.sendPost(doc['fields'])
+                    chatvolt.send(doc['fields'])
                 case 2:
                     chatvolt.delete(integration['id'])
-                    match doc['fields']['mbtype']:
-                        case 'post':
-                            chatvolt.sendPost(doc['fields'])
+                    chatvolt.send(doc['fields'])
 
     for source in chatVoltDataSources:
         chatvolt.delete(source['id'])
