@@ -32,10 +32,10 @@ def login(token):
     return response.json()
 
 def getPosts(accessToken):
-    headers = [
-        'Content-Type' : 'application/json',
+    headers = {
+        'Content-Type': 'application/json',
         'X-Community-Authorization': 'Bearer ' . accessToken
-    ]
+    }
 
     data = {
         "filters": [
