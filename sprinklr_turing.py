@@ -17,7 +17,7 @@ def main():
                 break
 
             for spPost in spPosts:
-                print("Titulo: " + spPost['t'] + " tags:")
+                print("Titulo: " + spPost['t'])
                 print(tags.get(sprinklr.get_paragraph_texts(spPost['m'])))
 
 if __name__ == '__main__':

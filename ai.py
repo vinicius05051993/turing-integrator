@@ -1,11 +1,9 @@
 from keybert import KeyBERT
-from transformers import BertModel, BertTokenizer
 
 class Tags:
     def __init__(self):
-        model_name = "neuralmind/bert-base-portuguese-cased"
-        self.model = BertModel.from_pretrained(model_name)
-        self.kw_model = KeyBERT(model=self.model)
+        model_name = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+        self.kw_model = KeyBERT(model=model_name)
 
     def get(self, texto, n=8, diversity=0.5):
         return self.kw_model.extract_keywords(

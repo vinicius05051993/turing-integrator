@@ -1,4 +1,5 @@
 requests
 python-dateutil
-keybert>=0.9.0
-transformers>=4.40.0
+keybert
+sentence-transformers
+scikit-learn
