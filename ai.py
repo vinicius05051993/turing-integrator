@@ -1,45 +1,47 @@
 from keybert import KeyBERT
-from sentence_transformers import SentenceTransformer
+from transformers import AutoModel, AutoTokenizer
+import torch
 
-# 1. Modelos recomendados já otimizados para sentence-transformers
-MODELOS_DISPNIVEIS = {
-    "portugues": "rufimelo/Legal-BERTimbau-sts-base-pt",  # Otimizado para similaridade
-    "multilingue": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
-    "pt-keywords": "neuralmind/bert-large-portuguese-cased"  # Especializado em palavras-chave
+# 1. Configuração dos modelos disponíveis
+MODELOS = {
+    "portugues": "neuralmind/bert-base-portuguese-cased",  # Modelo base mais estável
+    "large": "neuralmind/bert-large-portuguese-cased",     # Modelo large (mais recursos)
+    "multilingue": "bert-base-multilingual-cased"          # Fallback multilíngue
 }
 
-def carregar_modelo(modelo="portugues"):
-    # Carrega o modelo pré-otimizado
-    st_model = SentenceTransformer(MODELOS_DISPNIVEIS[modelo])
-    return KeyBERT(model=st_model)
+def carregar_modelo_pt(modelo="portugues"):
+    """Carrega o modelo com tratamento especial para PT-BR"""
+    try:
+        # Configuração especial para evitar warnings
+        model = AutoModel.from_pretrained(
+            MODELOS[modelo],
+            output_hidden_states=True  # Melhor para extração de keywords
+        )
+        tokenizer = AutoTokenizer.from_pretrained(MODELOS[modelo])
+        return KeyBERT(model=model, tokenizer=tokenizer)
+    except Exception as e:
+        print(f"Erro: {e}\nUsando fallback...")
+        return KeyBERT()  # Usa modelo padrão se falhar
 
-def extrair_palavras_chave(texto, model, n=8):
-    keywords = model.extract_keywords(
+def extrair_keywords(texto, modelo, n=8):
+    """Extrai keywords com tratamento robusto"""
+    kw_model = carregar_modelo_pt(modelo)
+
+    keywords = kw_model.extract_keywords(
         texto,
-        keyphrase_ngram_range=(1, 2),  # Captura palavras simples e compostas
+        keyphrase_ngram_range=(1, 2),
         stop_words="portuguese",
         top_n=n,
-        diversity=0.6,  # Garante variedade
-        use_mmr=True  # Algoritmo de Maximal Marginal Relevance
+        use_mmr=True,
+        diversity=0.6
     )
-    return [kw[0] for kw in keywords]
+    return ", ".join([kw[0] for kw in keywords])
 
-def main():
-    try:
-        # Carrega o modelo especializado
-        model = carregar_modelo("pt-keywords")
+# Exemplo de uso
+texto = """
+O novo modelo de linguagem lançado pela DeepSeek demonstra avanços significativos...
+"""
 
-        texto = """
-        O novo modelo de linguagem lançado pela DeepSeek demonstra avanços significativos em tarefas de compreensão
-        de linguagem natural, como resposta a perguntas, geração de texto e análise semântica.
-        Ele é treinado com bilhões de parâmetros e mostra desempenho competitivo com os melhores modelos open-source disponíveis.
-        """
-
-        palavras_chave = extrair_palavras_chave(texto, model)
-        print("Palavras-chave:", ", ".join(palavras_chave))
-
-    except Exception as e:
-        print(f"Erro: {e}")
-
-if __name__ == "__main__":
-    main()
+# Extrai palavras-chave (usando modelo base como padrão)
+palavras_chave = extrair_keywords(texto, "portugues")
+print(f"Palavras-chave: {palavras_chave}")
