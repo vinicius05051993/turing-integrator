@@ -47,7 +47,7 @@ def getPosts(accessToken):
         ],
         "page": {
             "page": 0,
-            "size": 2
+            "size": 1
         },
         "sorts": [
             {
