@@ -5,7 +5,7 @@ from sentence_transformers import SentenceTransformer
 MODELOS_DISPNIVEIS = {
     "portugues": "rufimelo/Legal-BERTimbau-sts-base-pt",  # Otimizado para similaridade
     "multilingue": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
-    "pt-keywords": "tgsc/bertimbau-keyword-extractor"  # Especializado em palavras-chave
+    "pt-keywords": "neuralmind/bert-large-portuguese-cased"  # Especializado em palavras-chave
 }
 
 def carregar_modelo(modelo="portugues"):
