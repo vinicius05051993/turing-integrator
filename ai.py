@@ -20,30 +20,31 @@ class Tags:
 class General:
     def __init__(self):
         from llama_cpp import Llama
-        self.n_ctx = 1024
-        self.max_response_tokens = 200
-        self.llm = Llama(model_path="models/Phi-2.Q4_K_M.gguf", n_ctx=self.n_ctx, n_threads=2)
-
-    def truncate_context(self, prompt_prefix, context, question):
-        # Cria um prompt temporário para calcular os tokens ocupados antes do contexto
-        base_prompt = f"{prompt_prefix}\n\n### Pergunta:\n{question}\n### Resposta:"
-        base_tokens = len(self.llm.tokenize(base_prompt.encode("utf-8")))
-        available_tokens = self.n_ctx - self.max_response_tokens - base_tokens
-
-        # Trunca o contexto para caber no espaço restante
-        context_tokens = self.llm.tokenize(context.encode("utf-8"))[:available_tokens]
-        truncated_context = self.llm.detokenize(context_tokens).decode("utf-8", errors="ignore")
-        return truncated_context
+        self.llm = Llama(
+            model_path="models/OpenHermes-2.5-Mistral.Q4_K_M.gguf",
+            n_ctx=4096,       # aumento do contexto para evitar erro de limite
+            n_threads=4,      # ajuste conforme o ambiente, pode subir se o runner permitir
+            verbose=False     # evita logs excessivos no pipeline
+        )
 
     def get(self, context, question):
-        prompt_prefix = "### Contexto:"
-        context = self.truncate_context(prompt_prefix, context, question)
+        prompt = f"""### Instrução:
+        Você é um assistente inteligente. Use o contexto abaixo para responder com clareza e precisão.
 
-        prompt = f"""{prompt_prefix}
+        ### Contexto:
         {context}
+
         ### Pergunta:
         {question}
+
         ### Resposta:"""
 
-        output = self.llm(prompt, max_tokens=self.max_response_tokens, stop=["###"])
-        return output["choices"][0]["text"].strip()
+        resposta = self.llm(
+            prompt,
+            max_tokens=300,       # limite de resposta
+            stop=["###"],         # para evitar que continue o prompt
+            temperature=0.7,      # criatividade moderada
+            top_p=0.95
+        )
+
+        return resposta["choices"][0]["text"].strip()
