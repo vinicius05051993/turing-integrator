@@ -1,4 +1,5 @@
 import requests
+from datetime import datetime
 from dateutil import parser
 
 def getAllTuring(page):
@@ -30,12 +31,16 @@ def integrationStatus(allTuringIds, spPost):
     for index, turingData in enumerate(allTuringIds):
         if turingData['id'] == spPost['id']:
             dateTuring = parser.isoparse(turingData['last_update'])
-            dateSpPost = parser.isoparse(spPost["mTm"])
+
+            timestamp_ms = spPost["mTm"]
+            dateSpPost = datetime.fromtimestamp(timestamp_ms / 1000)
+
             if dateTuring < dateSpPost:
-                return {"status": 2, "id": turingData["id"], "key" : index}
+                return {"status": 2, "id": turingData["id"], "key": index}
             else:
-                return {"status": 3, "id": turingData["id"], "key" : index}
-    return {"status": 1, "id": None, "key" : None}
+                return {"status": 3, "id": turingData["id"], "key": index}
+
+    return {"status": 1, "id": None, "key": None}
 
 def send(spPost):
     print("Enviar para turing: " + spPost['id'])
