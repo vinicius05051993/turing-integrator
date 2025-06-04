@@ -11,23 +11,23 @@ jobs:
       - name: Checkout do repositório
         uses: actions/checkout@v3
 
-      - name: Cachear modelo GGUF
-        uses: actions/cache@v3
-        with:
-          path: models/
-          key: phi2-model-cache-v1
-
-      - name: Criar pasta models
-        run: mkdir -p models
-
-      - name: Baixar modelo (se necessário)
-        run: |
-          mkdir -p models
-          if [ ! -f models/OpenHermes-2.5-Mistral.Q4_K_M.gguf ]; then
-            wget -O models/OpenHermes-2.5-Mistral.Q4_K_M.gguf https://huggingface.co/TheBloke/OpenHermes-2.5-Mistral-7B-GGUF/resolve/main/openhermes-2.5-mistral-7b.Q4_K_M.gguf
-          else
-            echo "Modelo já está presente, não será baixado."
-          fi
+#      - name: Cachear modelo GGUF
+#        uses: actions/cache@v3
+#        with:
+#          path: models/
+#          key: phi2-model-cache-v1
+#
+#      - name: Criar pasta models
+#        run: mkdir -p models
+#
+#      - name: Baixar modelo (se necessário)
+#        run: |
+#          mkdir -p models
+#          if [ ! -f models/OpenHermes-2.5-Mistral.Q4_K_M.gguf ]; then
+#            wget -O models/OpenHermes-2.5-Mistral.Q4_K_M.gguf https://huggingface.co/TheBloke/OpenHermes-2.5-Mistral-7B-GGUF/resolve/main/openhermes-2.5-mistral-7b.Q4_K_M.gguf
+#          else
+#            echo "Modelo já está presente, não será baixado."
+#          fi
 
       - name: Configurar Python
         uses: actions/setup-python@v4
