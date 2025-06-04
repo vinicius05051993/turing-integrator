@@ -20,6 +20,7 @@ def getAllTuringIds():
 
         document = datas.get("results", {}).get("document", [])
         for doc in document:
+            print(doc['fields'])
             ids.append({'id': doc['fields']['id'], 'last_update': doc['fields']['modification_date']})
 
     return ids
