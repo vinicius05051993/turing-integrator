@@ -12,7 +12,7 @@ def main():
 #         general = General()
         allManualsTuring = turing.getAllTuringIds('manual')
 
-        for page in range(0, 2):
+        for page in range(0, 100):
             spPosts = sprinklr.getPosts(accessToken, page)
 
             if len(spPosts) == 0:
