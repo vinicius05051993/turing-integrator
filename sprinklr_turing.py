@@ -10,7 +10,7 @@ def main():
         accessToken = login.get('accessToken', False)
 
 #         general = General()
-        allTuringIds = turing.getAllTuringIds()
+        allTuringIds = turing.getAllTuringIds('manual')
 
         for page in range(0, 2):
             spPosts = sprinklr.getPosts(accessToken, page)

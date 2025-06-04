@@ -9,7 +9,7 @@ def getAllTuring(page):
         print('Erro ao buscar dados:', e)
         return None
 
-def getAllTuringIds():
+def getAllTuringIds(type='all'):
     ids = []
     for page in range(1, 100):
         datas = getAllTuring(page)
@@ -20,8 +20,9 @@ def getAllTuringIds():
 
         document = datas.get("results", {}).get("document", [])
         for doc in document:
-            print(doc['fields'])
-            ids.append({'id': doc['fields']['id'], 'last_update': doc['fields']['modification_date']})
+            if type == 'all' OR type == doc['fields']['mbtype']:
+                print(doc['fields'])
+                ids.append({'id': doc['fields']['id'], 'last_update': doc['fields']['publication_date']})
 
     return ids
 
@@ -29,7 +30,7 @@ def integrationStatus(allTuringIds, spPost):
     for index, turingData in enumerate(allTuringIds):
         if turingData['id'] == spPost['id']:
             dateTuring = parser.isoparse(turingData['last_update'])
-            dateSpPost = parser.isoparse(spPost["modification_date"])
+            dateSpPost = parser.isoparse(spPost["publication_date"])
             if dateTuring < dateSpPost:
                 return {"status": 2, "id": turingData["id"], "key" : index}
             else:
