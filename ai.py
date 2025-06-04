@@ -2,7 +2,7 @@ from keybert import KeyBERT
 
 class Tags:
     def __init__(self):
-        model_name = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+        model_name = "sentence-transformers/distiluse-base-multilingual-cased-v2"
         self.kw_model = KeyBERT(model=model_name)
 
     def get(self, texto, n=8, diversity=0.5):
