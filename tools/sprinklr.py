@@ -66,7 +66,7 @@ def getPosts(accessToken, page):
 
     return response.json().get("data", [])
 
-def get_paragraph_texts(html: str) -> str:
+def get_only_texts(html: str) -> str:
     text_captured = ''
 
     # Find all text within <span> or <p> tags

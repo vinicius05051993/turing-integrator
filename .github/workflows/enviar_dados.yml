@@ -1,8 +1,7 @@
 name: Enviar dados para API
 
 on:
-  push:
-    branches: [ main ]  # ou outro gatilho que preferir
+  workflow_dispatch:
 
 jobs:
   enviar-dados:
