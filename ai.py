@@ -22,9 +22,9 @@ class General:
         from llama_cpp import Llama
         self.llm = Llama(
             model_path="models/OpenHermes-2.5-Mistral.Q4_K_M.gguf",
-            n_ctx=4096,       # aumento do contexto para evitar erro de limite
-            n_threads=4,      # ajuste conforme o ambiente, pode subir se o runner permitir
-            verbose=False     # evita logs excessivos no pipeline
+            n_ctx=4096,
+            n_threads=4,
+            verbose=False
         )
 
     def get(self, context, question):
@@ -41,9 +41,9 @@ class General:
 
         resposta = self.llm(
             prompt,
-            max_tokens=300,       # limite de resposta
-            stop=["###"],         # para evitar que continue o prompt
-            temperature=0.3,      # criatividade moderada
+            max_tokens=300,
+            stop=["###"],
+            temperature=0.3,
             top_p=0.95
         )
 
