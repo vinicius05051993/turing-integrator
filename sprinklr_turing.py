@@ -21,7 +21,7 @@ def main():
                 print("Titulo: " + spPost['t'])
                 text = sprinklr.get_only_texts(spPost['m'])
                 print(tags.get(text))
-                print(General.get(text, 'Qual a principal ideia?'))
+                print(General.get(context=text, question='Qual a principal ideia?'))
 
 if __name__ == '__main__':
     main()
