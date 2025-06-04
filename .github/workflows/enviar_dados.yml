@@ -23,7 +23,7 @@ jobs:
       - name: Baixar modelo (se necessário)
         run: |
           if [ ! -f models/Phi-2.Q4_K_M.gguf ]; then
-            wget -O models/Phi-2.Q4_K_M.gguf https://huggingface.co/TheBloke/phi-2-GGUF/resolve/main/Phi-2.Q4_K_M.gguf
+            wget -O models/Phi-2.Q4_K_M.gguf https://huggingface.co/TheBloke/phi-2-GGUF/resolve/main/phi-2.Q4_K_M.gguf
           else
             echo "Modelo já está presente, não será baixado."
           fi
