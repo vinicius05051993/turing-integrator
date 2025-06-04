@@ -8,7 +8,7 @@ class Tags:
     def get(self, texto, n=8, diversity=0.3):
         return self.kw_model.extract_keywords(
             texto.lower(),
-            keyphrase_ngram_range=(1, 1),
+            keyphrase_ngram_range=(1, 2),
             stop_words=None,
             top_n=n,
             use_mmr=True,
