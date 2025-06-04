@@ -20,7 +20,7 @@ def getAllTuringIds(type='all'):
 
         document = datas.get("results", {}).get("document", [])
         for doc in document:
-            if type == 'all' OR type == doc['fields']['mbtype']:
+            if type == 'all' or type == doc['fields']['mbtype']:
                 print(doc['fields'])
                 ids.append({'id': doc['fields']['id'], 'last_update': doc['fields']['publication_date']})
 
