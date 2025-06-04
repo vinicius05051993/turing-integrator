@@ -43,7 +43,7 @@ class General:
             prompt,
             max_tokens=300,       # limite de resposta
             stop=["###"],         # para evitar que continue o prompt
-            temperature=0.7,      # criatividade moderada
+            temperature=0.3,      # criatividade moderada
             top_p=0.95
         )
 
