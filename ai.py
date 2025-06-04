@@ -26,4 +26,4 @@ class General:
         {question}
         ### Resposta:"""
 
-        return llm(prompt, max_tokens=200, stop=["###"])["choices"][0]["text"].strip()
+        return self.llm(prompt, max_tokens=200, stop=["###"])["choices"][0]["text"].strip()
