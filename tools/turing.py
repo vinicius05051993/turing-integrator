@@ -23,19 +23,15 @@ def getAllTuringIds(type='all'):
         document = datas.get("results", {}).get("document", [])
         for doc in document:
             if type == 'all' or type == doc['fields']['mbtype']:
-                ids.append({'id': doc['fields']['id'], 'last_update': doc['fields']['publication_date']})
+                ids.append({'id': doc['fields']['id'], 'publication_date': doc['fields']['publication_date']})
 
     return ids
 
-def integrationStatus(allTuringIds, spPost):
-    for index, turingData in enumerate(allTuringIds):
+def integrationStatus(turingDatas, spPost):
+    for index, turingData in enumerate(turingDatas):
         if turingData['id'] == spPost['id']:
-            # Datetime com fuso (provavelmente UTC) vindo de uma string ISO 8601
-            dateTuring = parser.isoparse(turingData['last_update'])
-
-            # Converter timestamp em milissegundos para datetime com fuso UTC
-            timestamp_ms = spPost["mTm"]
-            dateSpPost = datetime.fromtimestamp(timestamp_ms / 1000, tz=timezone.utc)
+            dateTuring = parser.isoparse(turingData['publication_date'])
+            dateSpPost = datetime.fromtimestamp(spPost["mTm"] / 1000, tz=timezone.utc)
 
             if dateTuring < dateSpPost:
                 return {"status": 2, "id": turingData["id"], "key": index}

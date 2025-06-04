@@ -10,7 +10,7 @@ def main():
         accessToken = login.get('accessToken', False)
 
 #         general = General()
-        allTuringIds = turing.getAllTuringIds('manual')
+        allManualsTuring = turing.getAllTuringIds('manual')
 
         for page in range(0, 2):
             spPosts = sprinklr.getPosts(accessToken, page)
@@ -19,10 +19,10 @@ def main():
                 break
 
             for spPost in spPosts:
-                integration = turing.integrationStatus(allTuringIds, spPost)
+                integration = turing.integrationStatus(allManualsTuring, spPost)
 
                 if integration["key"] != None:
-                    allTuringIds.pop(integration["key"])
+                    allManualsTuring.pop(integration["key"])
 
                 match integration['status']:
                     case 1:
@@ -31,9 +31,8 @@ def main():
                         turing.delete(integration['id'])
                         turing.send(spPost)
 
-        for turingIdToDelete in allTuringIds:
-            print('permanentemente')
-            turing.delete(turingIdToDelete['id'])
+        for manualTuringToDelete in allManualsTuring:
+            turing.delete(manualTuringToDelete['id'])
 
 
 #                 print('---------------')
