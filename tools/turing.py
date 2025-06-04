@@ -30,7 +30,7 @@ def integrationStatus(allTuringIds, spPost):
     for index, turingData in enumerate(allTuringIds):
         if turingData['id'] == spPost['id']:
             dateTuring = parser.isoparse(turingData['last_update'])
-            dateSpPost = parser.isoparse(spPost["publication_date"])
+            dateSpPost = parser.isoparse(spPost["mTm"])
             if dateTuring < dateSpPost:
                 return {"status": 2, "id": turingData["id"], "key" : index}
             else:
