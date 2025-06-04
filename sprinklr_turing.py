@@ -1,5 +1,6 @@
 import tools.sprinklr as sprinklr
 from ai import Tags
+from ai import General
 
 def main():
     token = sprinklr.getToken()
@@ -18,7 +19,9 @@ def main():
 
             for spPost in spPosts:
                 print("Titulo: " + spPost['t'])
-                print(tags.get(sprinklr.get_only_texts(spPost['m'])))
+                text = sprinklr.get_only_texts(spPost['m'])
+                print(tags.get(text))
+                print(General.get(text, 'Qual a principal ideia?')
 
 if __name__ == '__main__':
     main()

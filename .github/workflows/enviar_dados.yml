@@ -11,6 +11,23 @@ jobs:
       - name: Checkout do repositório
         uses: actions/checkout@v3
 
+      - name: Cachear modelo GGUF
+        uses: actions/cache@v3
+        with:
+          path: models/
+          key: phi2-model-cache-v1
+
+      - name: Criar pasta models
+        run: mkdir -p models
+
+      - name: Baixar modelo (se necessário)
+        run: |
+          if [ ! -f models/Phi-2.Q4_K_M.gguf ]; then
+            wget -O models/Phi-2.Q4_K_M.gguf https://huggingface.co/TheBloke/phi-2-GGUF/resolve/main/Phi-2.Q4_K_M.gguf
+          else
+            echo "Modelo já está presente, não será baixado."
+          fi
+
       - name: Configurar Python
         uses: actions/setup-python@v4
         with:
