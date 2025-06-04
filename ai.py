@@ -1,3 +1,6 @@
+import os
+os.environ["LLAMA_LOG_LEVEL"] = "ERROR"
+
 class Tags:
     def __init__(self):
         from keybert import KeyBERT

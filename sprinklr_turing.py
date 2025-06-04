@@ -19,10 +19,12 @@ def main():
                 break
 
             for spPost in spPosts:
+                print('---------------')
                 print("Titulo: " + spPost['t'])
                 text = sprinklr.get_only_texts(spPost['m'])
                 print(tags.get(text))
-                print(general.get(context=text, question='Qual a principal ideia?'))
+                question = "Voce é um especialista em conteudos da maple bear, seu trabalho é analisar detalhadamente o texto, interpretar para ter o contexto necessário para gerar TAGs objetivas e diretas. As Tags precisam ter no maximo 25 caracteres, as tags serão usadas para orientar nossa IA maple bear a buscar respostas corretas para os usuários."
+                print(general.get(context=text, question=question))
 
 if __name__ == '__main__':
     main()
