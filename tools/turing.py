@@ -1,4 +1,5 @@
 import requests
+from dateutil import parser
 
 def getAllTuring(page):
     try:
@@ -21,7 +22,6 @@ def getAllTuringIds(type='all'):
         document = datas.get("results", {}).get("document", [])
         for doc in document:
             if type == 'all' or type == doc['fields']['mbtype']:
-                print(doc['fields'])
                 ids.append({'id': doc['fields']['id'], 'last_update': doc['fields']['publication_date']})
 
     return ids
@@ -38,7 +38,7 @@ def integrationStatus(allTuringIds, spPost):
     return {"status": 1, "id": None, "key" : None}
 
 def send(spPost):
-    print("Enviar para turing")
+    print("Enviar para turing: " + spPost['id'])
 
 def delete(id):
-    print("Deletar no turing")
+    print("Deletar no turing: " + id)
