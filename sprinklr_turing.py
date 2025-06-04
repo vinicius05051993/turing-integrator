@@ -10,6 +10,7 @@ def main():
         accessToken = login.get('accessToken', False)
 
         tags = Tags()
+        general = General()
 
         for page in range(0, 1):
             spPosts = sprinklr.getPosts(accessToken, page)
@@ -21,7 +22,7 @@ def main():
                 print("Titulo: " + spPost['t'])
                 text = sprinklr.get_only_texts(spPost['m'])
                 print(tags.get(text))
-                print(General.get(context=text, question='Qual a principal ideia?'))
+                print(general.get(context=text, question='Qual a principal ideia?'))
 
 if __name__ == '__main__':
     main()
