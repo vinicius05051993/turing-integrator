@@ -31,6 +31,10 @@ def main():
                         turing.delete(integration['id'])
                         turing.send(spPost)
 
+        for turingIdToDelete in allTuringIds:
+            print('permanentemente')
+            turing.delete(turingIdToDelete['id'])
+
 
 #                 print('---------------')
 #                 print("Titulo: " + spPost['t'])
