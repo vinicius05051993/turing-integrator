@@ -1,5 +1,5 @@
 import requests
-from datetime import datetime
+from datetime import datetime, timezone
 from dateutil import parser
 
 def getAllTuring(page):
@@ -30,10 +30,12 @@ def getAllTuringIds(type='all'):
 def integrationStatus(allTuringIds, spPost):
     for index, turingData in enumerate(allTuringIds):
         if turingData['id'] == spPost['id']:
+            # Datetime com fuso (provavelmente UTC) vindo de uma string ISO 8601
             dateTuring = parser.isoparse(turingData['last_update'])
 
+            # Converter timestamp em milissegundos para datetime com fuso UTC
             timestamp_ms = spPost["mTm"]
-            dateSpPost = datetime.fromtimestamp(timestamp_ms / 1000)
+            dateSpPost = datetime.fromtimestamp(timestamp_ms / 1000, tz=timezone.utc)
 
             if dateTuring < dateSpPost:
                 return {"status": 2, "id": turingData["id"], "key": index}
