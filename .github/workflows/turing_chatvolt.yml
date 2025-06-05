@@ -1,10 +1,10 @@
-name: Enviar dados para API
+name: Turing to Chatvolt
 
 on:
   workflow_dispatch:
 
 jobs:
-  enviar-dados:
+  turing-chatvolt:
     runs-on: ubuntu-latest
 
     steps:
@@ -35,9 +35,9 @@ jobs:
           python-version: '3.11'
 
       - name: Instalar dependências
-        run: pip install -r requirements.txt
+        run: pip install -r requirements/turing_chatvolt.txt
 
       - name: Executar script Python
         env:
           API_TOKEN: ${{ secrets.API_TOKEN }}
-        run: python sprinklr_turing.py
+        run: python turing_chatvolt.py
