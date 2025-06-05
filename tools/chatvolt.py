@@ -26,7 +26,7 @@ def sendPost(docFields : dict):
            "datasourceText": "[post] " + docFields.get('text', ''),
            "type": "file",
            "config": {
-               "tags": docFields.get('tags', []),
+               "tags": docFields.get('content_tags', []),
                "source_url": docFields.get('url', ''),
                "mime_type": "text/plain"
            }
@@ -55,7 +55,7 @@ def sendEvent(docFields : dict):
            "datasourceText": "[event] " + dataSourcetext,
            "type": "file",
            "config": {
-               "tags": docFields.get('tags', []),
+               "tags": docFields.get('content_tags', []),
                "source_url": docFields.get('url', ''),
                "mime_type": "text/plain"
            }
