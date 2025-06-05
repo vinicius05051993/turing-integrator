@@ -104,7 +104,7 @@ def delete(id):
         }
     }
 
-    print('enviar')
+    print('deletar')
     print(data)
 
 #     response = requests.post(TURING_HOMOLOG['url'], json=data, headers=headers)
