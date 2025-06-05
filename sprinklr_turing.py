@@ -36,7 +36,7 @@ def main():
         for manualTuringToDelete in allManualsTuring:
             turing.delete(manualTuringToDelete['id'])
 
-        print("Total registros strinklr: " + str(qtySprinklr))
+        print("Total registros sprinklr: " + str(qtySprinklr))
 
 if __name__ == '__main__':
     main()
