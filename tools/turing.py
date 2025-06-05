@@ -57,28 +57,30 @@ def send(spPost):
     }
 
     data = {
-        'turingDocuments': {
-            'turSNJobAction': 'CREATE',
-            'locale': TURING_HOMOLOG['locale'],
-            'siteNames': [TURING_HOMOLOG['site']],
-            'attributes': {
-                'id': spPost['id'],
-                'title': spPost['t'],
-                'abstract': get_only_texts(spPost['m']),
-                'html': get_text_with_images(spPost['m']),
-                'url': spPost['path'],
-                'mbtype': 'manual',
-                'area': get_tags(spPost['categoryIds'], 'area'),
-                'theme': get_tags(spPost['categoryIds'], 'theme'),
-                'area_name': get_tags_name(spPost['categoryIds'], 'area'),
-                'theme_name': get_tags_name(spPost['categoryIds'], 'theme'),
-                'functiontags': get_tags(spPost['categoryIds'], 'function'),
-                'otherTags': [],
-                'notify': False,
-                'publication_date': datetime.fromtimestamp(spPost["mTm"] / 1000, tz=timezone.utc).isoformat(),
-                'openInNewTab': True
+        'turingDocuments': [
+            {
+                'turSNJobAction': 'CREATE',
+                'locale': TURING_HOMOLOG['locale'],
+                'siteNames': [TURING_HOMOLOG['site']],
+                'attributes': {
+                    'id': spPost['id'],
+                    'title': spPost['t'],
+                    'abstract': get_only_texts(spPost['m']),
+                    'html': get_text_with_images(spPost['m']),
+                    'url': spPost['path'],
+                    'mbtype': 'manual',
+                    'area': get_tags(spPost['categoryIds'], 'area'),
+                    'theme': get_tags(spPost['categoryIds'], 'theme'),
+                    'area_name': get_tags_name(spPost['categoryIds'], 'area'),
+                    'theme_name': get_tags_name(spPost['categoryIds'], 'theme'),
+                    'functiontags': get_tags(spPost['categoryIds'], 'function'),
+                    'otherTags': [],
+                    'notify': False,
+                    'publication_date': datetime.fromtimestamp(spPost["mTm"] / 1000, tz=timezone.utc).isoformat(),
+                    'openInNewTab': True
+                }
             }
-        }
+        ]
     }
 
     print('enviar')
@@ -96,12 +98,14 @@ def delete(id):
     }
 
     data = {
-        'turingDocuments': {
-            'turSNJobAction': 'DELETE',
-            'attributes': {'id': id},
-            'locale': TURING_HOMOLOG['locale'],
-            'siteNames': [TURING_HOMOLOG['site']]
-        }
+        'turingDocuments': [
+            {
+                'turSNJobAction': 'DELETE',
+                'attributes': {'id': id},
+                'locale': TURING_HOMOLOG['locale'],
+                'siteNames': [TURING_HOMOLOG['site']]
+            }
+        ]
     }
 
     print('deletar')
