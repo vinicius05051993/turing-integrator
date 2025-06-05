@@ -88,7 +88,7 @@ def send(spPost):
     response = requests.post(TURING_HOMOLOG['url_import'], json=data, headers=headers)
     response.raise_for_status()
     print(data)
-    print('Publicação enviada com sucesso:', response.status_code)
+    print('Publicação enviada com sucesso:', response.status_code, response.text, response.json())
 
 def delete(id):
     headers = {
