@@ -15,7 +15,7 @@ TURING_HOMOLOG = {
 
 def getAllTuring(page):
     try:
-        resposta = requests.get('https://'+ TURING_HOMOLOG['host'] +'/api/sn/'+ TURING_HOMOLOG['site'] +'/search?p='+ str(page) +'&rows=100&_setlocale='+ TURING_HOMOLOG['locale'] +'&nfpr=0&q=', verify=False)
+        resposta = requests.get('https://'+ TURING_HOMOLOG['host'] +'/api/sn/'+ TURING_HOMOLOG['site'] +'/search?p='+ str(page) +'&rows=100&_setlocale='+ TURING_HOMOLOG['locale'] +'&nfpr=0&q=*', verify=False)
         resposta.raise_for_status()
         return resposta.json()
     except requests.RequestException as e:
