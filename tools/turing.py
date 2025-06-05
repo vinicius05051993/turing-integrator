@@ -47,7 +47,7 @@ def integrationStatus(turingDatas, spPost):
             if dateTuring < dateSpPost:
                 return {"status": 2, "id": turingData["id"], "key": index}
             else:
-                return {"status": 3, "id": turingData["id"], "key": index}
+                return {"status": 2, "id": turingData["id"], "key": index}
 
     return {"status": 1, "id": None, "key": None}
 
@@ -68,7 +68,7 @@ def send(spPost):
                     'title': spPost['t'],
                     'abstract': ' - '.join(spPost['tagLabels']) + " " + get_only_texts(spPost['m']),
                     'html': get_text_with_images(spPost['m']),
-                    'url': spPost['path'],
+                    'url': getUrlWithAuth(spPost['path']),
                     'mbtype': 'manual',
                     'area': get_tags(spPost['categoryIds'], 'area'),
                     'theme': get_tags(spPost['categoryIds'], 'theme'),
@@ -112,6 +112,10 @@ def delete(id):
     response.raise_for_status()
     print(data)
     print('Publicação deletada com sucesso:', response.status_code)
+
+def getUrlWithAuth(url):
+    url = "https://conhecimento-maplebear.sprinklr.com/articles/" + url
+    return TURING_HOMOLOG['auth'].replace("###", url)
 
 def get_only_texts(html: str) -> str:
     text_captured = ''
