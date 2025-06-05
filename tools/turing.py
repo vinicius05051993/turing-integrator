@@ -66,7 +66,7 @@ def send(spPost):
                 'attributes': {
                     'id': spPost['id'],
                     'title': spPost['t'],
-                    'abstract': get_only_texts(spPost['m']),
+                    'abstract': ' - '.join(spPost['tagLabels']) + " " + get_only_texts(spPost['m']),
                     'html': get_text_with_images(spPost['m']),
                     'url': spPost['path'],
                     'mbtype': 'manual',
@@ -84,11 +84,9 @@ def send(spPost):
         ]
     }
 
-    print('enviar')
-    print(data)
-
     response = requests.post(TURING_HOMOLOG['url_import'], json=data, headers=headers)
     response.raise_for_status()
+    print(data)
     print('Publicação enviada com sucesso:', response.status_code)
 
 def delete(id):
@@ -109,11 +107,9 @@ def delete(id):
         ]
     }
 
-    print('deletar')
-    print(data)
-
     response = requests.post(TURING_HOMOLOG['url_import'], json=data, headers=headers)
     response.raise_for_status()
+    print(data)
     print('Publicação deletada com sucesso:', response.status_code)
 
 def get_only_texts(html: str) -> str:
