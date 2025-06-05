@@ -84,9 +84,9 @@ def send(spPost):
     print('enviar')
     print(data)
 
-#     response = requests.post(TURING_HOMOLOG['url'], json=data, headers=headers)
-#     response.raise_for_status()
-#     print('Publicação enviada com sucesso:', response.status_code)
+    response = requests.post(TURING_HOMOLOG['url'], json=data, headers=headers)
+    response.raise_for_status()
+    print('Publicação enviada com sucesso:', response.status_code)
 
 def delete(id):
     headers = {
@@ -107,9 +107,9 @@ def delete(id):
     print('deletar')
     print(data)
 
-#     response = requests.post(TURING_HOMOLOG['url'], json=data, headers=headers)
-#     response.raise_for_status()
-#     print('Publicação deletada com sucesso:', response.status_code)
+    response = requests.post(TURING_HOMOLOG['url'], json=data, headers=headers)
+    response.raise_for_status()
+    print('Publicação deletada com sucesso:', response.status_code)
 
 def get_only_texts(html: str) -> str:
     text_captured = ''
