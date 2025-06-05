@@ -33,8 +33,7 @@ def getAllTuringIds(type='all'):
 
         document = datas.get("results", {}).get("document", [])
         for doc in document:
-            print(doc['fields'])
-            if type == 'all' or type == doc['fields']['mbtype']:
+            if type == 'all' or type == doc.get("fields", {}).get("mbtype", false):
                 ids.append({'id': doc['fields']['id'], 'publication_date': doc['fields']['publication_date']})
 
     return ids
