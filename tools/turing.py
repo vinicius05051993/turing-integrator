@@ -75,7 +75,7 @@ def send(spPost):
                 'functiontags': get_tags(spPost['categoryIds'], 'function'),
                 'otherTags': [],
                 'notify': False,
-                'publication_date': datetime.fromtimestamp(spPost["mTm"] / 1000, tz=timezone.utc),
+                'publication_date': datetime.fromtimestamp(spPost["mTm"] / 1000, tz=timezone.utc).isoformat(),
                 'openInNewTab': True
             }
         }
