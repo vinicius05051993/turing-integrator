@@ -10,10 +10,14 @@ def main():
 
         allManualsTuring = turing.getAllTuringIds('manual')
 
+        qtySprinklr = 0
         for page in range(0, 100):
             spPosts = sprinklr.getPosts(accessToken, page)
+            qty = len(spPosts)
 
-            if len(spPosts) == 0:
+            qtySprinklr += qty
+
+            if qty == 0:
                 break
 
             for spPost in spPosts:
@@ -31,6 +35,8 @@ def main():
 
         for manualTuringToDelete in allManualsTuring:
             turing.delete(manualTuringToDelete['id'])
+
+        print("Total registros strinklr: " + qtySprinklr)
 
 if __name__ == '__main__':
     main()
