@@ -5,7 +5,8 @@ import re
 from html import unescape
 
 TURING_HOMOLOG = {
-    'url': 'https://buscahml.maplebear.com.br/api/sn/import',
+    'host': 'buscahml.maplebear.com.br',
+    'url_import': 'https://buscahml.maplebear.com.br/api/sn/import',
     'key': 'd2e922bb73854fb3bcd04bc87',
     'locale': 'pt_BR',
     'site': 'maplebear-stage-publish',
@@ -14,7 +15,7 @@ TURING_HOMOLOG = {
 
 def getAllTuring(page):
     try:
-        resposta = requests.get('https://busca.maplebear.com.br/api/sn/maplebear-prd-publish/search?p='+ str(page) +'&rows=100&_setlocale=pt_BR&nfpr=0&q=', verify=False)
+        resposta = requests.get('https://'+ TURING_HOMOLOG['host'] +'/api/sn/maplebear-prd-publish/search?p='+ str(page) +'&rows=100&_setlocale=pt_BR&nfpr=0&q=', verify=False)
         resposta.raise_for_status()
         return resposta.json()
     except requests.RequestException as e:
@@ -86,7 +87,7 @@ def send(spPost):
     print('enviar')
     print(data)
 
-    response = requests.post(TURING_HOMOLOG['url'], json=data, headers=headers)
+    response = requests.post(TURING_HOMOLOG['url_import'], json=data, headers=headers)
     response.raise_for_status()
     print('Publicação enviada com sucesso:', response.status_code)
 
@@ -111,7 +112,7 @@ def delete(id):
     print('deletar')
     print(data)
 
-    response = requests.post(TURING_HOMOLOG['url'], json=data, headers=headers)
+    response = requests.post(TURING_HOMOLOG['url_import'], json=data, headers=headers)
     response.raise_for_status()
     print('Publicação deletada com sucesso:', response.status_code)
 
