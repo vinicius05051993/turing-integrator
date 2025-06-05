@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 from dateutil import parser
 import re
 from html import unescape
+import json
 
 TURING_HOMOLOG = {
     'host': 'buscahml.maplebear.com.br',
@@ -87,8 +88,7 @@ def send(spPost):
 
     response = requests.post(TURING_HOMOLOG['url_import'], json=data, headers=headers)
     response.raise_for_status()
-    print(data)
-    print('Publicação enviada com sucesso:', response.status_code, response.text, response.json())
+    print('Publicação enviada com sucesso:', response.status_code, response.text, response.json(), json.dumps(data))
 
 def delete(id):
     headers = {
@@ -110,8 +110,7 @@ def delete(id):
 
     response = requests.post(TURING_HOMOLOG['url_import'], json=data, headers=headers)
     response.raise_for_status()
-    print(data)
-    print('Publicação deletada com sucesso:', response.status_code)
+    print('Publicação deletada com sucesso:', response.status_code, json.dumps(data))
 
 def getUrlWithAuth(url):
     url = "https://conhecimento-maplebear.sprinklr.com/articles/" + url
