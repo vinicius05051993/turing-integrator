@@ -47,7 +47,7 @@ def integrationStatus(turingDatas, spPost):
             if dateTuring < dateSpPost:
                 return {"status": 2, "id": turingData["id"], "key": index}
             else:
-                return {"status": 2, "id": turingData["id"], "key": index}
+                return {"status": 3, "id": turingData["id"], "key": index}
 
     return {"status": 1, "id": None, "key": None}
 
@@ -66,7 +66,7 @@ def send(spPost):
                 'attributes': {
                     'id': spPost['id'],
                     'title': spPost['t'],
-                    'abstract': ' - '.join(spPost['tagLabels']) + " " + get_only_texts(spPost['m']),
+                    'abstract': ' - '.join(spPost['tagLabels']) + ". " + get_only_texts(spPost['m']),
                     'html': get_text_with_images(spPost['m']),
                     'url': getUrlWithAuth(spPost['path']),
                     'mbtype': 'manual',
