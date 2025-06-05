@@ -11,12 +11,6 @@ jobs:
       - name: Checkout do repositório
         uses: actions/checkout@v3
 
-#      - name: Cachear modelo GGUF
-#        uses: actions/cache@v3
-#        with:
-#          path: models/
-#          key: phi2-model-cache-v1
-#
 #      - name: Criar pasta models
 #        run: mkdir -p models
 #
