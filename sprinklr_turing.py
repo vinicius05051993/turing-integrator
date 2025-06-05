@@ -17,6 +17,9 @@ def main():
                 break
 
             for spPost in spPosts:
+                if spPost['id'] == '6812109789cac71a44c5176a':
+                    continue
+
                 integration = turing.integrationStatus(allManualsTuring, spPost)
 
                 if integration["key"] != None:
