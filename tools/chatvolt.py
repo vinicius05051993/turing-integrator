@@ -10,8 +10,8 @@ HEADERS_DESTINO = {
 }
 
 def send(docFields : dict):
-    match docFields['mbtype']:
-        sendFAQ(docFields)
+    sendFAQ(docFields)
+#     match docFields['mbtype']:
 #         case 'post':
 #             sendPost(docFields)
 #         case 'event':
