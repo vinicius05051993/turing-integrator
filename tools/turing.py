@@ -23,7 +23,7 @@ TURING_PRODUCTION = {
     'auth': 'https://2746bef7-54d2-4f0c-9fab-43175e1880ab.prod2-care.sprinklr.com/community/api/v1/auth/social?communityId=2746bef7-54d2-4f0c-9fab-43175e1880ab&provider=MAPLE_BEAR&returnTo=###'
 }
 
-DATA_IN_USE = TURING_HOMOLOG
+DATA_IN_USE = TURING_PRODUCTION
 
 def getAllTuring(page):
     try:
