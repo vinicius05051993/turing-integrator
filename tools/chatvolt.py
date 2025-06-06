@@ -94,7 +94,8 @@ def sendFAQ(docFields : dict):
         resposta.raise_for_status()
         print('FAQ enviado com sucesso:', resposta.status_code)
     except requests.RequestException as e:
-        print('Erro ao enviar manual:', e)
+        print('Erro ao enviar FAQ:', e)
+        print(payload)
 
 def sendManual(docFields : dict):
     return False
