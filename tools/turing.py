@@ -16,6 +16,7 @@ TURING_HOMOLOG = {
 
 def getAllTuring(page):
     try:
+#       https://buscahml.maplebear.com.br/api/sn/maplebear-stage-publish/search?p=1&rows=600&_setlocale=pt_BR&nfpr=0&q=*
         resposta = requests.get('https://'+ TURING_HOMOLOG['host'] +'/api/sn/'+ TURING_HOMOLOG['site'] +'/search?p='+ str(page) +'&rows=100&_setlocale='+ TURING_HOMOLOG['locale'] +'&nfpr=0&q=*', verify=False)
         resposta.raise_for_status()
         return resposta.json()
@@ -124,7 +125,7 @@ def get_only_texts(html: str) -> str:
         text_captured = ' '.join(matches)
 
     text_captured = re.sub(r'<[^>]*>', '', text_captured)  # Remove any remaining tags
-    text_captured = re.sub(r'[^\w\s]', '', text_captured)  # Remove non-alphanumeric chars
+    text_captured = re.sub(r'[^\w\s\?]', '', text_captured)  # Remove non-alphanumeric chars, except ?
 
     return text_captured.strip()
 
