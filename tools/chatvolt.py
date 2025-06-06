@@ -141,7 +141,7 @@ def getMarkArea(docFields):
 
 def integrationStatus(chatVoltData, post):
     for index, data in enumerate(chatVoltData):
-        if data["name"] == getIdName(post):
+        if getIdName(post) in data["name"] or getIdName(post) == data["name"]:
             dateChatVolt = parser.isoparse(data["updatedAt"])
             datePost = parser.isoparse(post["modification_date"])
             if dateChatVolt < datePost:
