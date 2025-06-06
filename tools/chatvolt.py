@@ -79,7 +79,7 @@ def sendFAQ(docFields : dict):
         blocos = separar_perguntas_respostas(docFields['html'])
         for i, bloco in enumerate(blocos):
             payload = {
-               "name": getIdName(docFields) + str(i),
+               "name": getIdName(docFields) + " - " + str(i),
                "datastoreId": DATASTORE_ID,
                "datasourceText": "[faq] " + '\n'.join(bloco['respostas']),
                "type": "qa",
