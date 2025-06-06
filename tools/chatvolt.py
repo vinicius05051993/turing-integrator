@@ -1,6 +1,7 @@
 import requests
 from dateutil import parser
 import re
+import json
 
 CHATVOLT_API_URL = 'https://api.chatvolt.ai/'
 DATASTORE_ID = 'cmbauo40600brx87n8gazln1j'
@@ -95,7 +96,7 @@ def sendFAQ(docFields : dict):
         print('FAQ enviado com sucesso:', resposta.status_code)
     except requests.RequestException as e:
         print('Erro ao enviar FAQ:', e)
-        print(payload)
+        print(json.dumps(payload))
 
 def sendManual(docFields : dict):
     return False
