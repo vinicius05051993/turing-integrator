@@ -40,9 +40,9 @@ def sendPost(docFields : dict):
 
         resposta = requests.post(CHATVOLT_API_URL + "datasources", json=payload, headers=HEADERS_DESTINO)
         resposta.raise_for_status()
-        print('Publicação enviada com sucesso:', resposta.status_code)
+        print('Publicação enviada com sucesso:', resposta.status_code, json.dumps(payload))
     except requests.RequestException as e:
-        print('Erro ao enviar publicação:', e)
+        print('Erro ao enviar publicação:', e, json.dumps(payload))
 
 def sendEvent(docFields : dict):
     try:
@@ -69,9 +69,9 @@ def sendEvent(docFields : dict):
 
         resposta = requests.post(CHATVOLT_API_URL + "datasources", json=payload, headers=HEADERS_DESTINO)
         resposta.raise_for_status()
-        print('Evento enviado com sucesso:', resposta.status_code)
+        print('Evento enviado com sucesso:', resposta.status_code, json.dumps(payload))
     except requests.RequestException as e:
-        print('Erro ao enviar eventos:', e)
+        print('Erro ao enviar eventos:', e, json.dumps(payload))
 
 def sendFAQ(docFields : dict):
     try:
@@ -95,7 +95,7 @@ def sendFAQ(docFields : dict):
             resposta.raise_for_status()
             print('FAQ enviado com sucesso:', resposta.status_code, json.dumps(payload))
     except requests.RequestException as e:
-        print('Erro ao enviar FAQ:', e)
+        print('Erro ao enviar FAQ:', e, json.dumps(payload))
 
 def sendManual(docFields : dict):
     try:
@@ -113,9 +113,9 @@ def sendManual(docFields : dict):
 
         resposta = requests.post(CHATVOLT_API_URL + "datasources", json=payload, headers=HEADERS_DESTINO)
         resposta.raise_for_status()
-        print('Manual enviado com sucesso:', resposta.status_code)
+        print('Manual enviado com sucesso:', resposta.status_code, json.dumps(payload))
     except requests.RequestException as e:
-        print('Erro ao enviar manual:', e)
+        print('Erro ao enviar manual:', e, json.dumps(payload))
 
 def getAll():
     response = requests.get(
@@ -134,7 +134,10 @@ def delete(datasource):
     print('Dados deletados com sucesso:', resposta.status_code)
 
 def getIdName(post : dict):
-    return getMarkArea(post) + post.get("title", "") + " #" + post["id"]
+    if post.get('area_name', False):
+        return getMarkArea(post) + post.get("title", "") + " #" + post["id"]
+    else:
+        return post.get("title", "") + " #" + post["id"]
 
 def getMarkArea(docFields):
     return '['+ docFields.get('area_name', "") +'] '
