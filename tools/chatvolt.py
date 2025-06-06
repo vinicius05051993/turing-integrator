@@ -73,7 +73,7 @@ def sendEvent(docFields : dict):
 
 def sendFAQ(docFields : dict):
     try:
-        question, response = separar_perguntas_respostas(docFields['html'].replace('Perguntas ', '')
+        question, response = separar_perguntas_respostas(docFields['html'].replace('Perguntas ', ''))
         payload = {
            "name": getIdName(docFields),
            "datastoreId": DATASTORE_ID,
