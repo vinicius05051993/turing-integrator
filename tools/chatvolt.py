@@ -12,11 +12,14 @@ HEADERS_DESTINO = {
 def send(docFields : dict):
     match docFields['mbtype']:
         case 'post':
-            sendPost(docFields)
+#             sendPost(docFields)
         case 'event':
-            sendEvent(docFields)
+#             sendEvent(docFields)
         case 'manual':
-            sendManual(docFields)
+            if "FAQ" in docFields.get('content_tags', []):
+                sendFAQ(docFields)
+            else:
+#                 sendManual(docFields)
 
 def sendPost(docFields : dict):
     try:
@@ -66,6 +69,30 @@ def sendEvent(docFields : dict):
         print('Evento enviado com sucesso:', resposta.status_code)
     except requests.RequestException as e:
         print('Erro ao enviar eventos:', e)
+
+def sendFAQ(docFields : dict):
+    try:
+        question = "Pergunta aqui?"
+        response = "Responder aqui."
+        payload = {
+           "name": getIdName(docFields),
+           "datastoreId": DATASTORE_ID,
+           "datasourceText": "[faq] " + response,
+           "type": "qa",
+           "isUpdateText": True,
+           "config": {
+               "tags": docFields.get('content_tags', []),
+               "source_url": docFields.get('url', ''),
+               "question": question,
+               "answer": response
+           }
+        }
+
+        resposta = requests.post(CHATVOLT_API_URL + "datasources", json=payload, headers=HEADERS_DESTINO)
+        resposta.raise_for_status()
+        print('FAQ enviado com sucesso:', resposta.status_code)
+    except requests.RequestException as e:
+        print('Erro ao enviar manual:', e)
 
 def sendManual(docFields : dict):
     try:
