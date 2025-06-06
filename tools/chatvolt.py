@@ -11,7 +11,7 @@ HEADERS_DESTINO = {
 }
 
 def send(docFields : dict):
-    match docFields['mbtype']:
+    match docFields.get('mbtype', false):
         case 'post':
             sendPost(docFields)
         case 'event':
