@@ -28,7 +28,7 @@ DATA_IN_USE = TURING_PRODUCTION
 def getAllTuring(page):
     try:
 #       https://buscahml.maplebear.com.br/api/sn/maplebear-stage-publish/search?p=1&rows=600&_setlocale=pt_BR&nfpr=0&q=*
-        resposta = requests.get('https://'+ DATA_IN_USE['host'] +'/api/sn/'+ DATA_IN_USE['site'] +'/search?p='+ str(page) +'&rows=100&_setlocale='+ DATA_IN_USE['locale'] +'&nfpr=0&q=', verify=False)
+        resposta = requests.get('https://'+ DATA_IN_USE['host'] +'/api/sn/'+ DATA_IN_USE['site'] +'/search?p='+ str(page) +'&rows=100&_setlocale='+ DATA_IN_USE['locale'] +'&nfpr=0&q=*', verify=False)
         resposta.raise_for_status()
         return resposta.json()
     except requests.RequestException as e:
@@ -98,7 +98,7 @@ def send(spPost):
         ]
     }
 
-    response = requests.post(DATA_IN_USE['url_import'], json=data, headers=headers)
+    response = requests.post(DATA_IN_USE['url_import'], json=data, headers=headers, verify=False)
     response.raise_for_status()
     print('Publicação enviada com sucesso:', response.status_code, response.text, response.json(), json.dumps(data))
 
@@ -120,7 +120,7 @@ def delete(id):
         ]
     }
 
-    response = requests.post(DATA_IN_USE['url_import'], json=data, headers=headers)
+    response = requests.post(DATA_IN_USE['url_import'], json=data, headers=headers, verify=False)
     response.raise_for_status()
     print('Publicação deletada com sucesso:', response.status_code, json.dumps(data))
 
