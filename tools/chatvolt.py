@@ -5,10 +5,11 @@ import json
 
 CHATVOLT_API_URL = 'https://api.chatvolt.ai/'
 DATASTORE_ID = 'cmbauo40600brx87n8gazln1j'
+TOKEN = '3f157bd4-64ae-4ecb-ac8d-ffe0f89b2149'
 
 HEADERS_DESTINO = {
     'Content-Type': 'application/json',
-    'Authorization': 'Bearer 3f157bd4-64ae-4ecb-ac8d-ffe0f89b2149'
+    'Authorization': 'Bearer ' + TOKEN
 }
 
 def send(docFields : dict):
