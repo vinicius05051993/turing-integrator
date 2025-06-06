@@ -13,7 +13,6 @@ def main():
             break
 
         turingDatas = datas.get("results", {}).get("document", [])
-        turingDatas = []
         for turingData in turingDatas:
             integration = chatvolt.integrationStatus(chatVoltDataSources, turingData['fields'])
 
