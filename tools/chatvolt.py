@@ -1,5 +1,6 @@
 import requests
 from dateutil import parser
+import re
 
 CHATVOLT_API_URL = 'https://api.chatvolt.ai/'
 DATASTORE_ID = 'cmbauo40600brx87n8gazln1j'
@@ -10,17 +11,16 @@ HEADERS_DESTINO = {
 }
 
 def send(docFields : dict):
-    sendFAQ(docFields)
-#     match docFields['mbtype']:
-#         case 'post':
-#             sendPost(docFields)
-#         case 'event':
-#             sendEvent(docFields)
-#         case 'manual':
-#             if "FAQ" in docFields.get('content_tags', []):
-#                 sendFAQ(docFields)
-#             else:
-#                 sendManual(docFields)
+    match docFields['mbtype']:
+        case 'post':
+            sendPost(docFields)
+        case 'event':
+            sendEvent(docFields)
+        case 'manual':
+            if "FAQ" in docFields.get('content_tags', []):
+                sendFAQ(docFields)
+            else:
+                sendManual(docFields)
 
 def sendPost(docFields : dict):
     try:
@@ -73,8 +73,7 @@ def sendEvent(docFields : dict):
 
 def sendFAQ(docFields : dict):
     try:
-        question = "Pergunta aqui?"
-        response = "Responder aqui."
+        question, response = separar_perguntas_respostas(docFields['html'])
         payload = {
            "name": getIdName(docFields),
            "datastoreId": DATASTORE_ID,
@@ -144,3 +143,20 @@ def integrationStatus(chatVoltData, post):
             else:
                 return {"status": 3, "id": data["id"], "key" : index}
     return {"status": 1, "id": None, "key" : None}
+
+def separar_perguntas_respostas(texto: str):
+    frases = re.split(r'(?<=[?.!])\s+', texto.strip())
+
+    perguntas = []
+    respostas = []
+
+    for frase in frases:
+        frase = frase.strip()
+        if not frase:
+            continue
+        if frase.endswith('?'):
+            perguntas.append(frase)
+        else:
+            respostas.append(frase)
+
+    return perguntas, respostas

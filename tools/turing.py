@@ -145,7 +145,7 @@ def get_text_with_images(html: str) -> str:
     matches = re.findall(r'<(span|p)[^>]*>(.*?)<\/\1>', html_com_marcadores, flags=re.IGNORECASE | re.DOTALL)
     textos_capturados = ' '.join([unescape(m[1]) for m in matches])
 
-    texto_limpo = re.sub(r'[^\w\s\[\]_]', '', re.sub(r'<[^>]+>', '', textos_capturados), flags=re.UNICODE)
+    texto_limpo = re.sub(r'[^\w\s\[\]_\?]', '', re.sub(r'<[^>]+>', '', textos_capturados), flags=re.UNICODE)
 
     for marcador, link in image_links.items():
         texto_limpo = texto_limpo.replace(marcador, link)
