@@ -86,7 +86,7 @@ def sendFAQ(docFields : dict):
                "config": {
                    "tags": docFields.get('content_tags', "").split('\n'),
                    "source_url": docFields.get('url', ''),
-                   "question":  '['+ ', '.join(docFields.get('area_name', ['Área Tecnologia'])) +'] ' + '\n'.join(block['perguntas']),
+                   "question": getMarkArea(docFields) + '\n'.join(block['perguntas']),
                    "answer": '\n'.join(block['respostas'])
                }
             }
@@ -134,7 +134,10 @@ def delete(datasource):
     print('Dados deletados com sucesso:', resposta.status_code)
 
 def getIdName(post : dict):
-    return post.get("title", "") + " #" + post["id"]
+    return getMarkArea(post) + post.get("title", "") + " #" + post["id"]
+
+def getMarkArea(docFields):
+    return '['+ docFields.get('area_name', "") +'] '
 
 def integrationStatus(chatVoltData, post):
     for index, data in enumerate(chatVoltData):
