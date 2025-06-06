@@ -79,7 +79,7 @@ def sendFAQ(docFields : dict):
         payload = {
            "name": getIdName(docFields),
            "datastoreId": DATASTORE_ID,
-           "datasourceText": "[faq] " + response,
+           "datasourceText": "[faq] " + ' \n '.join(response),
            "type": "qa",
            "isUpdateText": True,
            "config": {
