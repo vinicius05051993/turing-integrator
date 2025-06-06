@@ -76,27 +76,29 @@ def sendEvent(docFields : dict):
 
 def sendFAQ(docFields : dict):
     try:
-        question, response = separar_perguntas_respostas(docFields['html'].replace('Perguntas ', ''))
-        payload = {
-           "name": getIdName(docFields),
-           "datastoreId": DATASTORE_ID,
-           "datasourceText": "[faq] " + ' \n '.join(response),
-           "type": "qa",
-           "isUpdateText": True,
-           "config": {
-               "tags": docFields.get('content_tags', []),
-               "source_url": docFields.get('url', ''),
-               "question": question,
-               "answer": response
-           }
-        }
+        blocos = separar_perguntas_respostas(docFields['html'])
+        for i, bloco in enumerate(blocos):
+            payload = {
+               "name": getIdName(docFields) + str(i),
+               "datastoreId": DATASTORE_ID,
+               "datasourceText": "[faq] " + '\n'.join(bloco['respostas']),
+               "type": "qa",
+               "isUpdateText": True,
+               "config": {
+                   "tags": docFields.get('content_tags', []),
+                   "source_url": docFields.get('url', ''),
+                   "question":  '\n'bloco['perguntas'],
+                   "answer": '\n'.join(bloco['respostas'])
+               }
+            }
 
-        resposta = requests.post(CHATVOLT_API_URL + "datasources", json=payload, headers=HEADERS_DESTINO)
-        resposta.raise_for_status()
-        print('FAQ enviado com sucesso:', resposta.status_code)
+            print(json.dumps(payload))
+
+            resposta = requests.post(CHATVOLT_API_URL + "datasources", json=payload, headers=HEADERS_DESTINO)
+            resposta.raise_for_status()
+            print('FAQ enviado com sucesso:', resposta.status_code)
     except requests.RequestException as e:
         print('Erro ao enviar FAQ:', e)
-        print(json.dumps(payload))
 
 def sendManual(docFields : dict):
     return False
@@ -150,18 +152,23 @@ def integrationStatus(chatVoltData, post):
     return {"status": 1, "id": None, "key" : None}
 
 def separar_perguntas_respostas(texto: str):
-    frases = re.split(r'(?<=[?.!])\s+', texto.strip())
+    blocos = re.split(r'(?i)\bPerguntas\b', texto)
+    resultado = []
 
-    perguntas = []
-    respostas = []
-
-    for frase in frases:
-        frase = frase.strip()
-        if not frase:
+    for bloco in blocos:
+        if not bloco.strip():
             continue
-        if frase.endswith('?'):
-            perguntas.append(frase)
-        else:
-            respostas.append(frase)
 
-    return perguntas, respostas
+        partes = re.split(r'(?i)\bRespostas?\b', bloco)
+        perguntas_brutas = partes[0].strip() if len(partes) >= 1 else ''
+        respostas_brutas = partes[1].strip() if len(partes) > 1 else ''
+
+        perguntas = re.findall(r'[^?]+\?', perguntas_brutas)
+        respostas = [r.strip() for r in respostas_brutas.split('\n') if r.strip()]
+
+        resultado.append({
+            'perguntas': [p.strip() for p in perguntas],
+            'respostas': respostas
+        })
+
+    return resultado
