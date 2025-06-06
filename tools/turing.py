@@ -14,10 +14,21 @@ TURING_HOMOLOG = {
     'auth': 'https://2746bef7-54d2-4f0c-9fab-43175e1880ab.prod2-care.sprinklr.com/community/api/v1/auth/social?communityId=2746bef7-54d2-4f0c-9fab-43175e1880ab&provider=MAPLE_BEAR&returnTo=###'
 }
 
+TURING_PRODUCTION = {
+    'host': 'busca.maplebear.com.br',
+    'url_import': 'https://busca.maplebear.com.br/api/sn/import',
+    'key': '2803004d34004b4e8e8cb709f',
+    'locale': 'pt_BR',
+    'site': 'maplebear-prd-publish',
+    'auth': 'https://2746bef7-54d2-4f0c-9fab-43175e1880ab.prod2-care.sprinklr.com/community/api/v1/auth/social?communityId=2746bef7-54d2-4f0c-9fab-43175e1880ab&provider=MAPLE_BEAR&returnTo=###'
+}
+
+DATA_IN_USE = TURING_HOMOLOG
+
 def getAllTuring(page):
     try:
 #       https://buscahml.maplebear.com.br/api/sn/maplebear-stage-publish/search?p=1&rows=600&_setlocale=pt_BR&nfpr=0&q=*
-        resposta = requests.get('https://'+ TURING_HOMOLOG['host'] +'/api/sn/'+ TURING_HOMOLOG['site'] +'/search?p='+ str(page) +'&rows=100&_setlocale='+ TURING_HOMOLOG['locale'] +'&nfpr=0&q=*', verify=False)
+        resposta = requests.get('https://'+ DATA_IN_USE['host'] +'/api/sn/'+ DATA_IN_USE['site'] +'/search?p='+ str(page) +'&rows=100&_setlocale='+ DATA_IN_USE['locale'] +'&nfpr=0&q=*', verify=False)
         resposta.raise_for_status()
         return resposta.json()
     except requests.RequestException as e:
@@ -55,7 +66,7 @@ def integrationStatus(turingDatas, spPost):
 
 def send(spPost):
     headers = {
-        'Key': TURING_HOMOLOG['key'],
+        'Key': DATA_IN_USE['key'],
         'Content-Type': 'application/json'
     }
 
@@ -63,8 +74,8 @@ def send(spPost):
         'turingDocuments': [
             {
                 'turSNJobAction': 'CREATE',
-                'locale': TURING_HOMOLOG['locale'],
-                'siteNames': [TURING_HOMOLOG['site']],
+                'locale': DATA_IN_USE['locale'],
+                'siteNames': [DATA_IN_USE['site']],
                 'attributes': {
                     'id': spPost['id'],
                     'title': spPost['t'],
@@ -87,13 +98,13 @@ def send(spPost):
         ]
     }
 
-    response = requests.post(TURING_HOMOLOG['url_import'], json=data, headers=headers)
+    response = requests.post(DATA_IN_USE['url_import'], json=data, headers=headers)
     response.raise_for_status()
     print('Publicação enviada com sucesso:', response.status_code, response.text, response.json(), json.dumps(data))
 
 def delete(id):
     headers = {
-        'Key': TURING_HOMOLOG['key'],
+        'Key': DATA_IN_USE['key'],
         'Content-Type': 'application/json',
         'Cookie': 'XSRF-TOKEN=7b04df8b-ac27-4e84-b1f2-ed227537aa5d'
     }
@@ -103,19 +114,19 @@ def delete(id):
             {
                 'turSNJobAction': 'DELETE',
                 'attributes': {'id': id},
-                'locale': TURING_HOMOLOG['locale'],
-                'siteNames': [TURING_HOMOLOG['site']]
+                'locale': DATA_IN_USE['locale'],
+                'siteNames': [DATA_IN_USE['site']]
             }
         ]
     }
 
-    response = requests.post(TURING_HOMOLOG['url_import'], json=data, headers=headers)
+    response = requests.post(DATA_IN_USE['url_import'], json=data, headers=headers)
     response.raise_for_status()
     print('Publicação deletada com sucesso:', response.status_code, json.dumps(data))
 
 def getUrlWithAuth(url):
     url = "https://conhecimento-maplebear.sprinklr.com/articles/" + url
-    return TURING_HOMOLOG['auth'].replace("###", url)
+    return DATA_IN_USE['auth'].replace("###", url)
 
 def get_only_texts(html: str) -> str:
     text_captured = ''
