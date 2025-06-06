@@ -19,7 +19,7 @@ def send(docFields : dict):
         case 'event':
             sendEvent(docFields)
         case 'manual':
-            if "FAQ" in docFields.get('title', ""):
+            if "FAQ" in docFields.get('content_tags', []):
                 sendFAQ(docFields)
             else:
                 sendManual(docFields)
