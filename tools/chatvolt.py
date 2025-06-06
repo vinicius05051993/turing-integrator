@@ -76,27 +76,25 @@ def sendEvent(docFields : dict):
 
 def sendFAQ(docFields : dict):
     try:
-        blocos = separar_perguntas_respostas(docFields['html'])
-        for i, bloco in enumerate(blocos):
+        blocks = separar_perguntas_respostas(docFields['html'])
+        for i, block in enumerate(blocks):
             payload = {
                "name": getIdName(docFields) + " - " + str(i),
                "datastoreId": DATASTORE_ID,
-               "datasourceText": "[faq] " + '\n'.join(bloco['respostas']),
+               "datasourceText": "[faq] " + '\n'.join(block['respostas']),
                "type": "qa",
                "isUpdateText": True,
                "config": {
                    "tags": docFields.get('content_tags', []),
                    "source_url": docFields.get('url', ''),
-                   "question":  '\n'.join(bloco['perguntas']),
-                   "answer": '\n'.join(bloco['respostas'])
+                   "question":  '\n'.join(block['perguntas']),
+                   "answer": '\n'.join(block['respostas'])
                }
             }
 
-            print(json.dumps(payload))
-
             resposta = requests.post(CHATVOLT_API_URL + "datasources", json=payload, headers=HEADERS_DESTINO)
             resposta.raise_for_status()
-            print('FAQ enviado com sucesso:', resposta.status_code)
+            print('FAQ enviado com sucesso:', resposta.status_code, json.dumps(payload))
     except requests.RequestException as e:
         print('Erro ao enviar FAQ:', e)
 
