@@ -11,14 +11,15 @@ HEADERS_DESTINO = {
 
 def send(docFields : dict):
     match docFields['mbtype']:
-        case 'post':
+        sendFAQ(docFields)
+#         case 'post':
 #             sendPost(docFields)
-        case 'event':
+#         case 'event':
 #             sendEvent(docFields)
-        case 'manual':
-            if "FAQ" in docFields.get('content_tags', []):
-                sendFAQ(docFields)
-            else:
+#         case 'manual':
+#             if "FAQ" in docFields.get('content_tags', []):
+#                 sendFAQ(docFields)
+#             else:
 #                 sendManual(docFields)
 
 def sendPost(docFields : dict):
