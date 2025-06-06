@@ -19,7 +19,7 @@ def send(docFields : dict):
         case 'event':
             sendEvent(docFields)
         case 'manual':
-            if "FAQ" in docFields.get('content_tags', []):
+            if "FAQ" in docFields.get('content_tags', ""):
                 sendFAQ(docFields)
             else:
                 sendManual(docFields)
@@ -32,7 +32,7 @@ def sendPost(docFields : dict):
            "datasourceText": "[post] " + docFields.get('text', ''),
            "type": "file",
            "config": {
-               "tags": docFields.get('content_tags', []),
+               "tags": docFields.get('content_tags', "").split('\n'),
                "source_url": docFields.get('url', ''),
                "mime_type": "text/plain"
            }
@@ -61,7 +61,7 @@ def sendEvent(docFields : dict):
            "datasourceText": "[event] " + dataSourcetext,
            "type": "file",
            "config": {
-               "tags": docFields.get('content_tags', []),
+               "tags": docFields.get('content_tags', "").split('\n'),
                "source_url": docFields.get('url', ''),
                "mime_type": "text/plain"
            }
@@ -84,7 +84,7 @@ def sendFAQ(docFields : dict):
                "type": "qa",
                "isUpdateText": True,
                "config": {
-                   "tags": docFields.get('content_tags', []),
+                   "tags": docFields.get('content_tags', "").split('\n'),
                    "source_url": docFields.get('url', ''),
                    "question":  '['+ ', '.join(docFields.get('area_name', ['Área Tecnologia'])) +'] ' + '\n'.join(block['perguntas']),
                    "answer": '\n'.join(block['respostas'])
@@ -105,7 +105,7 @@ def sendManual(docFields : dict):
            "datasourceText": "[manual] " + docFields.get('html', ''),
            "type": "file",
            "config": {
-               "tags": docFields.get('content_tags', []),
+               "tags": docFields.get('content_tags', "").split('\n'),
                "source_url": docFields.get('url', ''),
                "mime_type": "text/plain"
            }
