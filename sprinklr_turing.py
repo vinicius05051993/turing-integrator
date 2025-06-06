@@ -1,5 +1,6 @@
 import tools.turing as turing
 import tools.sprinklr as sprinklr
+import json
 
 def main():
     token = sprinklr.getToken()
@@ -24,7 +25,7 @@ def main():
                 integration = turing.integrationStatus(allManualsTuring, spPost)
 
                 if "FAQ" in spPost['t']:
-                    print(spPost)
+                    print(json.dumps(spPost))
 
                 if integration["key"] != None:
                     allManualsTuring.pop(integration["key"])
