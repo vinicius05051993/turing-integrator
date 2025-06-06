@@ -23,6 +23,9 @@ def main():
             for spPost in spPosts:
                 integration = turing.integrationStatus(allManualsTuring, spPost)
 
+                if "FAQ" in spPost['t']:
+                    print(spPost)
+
                 if integration["key"] != None:
                     allManualsTuring.pop(integration["key"])
 
