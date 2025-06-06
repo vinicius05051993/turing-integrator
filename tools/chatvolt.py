@@ -23,6 +23,7 @@ def send(docFields : dict):
                 sendManual(docFields)
 
 def sendPost(docFields : dict):
+    return false
     try:
         payload = {
            "name": getIdName(docFields),
@@ -43,6 +44,7 @@ def sendPost(docFields : dict):
         print('Erro ao enviar publicação:', e)
 
 def sendEvent(docFields : dict):
+    return false
     try:
         dataSourcetext = ""
         if docFields.get("allDay", False):
@@ -95,6 +97,7 @@ def sendFAQ(docFields : dict):
         print('Erro ao enviar manual:', e)
 
 def sendManual(docFields : dict):
+    return false
     try:
         payload = {
            "name": getIdName(docFields),

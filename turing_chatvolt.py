@@ -5,7 +5,7 @@ def main():
     chatVoltDatas = chatvolt.getAll()
     chatVoltDataSources = chatVoltDatas.get("datasources", {})
 
-    for page in range(1, 2):
+    for page in range(1, 100):
         datas = turing.getAllTuring(page)
         queryContext = datas.get("queryContext", {})
 
