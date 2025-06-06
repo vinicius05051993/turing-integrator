@@ -87,7 +87,7 @@ def sendFAQ(docFields : dict):
                "config": {
                    "tags": docFields.get('content_tags', []),
                    "source_url": docFields.get('url', ''),
-                   "question":  '['+ ', '.docFields.get('area_name', ['Tecnologia']) +']' + '\n'.join(block['perguntas']),
+                   "question":  '['+ ', '.join(docFields.get('area_name', ['Tecnologia'])) +']' + '\n'.join(block['perguntas']),
                    "answer": '\n'.join(block['respostas'])
                }
             }
