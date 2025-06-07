@@ -32,7 +32,8 @@ def sendPost(docFields : dict, generalAI):
             if contentTags != "":
                 tagsList = contentTags.split('\n')
             else:
-                tagsList = generalAI.get(text, 'Analise o contexto e extraia de 8 a 10 tags, com no máximo 25 caracteres, que representa com clareza o conteúdo do texto. Retorne as tags separadas por vírgula.').split(',')
+                responseAI = generalAI.get(text, 'Analise detalhadamente o texto, interpretar para ter o contexto necessário para gerar TAGs objetivas e diretas. As Tags precisam ter no maximo 25 caracteres e devem estar separadas por "#".')
+                tagsList = responseAI.split('#')
 
             payload = {
                "name": getIdName(docFields),
