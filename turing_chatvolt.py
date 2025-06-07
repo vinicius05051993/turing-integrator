@@ -24,7 +24,6 @@ def main():
                     chatvolt.send(turingData['fields'])
                 case 2:
                     chatvolt.delete(statusInChatvolt['id'])
-                    chatvolt.send(turingData['fields'])
 
     for chatVoltData in chatVoltDataSources:
         chatvolt.delete(chatVoltData['id'])
