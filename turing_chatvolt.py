@@ -14,10 +14,6 @@ def main():
 
         turingDatas = datas.get("results", {}).get("document", [])
         for turingData in turingDatas:
-
-            if "FAQ" not in turingData['fields'].get('content_tags', ""):
-                continue
-
             statusInChatvolt = chatvolt.integrationStatus(chatVoltDataSources, turingData['fields'])
 
             if statusInChatvolt["key"] != None:
