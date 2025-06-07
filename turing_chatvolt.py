@@ -1,9 +1,12 @@
 import tools.turing as turing
 import tools.chatvolt as chatvolt
+from ai import General
 
 def main():
     chatVoltDatas = chatvolt.getAll()
     chatVoltDataSources = chatVoltDatas.get("datasources", {})
+
+    generalAI = General()
 
     for page in range(1, 100):
         datas = turing.getAllTuring(page)
@@ -21,7 +24,7 @@ def main():
 
             match statusInChatvolt['status']:
                 case 1:
-                    chatvolt.send(turingData['fields'])
+                    chatvolt.send(turingData['fields'], generalAI)
                 case 2:
                     chatvolt.delete(statusInChatvolt['id'])
 

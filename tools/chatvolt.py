@@ -12,10 +12,10 @@ HEADERS_DESTINO = {
     'Authorization': 'Bearer ' + TOKEN
 }
 
-def send(docFields : dict):
+def send(docFields : dict, generalAI):
     match docFields.get('mbtype', False):
         case 'post':
-            sendPost(docFields)
+            sendPost(docFields, generalAI)
         case 'event':
             sendEvent(docFields)
         case 'manual':
@@ -24,23 +24,33 @@ def send(docFields : dict):
             else:
                 sendManual(docFields)
 
-def sendPost(docFields : dict):
+def sendPost(docFields : dict, generalAI):
     try:
-        payload = {
-           "name": getIdName(docFields),
-           "datastoreId": DATASTORE_ID,
-           "datasourceText": "[post] " + docFields.get('text', ''),
-           "type": "file",
-           "config": {
-               "tags": docFields.get('content_tags', "").split('\n'),
-               "source_url": docFields.get('url', ''),
-               "mime_type": "text/plain"
-           }
-        }
+        text = docFields.get('text', False)
+        if text:
+            contentTags = docFields.get('content_tags', "")
+            if contentTags != "":
+                tagsList = contentTags.split('\n')
+            else:
+                tagsList = generalAI.get(text, 'Analise o contexto e extraia tags, com no máximo 25 caracteres, que representa o conteúdo do texto. Retorne as tags separadas por vírgula.').split(',')
 
-        resposta = requests.post(CHATVOLT_API_URL + "datasources", json=payload, headers=HEADERS_DESTINO)
-        resposta.raise_for_status()
-        print('Publicação enviada com sucesso:', resposta.status_code, json.dumps(payload))
+            payload = {
+               "name": getIdName(docFields),
+               "datastoreId": DATASTORE_ID,
+               "datasourceText": "[post] " + text,
+               "type": "file",
+               "config": {
+                   "tags": tagsList,
+                   "source_url": docFields.get('url', ''),
+                   "mime_type": "text/plain"
+               }
+            }
+
+            resposta = requests.post(CHATVOLT_API_URL + "datasources", json=payload, headers=HEADERS_DESTINO)
+            resposta.raise_for_status()
+            print('Publicação enviada com sucesso:', resposta.status_code, json.dumps(payload))
+        else:
+            print('Publicação não enviada por falta de texto: ', json.dumps(docFields))
     except requests.RequestException as e:
         print('Erro ao enviar publicação:', e, json.dumps(payload))
 
