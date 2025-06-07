@@ -70,6 +70,8 @@ def send(spPost):
         'Content-Type': 'application/json'
     }
 
+    dateUpdate = datetime.fromtimestamp(spPost["mTm"] / 1000, tz=timezone.utc).isoformat()
+
     data = {
         'turingDocuments': [
             {
@@ -91,7 +93,8 @@ def send(spPost):
                     'otherTags': [],
                     'notify': False,
                     'content_tags': spPost['tagLabels'],
-                    'publication_date': datetime.fromtimestamp(spPost["mTm"] / 1000, tz=timezone.utc).isoformat(),
+                    'publication_date': dateUpdate,
+                    'modification_date': dateUpdate,
                     'openInNewTab': True
                 }
             }
