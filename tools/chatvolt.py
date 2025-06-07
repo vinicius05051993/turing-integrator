@@ -142,15 +142,15 @@ def getIdName(post : dict):
 def getMarkArea(docFields):
     return '['+ docFields.get('area_name', "") +'] '
 
-def integrationStatus(chatVoltData, post):
-    for index, data in enumerate(chatVoltData):
-        if getIdName(post) in data["name"] or getIdName(post) == data["name"]:
-            dateChatVolt = parser.isoparse(data["updatedAt"])
-            datePost = parser.isoparse(post["modification_date"])
+def integrationStatus(chatVoltDatas, turingData):
+    for index, chatVoltData in enumerate(chatVoltDatas):
+        if getIdName(turingData) in chatVoltData["name"] or getIdName(turingData) == chatVoltData["name"]:
+            dateChatVolt = parser.isoparse(chatVoltData["updatedAt"])
+            datePost = parser.isoparse(turingData["modification_date"])
             if dateChatVolt < datePost:
-                return {"status": 2, "id": data["id"], "key" : index}
+                return {"status": 2, "id": chatVoltData["id"], "key" : index}
             else:
-                return {"status": 3, "id": data["id"], "key" : index}
+                return {"status": 3, "id": chatVoltData["id"], "key" : index}
     return {"status": 1, "id": None, "key" : None}
 
 def separar_perguntas_respostas(texto: str):
