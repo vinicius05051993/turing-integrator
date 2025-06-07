@@ -8,7 +8,7 @@ def main():
 
     generalAI = General()
 
-    for page in range(1, 100):
+    for page in range(1, 2):
         datas = turing.getAllTuring(page)
         queryContext = datas.get("queryContext", {})
 
