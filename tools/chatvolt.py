@@ -150,7 +150,7 @@ def integrationStatus(chatVoltDatas, turingData):
             if dateChatVolt < dateTuring:
                 return {"status": 2, "id": chatVoltData["id"], "key" : index}
             else:
-                return {"status": 3, "id": chatVoltData["id"], "key" : index}
+                return {"status": 2, "id": chatVoltData["id"], "key" : index}
     return {"status": 1, "id": None, "key" : None}
 
 def separar_perguntas_respostas(texto: str):
