@@ -146,6 +146,7 @@ def integrationStatus(chatVoltDatas, turingData):
     for index, chatVoltData in enumerate(chatVoltDatas):
         if getIdName(turingData) in chatVoltData["name"] or getIdName(turingData) == chatVoltData["name"]:
             dateChatVolt = parser.isoparse(chatVoltData["updatedAt"])
+            print(json.dumps(turingData))
             datePost = parser.isoparse(turingData["modification_date"])
             if dateChatVolt < datePost:
                 return {"status": 2, "id": chatVoltData["id"], "key" : index}
