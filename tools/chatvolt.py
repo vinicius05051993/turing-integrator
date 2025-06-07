@@ -150,12 +150,14 @@ def integrationStatus(chatVoltDatas, turingData):
             if dateChatVolt < datePost:
                 return {"status": 2, "id": chatVoltData["id"], "key" : index}
             else:
-                return {"status": 3, "id": chatVoltData["id"], "key" : index}
+                return {"status": 2, "id": chatVoltData["id"], "key" : index}
     return {"status": 1, "id": None, "key" : None}
 
 def separar_perguntas_respostas(texto: str):
     blocos = re.split(r'(?i)\bPerguntas\b', texto)
     resultado = []
+    perguntas_vistas = set()
+    respostas_vistas = set()
 
     for bloco in blocos:
         if not bloco.strip():
@@ -165,11 +167,17 @@ def separar_perguntas_respostas(texto: str):
         perguntas_brutas = partes[0].strip() if len(partes) >= 1 else ''
         respostas_brutas = partes[1].strip() if len(partes) > 1 else ''
 
-        perguntas = re.findall(r'[^?]+\?', perguntas_brutas)
+        perguntas = [p.strip() for p in re.findall(r'[^?]+\?', perguntas_brutas)]
         respostas = [r.strip() for r in respostas_brutas.split('\n') if r.strip()]
 
+        perguntas = [p for p in perguntas if p not in perguntas_vistas]
+        respostas = [r for r in respostas if r not in respostas_vistas]
+
+        perguntas_vistas.update(perguntas)
+        respostas_vistas.update(respostas)
+
         resultado.append({
-            'perguntas': [p.strip() for p in perguntas],
+            'perguntas': perguntas,
             'respostas': respostas
         })
 
