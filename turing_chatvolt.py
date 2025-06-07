@@ -13,6 +13,7 @@ def main():
             break
 
         turingDatas = datas.get("results", {}).get("document", [])
+        turingDatas = []
         for turingData in turingDatas:
 
             if "FAQ" not in turingData['fields'].get('content_tags', ""):
