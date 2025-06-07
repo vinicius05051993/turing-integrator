@@ -1,6 +1,6 @@
 requests
 python-dateutil
-#keybert
-#sentence-transformers
-#scikit-learn
-#llama-cpp-python
+keybert
+sentence-transformers
+scikit-learn
+llama-cpp-python
