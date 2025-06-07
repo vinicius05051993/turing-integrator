@@ -27,17 +27,42 @@ class General:
             verbose=False
         )
 
+    def _build_prompt(self, context, question):
+        return (
+            "### Instrução:\n"
+            "Você é um assistente inteligente. Use o contexto abaixo para responder com clareza e precisão.\n\n"
+            "### Contexto:\n"
+            f"{context}\n\n"
+            "### Pergunta:\n"
+            f"{question}\n\n"
+            "### Resposta:"
+        )
+
+    def _truncate_context(self, context, question, max_out_tokens=300, safety_margin=50):
+        # monta prompt base sem contexto longo
+        prompt = self._build_prompt("", question)
+        # quantos tokens já ocupados (instrução + pergunta fixa)
+        base_tokens = len(self.llm.tokenize(prompt.encode()))
+        # espaço disponível para contexto
+        avail = self.llm.n_ctx - max_out_tokens - base_tokens - safety_margin
+
+        if avail <= 0:
+            return ""  # não há espaço sobrando
+
+        # começa com todo o contexto e vai reduzindo se preciso
+        current = context
+        while True:
+            tok_count = len(self.llm.tokenize(current.encode()))
+            if tok_count <= avail:
+                return current
+            # corta 10% cada vez até caber
+            cut_len = int(len(current) * 0.9)
+            current = current[:cut_len]
+
     def get(self, context, question):
-        prompt = f"""### Instrução:
-        Você é um assistente inteligente. Use o contexto abaixo para responder com clareza e precisão.
-
-        ### Contexto:
-        {context}
-
-        ### Pergunta:
-        {question}
-
-        ### Resposta:"""
+        # aplica truncagem automática
+        safe_ctx = self._truncate_context(context, question)
+        prompt = self._build_prompt(safe_ctx, question)
 
         resposta = self.llm(
             prompt,
@@ -46,5 +71,4 @@ class General:
             temperature=0.1,
             top_p=0.95
         )
-
         return resposta["choices"][0]["text"].strip()
