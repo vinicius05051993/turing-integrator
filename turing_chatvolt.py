@@ -14,16 +14,16 @@ def main():
 
         turingDatas = datas.get("results", {}).get("document", [])
         for turingData in turingDatas:
-            integration = chatvolt.integrationStatus(chatVoltDataSources, turingData['fields'])
+            statusInChatvolt = chatvolt.integrationStatus(chatVoltDataSources, turingData['fields'])
 
-            if integration["key"] != None:
-                chatVoltDataSources.pop(integration["key"])
+            if statusInChatvolt["key"] != None:
+                chatVoltDataSources.pop(statusInChatvolt["key"])
 
-            match integration['status']:
+            match statusInChatvolt['status']:
                 case 1:
                     chatvolt.send(turingData['fields'])
                 case 2:
-                    chatvolt.delete(integration['id'])
+                    chatvolt.delete(statusInChatvolt['id'])
                     chatvolt.send(turingData['fields'])
 
     for chatVoltData in chatVoltDataSources:
