@@ -26,8 +26,8 @@ def main():
                     chatvolt.delete(integration['id'])
                     chatvolt.send(turingData['fields'])
 
-    for source in chatVoltDataSources:
-        chatvolt.delete(source['id'])
+    for chatVoltData in chatVoltDataSources:
+        chatvolt.delete(chatVoltData['id'])
 
 if __name__ == '__main__':
     main()
