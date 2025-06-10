@@ -28,7 +28,7 @@ DATA_IN_USE = TURING_PRODUCTION
 def getAllTuring(page):
     try:
 #       https://buscahml.maplebear.com.br/api/sn/maplebear-stage-publish/search?p=1&rows=600&_setlocale=pt_BR&nfpr=0&q=*
-        resposta = requests.get('https://'+ DATA_IN_USE['host'] +'/api/sn/'+ DATA_IN_USE['site'] +'/search?p='+ str(page) +'&rows=20&_setlocale='+ DATA_IN_USE['locale'] +'&nfpr=0&q=*', verify=False)
+        resposta = requests.get('https://'+ DATA_IN_USE['host'] +'/api/sn/'+ DATA_IN_USE['site'] +'/search?p='+ str(page) +'&rows=300&_setlocale='+ DATA_IN_USE['locale'] +'&nfpr=0&q=*', verify=False)
         resposta.raise_for_status()
         return resposta.json()
     except requests.RequestException as e:
@@ -55,7 +55,7 @@ def integrationStatus(turingDatas, spPost):
     for index, turingData in enumerate(turingDatas):
         if turingData['id'] == spPost['id']:
             dateTuring = parser.isoparse(turingData['publication_date'])
-            dateSpPost = datetime.fromtimestamp(spPost["mTm"] / 1000, tz=timezone.utc)
+            dateSpPost = datetime.fromtimestamp(spPost["lastActivityAt"] / 1000, tz=timezone.utc)
 
             if dateTuring < dateSpPost:
                 return {"status": 2, "id": turingData["id"], "key": index}
@@ -70,7 +70,7 @@ def send(spPost):
         'Content-Type': 'application/json'
     }
 
-    dateUpdate = datetime.fromtimestamp(spPost["mTm"] / 1000, tz=timezone.utc).isoformat()
+    dateUpdate = datetime.fromtimestamp(spPost["lastActivityAt"] / 1000, tz=timezone.utc).isoformat()
 
     data = {
         'turingDocuments': [

@@ -13,7 +13,6 @@ def main():
         qtySprinklr = 0
         for page in range(0, 100):
             spPosts = sprinklr.getPosts(accessToken, page)
-            spPosts = []
             qty = len(spPosts)
 
             qtySprinklr += qty
@@ -29,11 +28,9 @@ def main():
 
                 match integration['status']:
                     case 1:
-                        turing.delete(spPost['id'])
                         turing.send(spPost)
                     case 2:
                         turing.delete(integration['id'])
-                        turing.send(spPost)
 
         for manualTuringToDelete in allManualsTuring:
             turing.delete(manualTuringToDelete['id'])
