@@ -44,7 +44,7 @@ class General:
             prompt,
             max_tokens=300,
             stop=["###"],
-            temperature=0.1,
+            temperature=0.3,
             top_p=0.95
         )
 
