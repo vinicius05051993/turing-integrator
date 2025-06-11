@@ -32,7 +32,7 @@ def sendPost(docFields : dict, generalAI):
             if contentTags != "":
                 tagsList = contentTags.split('\n')
             else:
-                responseAI = generalAI.get(text, 'Extraia exatamente 12 tags que representando o conteúdo do texto acima. As tags devem: ter no máximo 25 caracteres, conter apenas letras e espaço (sem números ou símbolos), e estar separadas por vírgula.')
+                responseAI = generalAI.get(text, 'Extraia exatamente 12 conjunto de palavras que representa o conteúdo do texto acima. Os conjuntos devem: ter no máximo 25 caracteres, conter apenas letras e espaço (sem números ou símbolos), e estar separadas por vírgula.')
                 print(responseAI)
                 tagsList = responseAI.split(',')
 
