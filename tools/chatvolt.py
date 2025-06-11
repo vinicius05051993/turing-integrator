@@ -2,6 +2,7 @@ import requests
 from dateutil import parser
 import re
 import json
+from collections import Counter
 
 CHATVOLT_API_URL = 'https://api.chatvolt.ai/'
 DATASTORE_ID = 'cmbauo40600brx87n8gazln1j'
@@ -32,9 +33,11 @@ def sendPost(docFields : dict, generalAI):
             if contentTags != "":
                 tagsList = contentTags.split('\n')
             else:
-                responseAI = generalAI.get(text, 'Extraia exatamente 12 conjunto de palavras que representa o conteúdo do texto acima. Os conjuntos devem: ter no máximo 25 caracteres, conter apenas letras e espaço (sem números ou símbolos), e estar separadas por vírgula.')
+                responseAI = generalAI.get(text, 'Extraia exatamente 12 conjunto de palavras que representa o conteúdo do texto acima. Os conjuntos devem: ter no máximo 25 caracteres, conter apenas letras e espaço (sem números e sem símbolos), e estar separadas por vírgula.')
                 print(responseAI)
                 tagsList = responseAI.split(',')
+                countTagsList = Counter(tagsList)
+                tagsList = [x for x in tagsList if countTagsList[x] > 1]
 
             payload = {
                "name": getIdName(docFields),
