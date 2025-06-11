@@ -42,7 +42,7 @@ def sendPost(docFields : dict, generalAI):
                "datasourceText": "[post] " + text,
                "type": "file",
                "config": {
-                   "tags": tagsList,
+                   "tags": tagsList[:12],
                    "source_url": docFields.get('url', ''),
                    "mime_type": "text/plain"
                }
