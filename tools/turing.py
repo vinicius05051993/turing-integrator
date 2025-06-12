@@ -207,15 +207,24 @@ def get_tags_name(category_ids: list, tag_type: str) -> list:
 
 def get_tags(category_ids: list, tag_type: str) -> list:
     if tag_type == 'area':
+#         tag_relation = {
+#             '673ef6a1ec0d3452790927a2': "maple-bear:area/academico",
+#             "673ef6a7ec0d345279092ce0": "maple-bear:area/administrativo-financeiro",
+#             "673ef6aeec0d34527909328a": "maple-bear:area/marketing",
+#             "6740b0b4ec0d345279f6f31e": "maple-bear:area/comercial-vendas",
+#             "67e1673057c3b02ea30b4cc5": "maple-bear:area/gente",
+#             "67e1679557c3b02ea30c415a": "maple-bear:area/gestaoescolar",
+#             "6740b144ec0d345279f7e8ba": "Área Tecnologia",
+#             "6740b12bec0d345279f7b432": "Área Liderança"
+#         }
+
         tag_relation = {
             '673ef6a1ec0d3452790927a2': "maple-bear:area/academico",
             "673ef6a7ec0d345279092ce0": "maple-bear:area/administrativo-financeiro",
             "673ef6aeec0d34527909328a": "maple-bear:area/marketing",
             "6740b0b4ec0d345279f6f31e": "maple-bear:area/comercial-vendas",
             "67e1673057c3b02ea30b4cc5": "maple-bear:area/gente",
-            "67e1679557c3b02ea30c415a": "maple-bear:area/gestaoescolar",
-            "6740b144ec0d345279f7e8ba": "Área Tecnologia",
-            "6740b12bec0d345279f7b432": "Área Liderança"
+            "67e1679557c3b02ea30c415a": "maple-bear:area/gestaoescolar"
         }
     elif tag_type == 'theme':
         tag_relation = {
