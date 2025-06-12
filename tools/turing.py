@@ -75,7 +75,7 @@ def send(spPost):
     data = {
         'turingDocuments': [
             {
-                'turSNJobAction': 'CREATE',
+                'turSNJobAction': 'UPDATE',
                 'locale': DATA_IN_USE['locale'],
                 'siteNames': [DATA_IN_USE['site']],
                 'attributes': {
