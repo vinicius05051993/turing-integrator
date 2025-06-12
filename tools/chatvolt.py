@@ -168,6 +168,7 @@ def getMarkArea(docFields):
             "maple-bear:area/gestaoescolar": "Gestão Escolar",
             "maple-bear:area/digital": "Tecnologia",
             "maple-bear:area/lideranca": "Liderança",
+            "maple-bear:area/liderança": "Liderança"
         }
         return '[Área '+ tag_relation[area[0]] +'] '
     else:
