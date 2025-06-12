@@ -167,12 +167,13 @@ def getMarkArea(docFields):
             "maple-bear:area/gente": "Gente",
             "maple-bear:area/gestaoescolar": "Gestão Escolar",
             "maple-bear:area/digital": "Tecnologia",
-            "maple-bear:area/lideranca": "Liderança",
-            "maple-bear:area/liderança": "Liderança"
+            "maple-bear:area/lideranca": "Lideranca"
         }
-        return '[Área '+ tag_relation[area[0]] +'] '
-    else:
-        return docFields.get("title", "") + " #" + docFields["id"]
+        if area[0] in tag_relation:
+            return '[Área '+ tag_relation[area[0]] +'] '
+
+    return docFields.get("title", "") + " #" + docFields["id"]
+
 
 def integrationStatus(chatVoltDatas, turingData):
     for index, chatVoltData in enumerate(chatVoltDatas):
