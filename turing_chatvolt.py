@@ -29,7 +29,7 @@ def main():
                     case 2:
 #                         chatvolt.delete(statusInChatvolt['id'])
 
-    for chatVoltData in chatVoltDataSources:
+#     for chatVoltData in chatVoltDataSources:
 #         chatvolt.delete(chatVoltData['id'])
 
 if __name__ == '__main__':
