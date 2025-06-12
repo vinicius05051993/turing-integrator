@@ -30,7 +30,7 @@ def main():
 
                 match integration['status']:
                     case 1:
-                        turing.delete(integration['id'])
+                        turing.send(spPost)
                     case 2:
                         turing.delete(integration['id'])
 
