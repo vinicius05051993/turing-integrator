@@ -26,7 +26,7 @@ def main():
                 match statusInChatvolt['status']:
                     case 1:
                         chatvolt.send(turingData['fields'], generalAI)
-                    case 2:
+#                     case 2:
 #                         chatvolt.delete(statusInChatvolt['id'])
 
 #     for chatVoltData in chatVoltDataSources:
