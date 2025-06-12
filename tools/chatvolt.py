@@ -9,7 +9,7 @@ import json
 
 CHATVOLT_API_URL = 'https://api.chatvolt.ai/'
 DATASTORE_ID = 'cmabhzmjq030y6oa13bhycwdc'
-TOKEN = '4e4bf4e0-92ad-4308-881a-44e6a88c1f32'
+TOKEN = '47b65f10-d5c2-4cfb-bdbb-48ff58c557a1'
 
 HEADERS_DESTINO = {
     'Content-Type': 'application/json',
