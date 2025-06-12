@@ -169,7 +169,7 @@ def getMarkArea(docFields):
             "maple-bear:area/digital": "Área Tecnologia",
             "maple-bear:area/lideranca": "Área Liderança",
         }
-        return '['+ tag_relation[area] +'] '
+        return '['+ tag_relation[area[0]] +'] '
     else:
         return docFields.get("title", "") + " #" + docFields["id"]
 
