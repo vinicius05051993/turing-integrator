@@ -75,7 +75,7 @@ def send(spPost):
     data = {
         'turingDocuments': [
             {
-                'turSNJobAction': 'UPDATE',
+                'turSNJobAction': 'CREATE',
                 'locale': DATA_IN_USE['locale'],
                 'siteNames': [DATA_IN_USE['site']],
                 'attributes': {
@@ -95,7 +95,7 @@ def send(spPost):
                     'content_tags': spPost['tagLabels'],
                     'publication_date': dateUpdate,
                     'modification_date': dateUpdate,
-                    'openInNewTab': True
+                    'openInNewTab': False
                 }
             }
         ]
