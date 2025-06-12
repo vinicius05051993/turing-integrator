@@ -151,13 +151,27 @@ def delete(datasource):
     print('Dados deletados com sucesso:', resposta.status_code)
 
 def getIdName(post : dict):
-    if post.get('area_name', False):
+    if post.get('area', False):
         return getMarkArea(post) + post.get("title", "") + " #" + post["id"]
     else:
         return post.get("title", "") + " #" + post["id"]
 
 def getMarkArea(docFields):
-    return '['+ docFields.get('area_name', "") +'] '
+    area = docFields.get('area', False)
+    if area:
+        tag_relation = {
+            'maple-bear:area/academico': "Acadêmico",
+            "maple-bear:area/administrativo-financeiro": "Administrativo e Financeiro",
+            "maple-bear:area/marketing": "Marketing",
+            "maple-bear:area/comercial-vendas": "Comercial e Vendas",
+            "maple-bear:area/gente": "Gente",
+            "maple-bear:area/gestaoescolar": "Área Gestão Escolar",
+            "maple-bear:area/digital": "Área Tecnologia",
+            "maple-bear:area/lideranca": "Área Liderança",
+        }
+        return '['+ tag_relation.get(area, "") +'] '
+    else:
+        return docFields.get("title", "") + " #" + docFields["id"]
 
 def integrationStatus(chatVoltDatas, turingData):
     for index, chatVoltData in enumerate(chatVoltDatas):
