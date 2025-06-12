@@ -95,7 +95,7 @@ def send(spPost):
                     'content_tags': spPost['tagLabels'],
                     'publication_date': dateUpdate,
                     'modification_date': dateUpdate,
-                    'openInNewTab': False
+                    'openInNewTab': True
                 }
             }
         ]
