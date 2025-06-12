@@ -224,7 +224,8 @@ def get_tags(category_ids: list, tag_type: str) -> list:
             "673ef6aeec0d34527909328a": "maple-bear:area/marketing",
             "6740b0b4ec0d345279f6f31e": "maple-bear:area/comercial-vendas",
             "67e1673057c3b02ea30b4cc5": "maple-bear:area/gente",
-            "67e1679557c3b02ea30c415a": "maple-bear:area/gestaoescolar"
+            "67e1679557c3b02ea30c415a": "maple-bear:area/gestaoescolar",
+            "6740b12bec0d345279f7b432": "maple-bear:area/lideranca"
         }
     elif tag_type == 'theme':
         tag_relation = {

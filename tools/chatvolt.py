@@ -165,11 +165,11 @@ def getMarkArea(docFields):
             "maple-bear:area/marketing": "Marketing",
             "maple-bear:area/comercial-vendas": "Comercial e Vendas",
             "maple-bear:area/gente": "Gente",
-            "maple-bear:area/gestaoescolar": "Área Gestão Escolar",
-            "maple-bear:area/digital": "Área Tecnologia",
-            "maple-bear:area/lideranca": "Área Liderança",
+            "maple-bear:area/gestaoescolar": "Gestão Escolar",
+            "maple-bear:area/digital": "Tecnologia",
+            "maple-bear:area/lideranca": "Liderança",
         }
-        return '['+ tag_relation[area[0]] +'] '
+        return '[Área '+ tag_relation[area[0]] +'] '
     else:
         return docFields.get("title", "") + " #" + docFields["id"]
 
