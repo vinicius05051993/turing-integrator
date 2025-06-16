@@ -67,7 +67,10 @@ def integrationStatus(turingDatas, spPost):
 def send(spPost):
     headers = {
         'Key': DATA_IN_USE['key'],
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "0"
     }
 
     dateUpdate = datetime.fromtimestamp(spPost["lastActivityAt"] / 1000, tz=timezone.utc).isoformat()
@@ -80,7 +83,7 @@ def send(spPost):
                 'siteNames': [DATA_IN_USE['site']],
                 'attributes': {
                     'id': spPost['id'],
-                    'title': spPost['t'] + " " + datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                    'title': spPost['t'],
                     'abstract': ' - '.join(spPost['tagLabels']) + "\n " + get_only_texts(spPost['m']),
                     'html': get_text_with_images(spPost['m']),
                     'url': getUrlWithAuth(spPost['path']),
