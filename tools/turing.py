@@ -52,6 +52,7 @@ def getAllTuringIds(type='all'):
     return ids
 
 def integrationStatus(turingDatas, spPost):
+    return {"status": 1, "id": None, "key": None}
     for index, turingData in enumerate(turingDatas):
         if turingData['id'] == spPost['id']:
             dateTuring = parser.isoparse(turingData['publication_date'])
