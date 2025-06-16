@@ -80,7 +80,7 @@ def send(spPost):
                 'siteNames': [DATA_IN_USE['site']],
                 'attributes': {
                     'id': spPost['id'],
-                    'title': spPost['t'] + " " + datetime.now(),
+                    'title': spPost['t'] + " " + datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                     'abstract': ' - '.join(spPost['tagLabels']) + "\n " + get_only_texts(spPost['m']),
                     'html': get_text_with_images(spPost['m']),
                     'url': getUrlWithAuth(spPost['path']),
