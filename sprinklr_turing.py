@@ -36,8 +36,8 @@ def main():
                     case 2:
                         turing.delete(integration['id'])
 
-        if len(allManualsTuring) == 0 and lastTuringId:
-            turing.delete(lastTuringId)
+#         if len(allManualsTuring) == 0 and lastTuringId:
+#             turing.delete(lastTuringId)
 
 #         for manualTuringToDelete in allManualsTuring:
 #             turing.delete(manualTuringToDelete['id'])
