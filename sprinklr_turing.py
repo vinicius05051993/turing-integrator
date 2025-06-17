@@ -15,7 +15,6 @@ def main():
         lastTuringId = False
         for page in range(0, 100):
             spPosts = sprinklr.getPosts(accessToken, page)
-            print(spPosts)
             qty = len(spPosts)
 
             qtySprinklr += qty
@@ -33,7 +32,7 @@ def main():
                 match integration['status']:
                     case 1:
                         turing.send(spPost)
-                        qtyTuring += qty
+                        qtyTuring += 1
                     case 2:
                         turing.delete(integration['id'])
 
