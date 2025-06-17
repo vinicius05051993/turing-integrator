@@ -21,7 +21,7 @@ def main():
             if qty == 0:
                 break
 
-            for spPost in spPosts:
+            for spPost in spPosts[:10]:
                 integration = turing.integrationStatus(allManualsTuring, spPost)
 
                 if integration["key"] != None:
