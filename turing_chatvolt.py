@@ -26,11 +26,12 @@ def main():
                 match statusInChatvolt['status']:
                     case 1:
                         chatvolt.send(turingData['fields'], generalAI)
-#                     case 2:
-#                         chatvolt.delete(statusInChatvolt['id'])
+                    case 2:
+                        chatvolt.delete(statusInChatvolt['id'])
+                        chatvolt.send(turingData['fields'], generalAI)
 
-#     for chatVoltData in chatVoltDataSources:
-#         chatvolt.delete(chatVoltData['id'])
+    for chatVoltData in chatVoltDataSources:
+        chatvolt.delete(chatVoltData['id'])
 
 if __name__ == '__main__':
     main()
