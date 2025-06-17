@@ -11,7 +11,6 @@ def main():
         allManualsTuring = turing.getAllTuringIds('manual')
 
         qtySprinklr = 0
-        qtyTuring = 0
         lastTuringId = False
         for page in range(0, 1):
             spPosts = sprinklr.getPosts(accessToken, page)
@@ -32,9 +31,9 @@ def main():
                 match integration['status']:
                     case 1:
                         turing.send(spPost)
-                        qtyTuring += 1
                     case 2:
                         turing.delete(integration['id'])
+                        turing.send(spPost)
 
         if len(allManualsTuring) == 0 and lastTuringId:
             turing.delete(lastTuringId)
@@ -43,7 +42,6 @@ def main():
             turing.delete(manualTuringToDelete['id'])
 
         print("Total registros sprinklr: " + str(qtySprinklr))
-        print("Total registros enviados turing: " + str(qtyTuring))
 
 if __name__ == '__main__':
     main()

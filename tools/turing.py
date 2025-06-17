@@ -84,8 +84,8 @@ def send(spPost):
                 'attributes': {
                     'id': spPost['id'],
                     'title': spPost['t'],
-                    'abstract': ' - '.join(spPost['tagLabels']) + "\n " + get_only_texts(spPost['m'])[:5000],
-                    'html': get_text_with_images(spPost['m'])[:5000],
+                    'abstract': ' - '.join(spPost['tagLabels']) + "\n " + get_only_texts(spPost['m']),
+                    'html': get_text_with_images(spPost['m']),
                     'url': getUrlWithAuth(spPost['path']),
                     'mbtype': 'manual',
                     'area': get_tags(spPost['categoryIds'], 'area'),
