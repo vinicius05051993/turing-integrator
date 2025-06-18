@@ -177,13 +177,23 @@ def getMarkArea(docFields):
 
 def integrationStatus(chatVoltDatas, turingData):
     for index, chatVoltData in enumerate(chatVoltDatas):
-        if getIdName(turingData) in chatVoltData["name"] or getIdName(turingData) == chatVoltData["name"]:
+        if getIdName(turingData) == chatVoltData["name"]:
             dateChatVolt = parser.isoparse(chatVoltData["updatedAt"])
             dateTuring = parser.isoparse(turingData["modification_date"])
             if dateChatVolt < dateTuring:
                 return {"status": 2, "id": chatVoltData["id"], "key" : index}
             else:
                 return {"status": 3, "id": chatVoltData["id"], "key" : index}
+
+        for i in range(1, 100):
+            if getIdName(turingData) + " - " + str(i) == chatVoltData["name"]:
+                dateChatVolt = parser.isoparse(chatVoltData["updatedAt"])
+                dateTuring = parser.isoparse(turingData["modification_date"])
+                if dateChatVolt < dateTuring:
+                    return {"status": 2, "id": chatVoltData["id"], "key" : index}
+                else:
+                    return {"status": 3, "id": chatVoltData["id"], "key" : index}
+
     return {"status": 1, "id": None, "key" : None}
 
 def separar_perguntas_respostas(texto: str):
