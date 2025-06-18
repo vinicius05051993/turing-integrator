@@ -136,7 +136,7 @@ def sendManual(docFields : dict):
 
 def getAll():
     response = requests.get(
-        CHATVOLT_API_URL + "datastores/" + DATASTORE_ID,
+        CHATVOLT_API_URL + "datastores/" + DATASTORE_ID + "?limit=10000",
         headers=HEADERS_DESTINO
     )
     response.raise_for_status()
