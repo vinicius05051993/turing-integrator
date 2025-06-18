@@ -25,7 +25,7 @@ TURING_PRODUCTION = {
 
 DATA_IN_USE = TURING_PRODUCTION
 
-def getAllTuring(page, type):
+def getAllTuring(page, type = 'all'):
     try:
 #       https://buscahml.maplebear.com.br/api/sn/maplebear-stage-publish/search?p=1&rows=600&_setlocale=pt_BR&nfpr=0&q=*
         if type == 'all':
