@@ -185,16 +185,22 @@ def integrationStatus(chatVoltDatas, turingData):
             else:
                 return {"status": 3, "id": chatVoltData["id"], "key" : index}
 
-        for i in range(1, 100):
-            if getIdName(turingData) + " - " + str(i) == chatVoltData["name"]:
-                dateChatVolt = parser.isoparse(chatVoltData["updatedAt"])
-                dateTuring = parser.isoparse(turingData["modification_date"])
-                if dateChatVolt < dateTuring:
-                    return {"status": 2, "id": chatVoltData["id"], "key" : index}
-                else:
-                    return {"status": 3, "id": chatVoltData["id"], "key" : index}
-
     return {"status": 1, "id": None, "key" : None}
+
+def integrationStatusFAQ(chatVoltDatas, turingData):
+    allChatVoltsFaqIds = []
+    status = 1
+    for index, chatVoltData in enumerate(chatVoltDatas):
+        if getIdName(turingData) in chatVoltData["name"]:
+            status = 3
+            allChatVoltsFaqIds.append({"id": chatVoltData["id"], "key": index})
+
+            dateChatVolt = parser.isoparse(chatVoltData["updatedAt"])
+            dateTuring = parser.isoparse(turingData["modification_date"])
+            if dateChatVolt < dateTuring:
+                status = 2
+
+    return {"status": status, "allChatVoltsFaqIds": allChatVoltsFaqIds}
 
 def separar_perguntas_respostas(texto: str):
     blocos = re.split(r'(?i)\bPerguntas\b', texto)
