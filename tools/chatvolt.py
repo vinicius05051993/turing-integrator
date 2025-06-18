@@ -166,7 +166,7 @@ def getMarkArea(docFields):
             "maple-bear:area/comercial-vendas": "Comercial e Vendas",
             "maple-bear:area/gente": "Gente",
             "maple-bear:area/gestaoescolar": "Gestão Escolar",
-            "maple-bear:area/digital": "Tecnologia",
+            "maple-bear:area/tecnologia": "Tecnologia",
             "maple-bear:area/lideranca": "Lideranca"
         }
         if area[0] in tag_relation:
