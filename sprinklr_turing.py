@@ -12,7 +12,7 @@ def main():
 
         qtySprinklr = 0
         lastTuringId = False
-        for page in range(0, 1):
+        for page in range(0, 100):
             spPosts = sprinklr.getPosts(accessToken, page)
             qty = len(spPosts)
 
