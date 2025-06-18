@@ -2,6 +2,7 @@ import requests
 from dateutil import parser
 import re
 import json
+from datetime import datetime, timezone
 
 # CHATVOLT_API_URL = 'https://api.chatvolt.ai/'
 # DATASTORE_ID = 'cmbauo40600brx87n8gazln1j'
@@ -179,7 +180,7 @@ def integrationStatus(chatVoltDatas, turingData):
     for index, chatVoltData in enumerate(chatVoltDatas):
         if getIdName(turingData) == chatVoltData["name"]:
             dateChatVolt = parser.isoparse(chatVoltData["updatedAt"])
-            dateTuring = parser.isoparse(turingData["modification_date"])
+            dateTuring = parser.isoparse(turingData.get("modification_date", datetime.now(timezone.utc).isoformat()))
             if dateChatVolt < dateTuring:
                 return {"status": 2, "id": chatVoltData["id"], "key" : index}
             else:
