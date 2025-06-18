@@ -17,18 +17,17 @@ def main():
 
         turingDatas = datas.get("results", {}).get("document", [])
         for turingData in turingDatas:
-            if turingData['fields']['mbtype'] == 'post':
-                statusInChatvolt = chatvolt.integrationStatus(chatVoltDataSources, turingData['fields'])
+            statusInChatvolt = chatvolt.integrationStatus(chatVoltDataSources, turingData['fields'])
 
-                if statusInChatvolt["key"] != None:
-                    chatVoltDataSources.pop(statusInChatvolt["key"])
+            if statusInChatvolt["key"] != None:
+                chatVoltDataSources.pop(statusInChatvolt["key"])
 
-                match statusInChatvolt['status']:
-                    case 1:
-                        chatvolt.send(turingData['fields'], generalAI)
-                    case 2:
-                        chatvolt.delete(statusInChatvolt['id'])
-                        chatvolt.send(turingData['fields'], generalAI)
+            match statusInChatvolt['status']:
+                case 1:
+                    chatvolt.send(turingData['fields'], generalAI)
+                case 2:
+                    chatvolt.delete(statusInChatvolt['id'])
+                    chatvolt.send(turingData['fields'], generalAI)
 
     for chatVoltData in chatVoltDataSources:
         chatvolt.delete(chatVoltData['id'])

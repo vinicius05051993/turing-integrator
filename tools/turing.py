@@ -28,14 +28,18 @@ DATA_IN_USE = TURING_PRODUCTION
 def getAllTuring(page, type):
     try:
 #       https://buscahml.maplebear.com.br/api/sn/maplebear-stage-publish/search?p=1&rows=600&_setlocale=pt_BR&nfpr=0&q=*
-        resposta = requests.get('https://'+ DATA_IN_USE['host'] +'/api/sn/'+ DATA_IN_USE['site'] +'/search?p='+ str(page) +'&rows=200&_setlocale='+ DATA_IN_USE['locale'] +'&nfpr=0&q=*&fq[]=mbtype:' + type, verify=False)
+        if type == 'all':
+            resposta = requests.get('https://'+ DATA_IN_USE['host'] +'/api/sn/'+ DATA_IN_USE['site'] +'/search?p='+ str(page) +'&rows=200&_setlocale='+ DATA_IN_USE['locale'] +'&nfpr=0&q=*', verify=False)
+        else:
+            resposta = requests.get('https://'+ DATA_IN_USE['host'] +'/api/sn/'+ DATA_IN_USE['site'] +'/search?p='+ str(page) +'&rows=200&_setlocale='+ DATA_IN_USE['locale'] +'&nfpr=0&q=*&fq[]=mbtype:' + type, verify=False)
+
         resposta.raise_for_status()
         return resposta.json()
     except requests.RequestException as e:
         print('Erro ao buscar dados:', e)
         return None
 
-def getAllTuringIds(type='manual'):
+def getAllTuringIds(type='all'):
     ids = []
     for page in range(1, 100):
         datas = getAllTuring(page, type)
