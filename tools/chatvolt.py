@@ -172,7 +172,7 @@ def getMarkArea(docFields):
         if area[0] in tag_relation:
             return '[Área '+ tag_relation[area[0]] +'] '
 
-    return docFields.get("title", "") + " #" + docFields["id"]
+    return ""
 
 
 def integrationStatus(chatVoltDatas, turingData):
