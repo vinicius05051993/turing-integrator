@@ -149,7 +149,7 @@ def delete(datasource):
         headers=HEADERS_DESTINO
     )
     resposta.raise_for_status()
-    print('Dados deletados com sucesso:', resposta.status_code)
+    print('Dados deletados com sucesso: ', resposta.status_code, datasource)
 
 def getIdName(post : dict):
     if post.get('area', False):
