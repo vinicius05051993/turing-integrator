@@ -179,6 +179,8 @@ def getMarkArea(docFields):
 def integrationStatus(chatVoltDatas, turingData):
     for index, chatVoltData in enumerate(chatVoltDatas):
         if getIdName(turingData) == chatVoltData["name"]:
+            print("Comparação 1: " + getIdName(turingData))
+            print("Comparação 2: " + chatVoltData["name"])
             dateChatVolt = parser.isoparse(chatVoltData["updatedAt"])
             dateTuring = parser.isoparse(turingData.get("modification_date", datetime.now(timezone.utc).isoformat()))
             if dateChatVolt < dateTuring:
