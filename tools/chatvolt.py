@@ -2,6 +2,7 @@ import requests
 from dateutil import parser
 import re
 import json
+import time
 from datetime import datetime, timezone
 
 # CHATVOLT_API_URL = 'https://api.chatvolt.ai/'
@@ -38,7 +39,6 @@ def sendPost(docFields : dict, generalAI):
                 tagsList = contentTags.split('\n')
             else:
                 responseAI = generalAI.get(text, 'Extraia exatamente 12 conjunto de palavras que representa o conteúdo do texto acima. Os conjuntos devem: ter no máximo 25 caracteres, conter apenas letras e espaço (sem números e sem símbolos), e estar separadas por vírgula.')
-                print(responseAI)
                 tagsList = [x.strip() for x in responseAI.split(',')]
                 tagsList = list(dict.fromkeys(tagsList))
 
@@ -136,10 +136,22 @@ def sendManual(docFields : dict):
         print('Erro ao enviar manual:', e, json.dumps(payload))
 
 def getAll():
-    response = requests.get(
-        CHATVOLT_API_URL + "datastores/" + DATASTORE_ID + "?limit=10000",
-        headers=HEADERS_DESTINO
+    url = (
+        CHATVOLT_API_URL
+        + "datastores/"
+        + DATASTORE_ID
+        + "?limit=10000&_nocache="
+        + str(int(time.time()))  # adiciona timestamp para evitar cache de URL
     )
+
+    headers = HEADERS_DESTINO.copy()
+    headers.update({
+        "Cache-Control": "no-cache",
+        "Pragma": "no-cache",
+        "Expires": "0"
+    })
+
+    response = requests.get(url, headers=headers)
     response.raise_for_status()
     return response.json()
 
@@ -179,8 +191,6 @@ def getMarkArea(docFields):
 def integrationStatus(chatVoltDatas, turingData):
     for index, chatVoltData in enumerate(chatVoltDatas):
         if getIdName(turingData) == chatVoltData["name"]:
-            print("Comparação 1: " + getIdName(turingData))
-            print("Comparação 2: " + chatVoltData["name"])
             dateChatVolt = parser.isoparse(chatVoltData["updatedAt"])
             dateTuring = parser.isoparse(turingData.get("modification_date", datetime.now(timezone.utc).isoformat()))
             if dateChatVolt < dateTuring:
