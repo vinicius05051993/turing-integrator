@@ -14,10 +14,12 @@ def main():
     ids_para_excluir = []
     for nome, ids in nomes_agrupados.items():
         if len(ids) > 1:
-            # Mantém o primeiro e marca os outros para exclusão
             ids_para_excluir.extend(ids[1:])
 
     print(ids_para_excluir)
+
+    for id in ids_para_excluir:
+        chatvolt.delete(id)
 
 if __name__ == '__main__':
     main()
