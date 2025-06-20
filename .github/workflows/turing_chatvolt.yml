@@ -32,6 +32,7 @@ jobs:
         run: pip install -r requirements/turing_chatvolt.txt
 
       - name: Executar script Python
-        env:
-          API_TOKEN: ${{ secrets.API_TOKEN }}
         run: python turing_chatvolt.py
+
+      - name: Clean Chatvolt
+        run: python clean_chatvolt.py
