@@ -19,7 +19,7 @@ def main():
         for turingData in turingDatas:
             if "FAQ" in turingData['fields'].get('title', ''):
                 statusInChatvolt = chatvolt.integrationStatusFAQ(chatVoltDataSources, turingData['fields'])
-
+                print("é FAQ", statusInChatvolt, turingData['fields'].get('title', ''))
                 for chatVoltsFaqId in statusInChatvolt['allChatVoltsFaqIds']:
                     chatVoltDataSources.pop(chatVoltsFaqId["key"])
 
