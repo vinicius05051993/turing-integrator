@@ -5,7 +5,7 @@ def main():
     chatVoltDatas = chatvolt.getAll()
     chatVoltDataSources = chatVoltDatas.get("datasources", {})
 
-    ids = [chatVoltData['id'] for chatVoltData in chatVoltDataSources]
+    ids = [chatVoltData['name'] for chatVoltData in chatVoltDataSources]
     contagem = Counter(ids)
 
     resultado = [(id_, qtd) for id_, qtd in contagem.items() if qtd > 1]
