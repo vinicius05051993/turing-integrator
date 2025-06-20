@@ -17,7 +17,7 @@ def main():
 
         turingDatas = datas.get("results", {}).get("document", [])
         for turingData in turingDatas:
-            if "FAQ" in turingData['fields'].get('content_tags', []):
+            if "FAQ" in turingData['fields'].get('title', ''):
                 statusInChatvolt = chatvolt.integrationStatusFAQ(chatVoltDataSources, turingData['fields'])
 
                 for chatVoltsFaqId in statusInChatvolt['allChatVoltsFaqIds']:
