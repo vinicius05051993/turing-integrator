@@ -1,4 +1,4 @@
-name: Sprinklr to Turing
+name: Clean Chatvolt
 
 on:
   workflow_dispatch:
