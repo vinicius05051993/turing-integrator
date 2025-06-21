@@ -84,6 +84,8 @@ def send(spPost):
     else:
         html = get_only_texts(spPost['m'])
 
+    print("Total", len(get_only_texts(spPost['m'])))
+
     data = {
         'turingDocuments': [
             {
