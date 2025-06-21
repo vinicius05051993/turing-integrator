@@ -84,8 +84,6 @@ def send(spPost):
     else:
         html = get_only_texts(spPost['m'])
 
-    print("Total", len(get_only_texts(spPost['m'])))
-
     data = {
         'turingDocuments': [
             {
@@ -95,7 +93,7 @@ def send(spPost):
                 'attributes': {
                     'id': spPost['id'],
                     'title': spPost['t'],
-                    'abstract': ' - '.join(spPost['tagLabels']) + "\n " + get_only_texts(spPost['m']),
+                    'abstract': ' - '.join(spPost['tagLabels']) + "\n " + get_only_texts(spPost['m'])[:15000],
                     'html': html,
                     'url': getUrlWithAuth(spPost['path']),
                     'mbtype': 'manual',
