@@ -79,7 +79,10 @@ def send(spPost):
 
     dateUpdate = datetime.fromtimestamp(spPost["lastActivityAt"] / 1000, tz=timezone.utc).isoformat()
 
-    print("Total: ", len(spPost['m']))
+    if len(spPost['m']) < 120000:
+        html = get_text_with_images(spPost['m'])
+    else:
+        html = get_only_texts(spPost['m'])
 
     data = {
         'turingDocuments': [
@@ -91,7 +94,7 @@ def send(spPost):
                     'id': spPost['id'],
                     'title': spPost['t'],
                     'abstract': ' - '.join(spPost['tagLabels']) + "\n " + get_only_texts(spPost['m']),
-                    'html': get_text_with_images(spPost['m']),
+                    'html': html,
                     'url': getUrlWithAuth(spPost['path']),
                     'mbtype': 'manual',
                     'area': get_tags(spPost['categoryIds'], 'area'),
