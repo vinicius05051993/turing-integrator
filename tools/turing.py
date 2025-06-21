@@ -79,6 +79,8 @@ def send(spPost):
 
     dateUpdate = datetime.fromtimestamp(spPost["lastActivityAt"] / 1000, tz=timezone.utc).isoformat()
 
+    print("Total: " spPost['m'])
+
     data = {
         'turingDocuments': [
             {
