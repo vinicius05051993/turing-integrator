@@ -93,7 +93,7 @@ def send(spPost):
                 'attributes': {
                     'id': spPost['id'],
                     'title': spPost['t'],
-                    'abstract': ' - '.join(spPost['tagLabels']) + "\n " + get_only_texts(spPost['m'])[:15000],
+                    'abstract': ' - '.join(spPost['tagLabels']) + "\n " + get_only_texts(spPost['m'])[:12000],
                     'html': html,
                     'url': getUrlWithAuth(spPost['path']),
                     'mbtype': 'manual',
