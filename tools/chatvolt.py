@@ -80,7 +80,7 @@ def sendEvent(docFields : dict):
            "datasourceText": "[event] " + dataSourcetext,
            "type": "file",
            "config": {
-               "tags": docFields.get('content_tags', "").split('\n'),
+               "tags": ["evento"],
                "source_url": docFields.get('url', ''),
                "mime_type": "text/plain"
            }
