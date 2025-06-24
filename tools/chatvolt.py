@@ -41,6 +41,7 @@ def sendPost(docFields : dict, generalAI):
                 responseAI = generalAI.get(text, 'Extraia exatamente 12 conjunto de palavras que representa o conteúdo do texto acima. Os conjuntos devem: ter no máximo 25 caracteres, conter apenas letras e espaço (sem números e sem símbolos), e estar separadas por vírgula.')
                 tagsList = [x.strip() for x in responseAI.split(',')]
                 tagsList = list(dict.fromkeys(tagsList))
+                tagsList = [tag for tag in tagsList if len(tag) <= 25
 
             payload = {
                "name": getIdName(docFields),
