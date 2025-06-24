@@ -157,12 +157,15 @@ def getAll():
     return response.json()
 
 def delete(datasource):
-    resposta = requests.delete(
-        CHATVOLT_API_URL + "datasources/" + datasource,
-        headers=HEADERS_DESTINO
-    )
-    resposta.raise_for_status()
-    print('Dados deletados com sucesso: ', resposta.status_code, datasource)
+    try:
+        resposta = requests.delete(
+            CHATVOLT_API_URL + "datasources/" + datasource,
+            headers=HEADERS_DESTINO
+        )
+        resposta.raise_for_status()
+        print('Dados deletados com sucesso: ', resposta.status_code, datasource)
+    except requests.RequestException as e:
+        print('Erro ao deletar item', datasource)
 
 def getIdName(post : dict):
     if post.get('area', False):
