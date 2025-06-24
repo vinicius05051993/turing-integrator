@@ -198,9 +198,6 @@ def integrationStatus(chatVoltDatas, turingData):
             dateChatVolt = parser.isoparse(chatVoltData["updatedAt"])
             dateTuring = parser.isoparse(turingData.get("modification_date", datetime.now(timezone.utc).isoformat()))
 
-            if turingData.get("mbtype", False) == "event":
-                return {"status": 2, "id": chatVoltData["id"], "key" : index}
-
             if dateChatVolt < dateTuring:
                 return {"status": 2, "id": chatVoltData["id"], "key" : index}
             else:
