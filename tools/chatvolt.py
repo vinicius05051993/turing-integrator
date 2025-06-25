@@ -118,13 +118,16 @@ def sendFAQ(docFields : dict):
 
 def sendManual(docFields : dict):
     try:
+        tags = docFields.get('content_tags', "").split('\n')
+        tagsList = [tag for tag in tags if len(tag) <= 25]
+
         payload = {
            "name": getIdName(docFields),
            "datastoreId": DATASTORE_ID,
            "datasourceText": "[manual] " + docFields.get('html', ''),
            "type": "file",
            "config": {
-               "tags": docFields.get('content_tags', "").split('\n'),
+               "tags": tagsList,
                "source_url": docFields.get('url', ''),
                "mime_type": "text/plain"
            }
