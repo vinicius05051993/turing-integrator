@@ -261,21 +261,21 @@ def get_text_with_images_and_pdf(html: str, id) -> str:
 
     # Substitui imagens
     html = re.sub(
-        r'<img[^>]+src="\'["\'][^>]*>',
+        r'<img[^>]+src=["\']([^"\']+)["\'][^>]*>',
         substituir_img,
         html,
         flags=re.IGNORECASE
     )
 
-    # Substitui PDFs (mesmo com parâmetros complexos)
+    # Substitui PDFs
     html = re.sub(
-        r'<a[^>]+href="\'["\'][^>]*>.*?</a>',
+        r'<a[^>]+href=["\']([^"\']+\.pdf(\?[^"\']*)?)["\'][^>]*>.*?</a>',
         substituir_pdf,
         html,
-        flags=re.IGNORECASE
+        flags=re.IGNORECASE | re.DOTALL
     )
 
-    # Extrai texto de elementos comuns
+    # Extrai e limpa texto
     matches = re.findall(
         r'<(span|p|div|a)[^>]*>(.*?)</\1>',
         html,
