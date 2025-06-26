@@ -188,26 +188,47 @@ def get_text_with_images(html: str) -> str:
     def substituir_img(match):
         nonlocal contador
         src = match.group(1)
+        marcador_simples = f"__IMG{contador}__"
         try:
             img_response = requests.get(src)
             img_response.raise_for_status()
+            content_type = img_response.headers.get("Content-Type", "")
+            if "image" not in content_type:
+                raise Exception("Conteúdo não é imagem")
+
             extension = src.split('.')[-1].split('?')[0].lower()
+            if not extension or len(extension) > 5:
+                extension = content_type.split('/')[-1] or "png"
+
             filename = f"img_{contador}.{extension}"
             github_url = upload_image_to_github(img_response.content, filename)
-            marcador = f"[{github_url}]"
-            image_links[f"__IMG{contador}__"] = marcador
+            image_links[marcador_simples] = f"[{github_url}]"
         except Exception as e:
             print(f"Erro ao processar imagem {src}: {e}")
-            image_links[f"__IMG{contador}__"] = "[imagem inválida]"
-        marcador_simples = f"__IMG{contador}__"
+            image_links[marcador_simples] = "[imagem inválida]"
         contador += 1
         return marcador_simples
 
-    html_com_marcadores = re.sub(r'<img[^>]+src=["\']([^"\']+)["\'][^>]*>', substituir_img, html, flags=re.IGNORECASE)
-    matches = re.findall(r'<(span|p)[^>]*>(.*?)<\/\1>', html_com_marcadores, flags=re.IGNORECASE | re.DOTALL)
-    textos_capturados = ' '.join([unescape(m[1]) for m in matches])
-    texto_limpo = re.sub(r'[^\w\s\[\]_\?]', '', re.sub(r'<[^>]+>', '', textos_capturados), flags=re.UNICODE)
+    html_com_marcadores = re.sub(
+        r'<img[^>]+src=["\']([^"\']+)["\'][^>]*>',
+        substituir_img,
+        html,
+        flags=re.IGNORECASE
+    )
 
+    # Extrai texto de elementos comuns (p, span, etc.)
+    matches = re.findall(
+        r'<(span|p|div)[^>]*>(.*?)<\/\1>',
+        html_com_marcadores,
+        flags=re.IGNORECASE | re.DOTALL
+    )
+    textos_capturados = ' '.join([unescape(m[1]) for m in matches])
+
+    # Remove tags HTML restantes
+    texto_limpo = re.sub(r'<[^>]+>', '', textos_capturados)
+    texto_limpo = re.sub(r'[^\w\s\[\]_\-.:/]', '', texto_limpo, flags=re.UNICODE)
+
+    # Substitui marcadores por URLs das imagens
     for marcador, link in image_links.items():
         texto_limpo = texto_limpo.replace(marcador, link)
 
