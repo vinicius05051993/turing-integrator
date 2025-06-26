@@ -24,7 +24,7 @@ def main():
             for spPost in spPosts:
                 integration = turing.integrationStatus(allManualsTuring, spPost)
 
-                if 'cmccrfezm003zp5qp1zjc09lz' != spPost['id']:
+                if '6642155e8310140e3a2ec54f' != spPost['id']:
                     continue
 
                 print(spPost['m'])
