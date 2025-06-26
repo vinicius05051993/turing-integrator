@@ -184,7 +184,7 @@ def remover_arquivos_do_github_por_id(id):
                 "message": f"Remover arquivo {nome}",
                 "sha": sha
             }
-            delete_res = requests.delete(url_delete, headers=HEADERS, json=delete_payload)
+            delete_res = requests.delete(url_delete, headers=headers, json=delete_payload)
             if delete_res.status_code == 200:
                 print(f"Arquivo {nome} removido com sucesso.")
             else:
