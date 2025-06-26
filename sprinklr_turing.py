@@ -23,7 +23,7 @@ def main():
 
             for spPost in spPosts:
                 integration = turing.integrationStatus(allManualsTuring, spPost)
-                print("original", spPost)
+                print("original", spPost['m'])
 
                 if integration["key"] != None:
                     lastTuringId = integration['id']
