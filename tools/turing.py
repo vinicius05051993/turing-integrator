@@ -267,8 +267,9 @@ def get_text_with_images_and_pdf(html: str, id) -> str:
         flags=re.IGNORECASE
     )
 
+    # Substitui PDFs
     html = re.sub(
-        r'<a[^>]+href=["\']([^"\']+?\.pdf[^"\']*)["\'][^>]*>.*?</a>',
+        r'<a[^>]+href=["\']([^"\']+\.pdf(\?[^"\']*)?)["\'][^>]*>.*?</a>',
         substituir_pdf,
         html,
         flags=re.IGNORECASE | re.DOTALL
