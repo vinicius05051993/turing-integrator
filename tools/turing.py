@@ -74,7 +74,7 @@ def integrationStatus(turingDatas, spPost):
             else:
                 return {"status": 3, "id": turingData["id"], "key": index}
 
-    return {"status": 1, "id": None, "key": None}
+    return {"status": 3, "id": None, "key": None}
 
 def send(spPost):
     headers = {
