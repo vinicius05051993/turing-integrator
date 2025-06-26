@@ -90,7 +90,7 @@ def send(spPost):
 
     dateUpdate = datetime.fromtimestamp(spPost["lastActivityAt"] / 1000, tz=timezone.utc).isoformat()
 
-    if len(spPost['m']) < 999120000:
+    if len(spPost['m']) < 0:
         html = get_text_with_images(spPost['m'])
     else:
         html = get_only_texts(spPost['m'])
