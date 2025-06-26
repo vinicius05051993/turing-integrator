@@ -191,7 +191,6 @@ def get_text_with_images(html: str) -> str:
     def substituir_img(match):
         nonlocal contador
         src = match.group(1)
-        print("Original", html)
         try:
             img_response = requests.get(src)
             img_response.raise_for_status()
