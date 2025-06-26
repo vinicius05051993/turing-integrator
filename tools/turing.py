@@ -163,6 +163,29 @@ def get_only_texts(html: str) -> str:
 
     return text_captured.strip()
 
+def remover_arquivos_do_github_por_id(id):
+    url_lista = f"{GITHUB_API}/repos/{REPO}/contents/{PASTA}"
+    resposta = requests.get(url_lista, headers=HEADERS)
+    if resposta.status_code != 200:
+        print(f"Erro ao listar arquivos: {resposta.text}")
+        return
+
+    arquivos = resposta.json()
+    for arquivo in arquivos:
+        nome = arquivo["name"]
+        if nome.startswith(f"{id}_"):
+            url_delete = f"{GITHUB_API}/repos/{REPO}/contents/{PASTA}/{nome}"
+            sha = arquivo["sha"]
+            delete_payload = {
+                "message": f"Remover arquivo {nome}",
+                "sha": sha
+            }
+            delete_res = requests.delete(url_delete, headers=HEADERS, json=delete_payload)
+            if delete_res.status_code == 200:
+                print(f"Arquivo {nome} removido com sucesso.")
+            else:
+                print(f"Erro ao remover {nome}: {delete_res.text}")
+
 def upload_image_to_github(image_bytes, filename):
     url = f"{GITHUB_API}/repos/{REPO}/contents/{PASTA}/{filename}"
     headers = {
@@ -184,6 +207,8 @@ def upload_image_to_github(image_bytes, filename):
 def get_text_with_images(html: str, id) -> str:
     image_links = {}
     contador = 0
+
+    remover_arquivos_do_github_por_id(id)
 
     def substituir_img(match):
         nonlocal contador
