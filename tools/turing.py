@@ -123,7 +123,7 @@ def send(spPost):
 
     response = requests.post(DATA_IN_USE['url_import'], json=data, headers=headers, verify=False)
     response.raise_for_status()
-    print('Publicação enviada com sucesso:', response.status_code, response.text, response.json(), json.dumps(data))
+    print('Publicação enviada com sucesso:', response.status_code, response.text, response.json(), json.dumps(data), len(data['turingDocuments'][0]['attributes']['html']))
 
 def delete(id):
     headers = {
