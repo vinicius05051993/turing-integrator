@@ -73,9 +73,9 @@ def integrationStatus(turingDatas, spPost):
                 print(spPost)
 
             if dateTuring < dateSpPost:
-                return {"status": 2, "id": turingData["id"], "key": index}
+                return {"status": 3, "id": turingData["id"], "key": index}
             else:
-                return {"status": 2, "id": turingData["id"], "key": index}
+                return {"status": 3, "id": turingData["id"], "key": index}
 
     return {"status": 1, "id": None, "key": None}
 
