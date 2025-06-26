@@ -5,6 +5,12 @@ import re
 from html import unescape
 import json
 
+GITHUB_API = "https://api.github.com"
+REPO = "vinicius05051993/turing-integrator"
+BRANCH = "main"
+PASTA = "blob"
+GITHUB_TOKEN = os.environ.get("API_TOKEN")
+
 TURING_HOMOLOG = {
     'host': 'buscahml.maplebear.com.br',
     'url_import': 'https://buscahml.maplebear.com.br/api/sn/import',
@@ -158,6 +164,24 @@ def get_only_texts(html: str) -> str:
 
     return text_captured.strip()
 
+def upload_image_to_github(image_bytes, filename):
+    url = f"{GITHUB_API}/repos/{REPO}/contents/{PASTA}/{filename}"
+    headers = {
+        "Authorization": f"token {GITHUB_TOKEN}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+    data = {
+        "message": f"Adicionando imagem {filename}",
+        "branch": BRANCH,
+        "content": base64.b64encode(image_bytes).decode("utf-8")
+    }
+
+    response = requests.put(url, headers=headers, json=data)
+    if response.status_code in [200, 201]:
+        return f"https://raw.githubusercontent.com/{REPO}/{BRANCH}/{PASTA}/{filename}"
+    else:
+        raise Exception(f"Erro ao enviar {filename}: {response.text}")
+
 def get_text_with_images(html: str) -> str:
     image_links = {}
     contador = 0
@@ -165,16 +189,24 @@ def get_text_with_images(html: str) -> str:
     def substituir_img(match):
         nonlocal contador
         src = match.group(1)
-        marcador = f"__IMG{contador}__"
-        image_links[marcador] = f"[{src}]"
+        try:
+            img_response = requests.get(src)
+            img_response.raise_for_status()
+            extension = src.split('.')[-1].split('?')[0].lower()
+            filename = f"img_{contador}.{extension}"
+            github_url = upload_image_to_github(img_response.content, filename)
+            marcador = f"[{github_url}]"
+            image_links[f"__IMG{contador}__"] = marcador
+        except Exception as e:
+            print(f"Erro ao processar imagem {src}: {e}")
+            image_links[f"__IMG{contador}__"] = "[imagem inválida]"
+        marcador_simples = f"__IMG{contador}__"
         contador += 1
-        return marcador
+        return marcador_simples
 
     html_com_marcadores = re.sub(r'<img[^>]+src=["\']([^"\']+)["\'][^>]*>', substituir_img, html, flags=re.IGNORECASE)
-
     matches = re.findall(r'<(span|p)[^>]*>(.*?)<\/\1>', html_com_marcadores, flags=re.IGNORECASE | re.DOTALL)
     textos_capturados = ' '.join([unescape(m[1]) for m in matches])
-
     texto_limpo = re.sub(r'[^\w\s\[\]_\?]', '', re.sub(r'<[^>]+>', '', textos_capturados), flags=re.UNICODE)
 
     for marcador, link in image_links.items():
