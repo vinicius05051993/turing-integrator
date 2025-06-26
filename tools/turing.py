@@ -165,7 +165,11 @@ def get_only_texts(html: str) -> str:
 
 def remover_arquivos_do_github_por_id(id):
     url_lista = f"{GITHUB_API}/repos/{REPO}/contents/{PASTA}"
-    resposta = requests.get(url_lista, headers=HEADERS)
+    headers = {
+        "Authorization": f"token {GITHUB_TOKEN}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+    resposta = requests.get(url_lista, headers=headers)
     if resposta.status_code != 200:
         print(f"Erro ao listar arquivos: {resposta.text}")
         return
