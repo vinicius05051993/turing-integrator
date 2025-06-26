@@ -132,6 +132,8 @@ def delete(id):
         'Cookie': 'XSRF-TOKEN=7b04df8b-ac27-4e84-b1f2-ed227537aa5d'
     }
 
+    remover_arquivos_do_github_por_id(id):
+
     data = {
         'turingDocuments': [
             {
