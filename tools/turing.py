@@ -69,9 +69,6 @@ def integrationStatus(turingDatas, spPost):
             dateTuring = parser.isoparse(turingData['publication_date'])
             dateSpPost = datetime.fromtimestamp(spPost["lastActivityAt"] / 1000, tz=timezone.utc)
 
-            if spPost['id'] == '66c79943dac62338bfc7d25d':
-                print(spPost)
-
             if dateTuring < dateSpPost:
                 return {"status": 3, "id": turingData["id"], "key": index}
             else:
