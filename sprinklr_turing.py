@@ -24,12 +24,6 @@ def main():
             for spPost in spPosts:
                 integration = turing.integrationStatus(allManualsTuring, spPost)
 
-                if '6642155e8310140e3a2ec54f' != spPost['id']:
-                    continue
-
-                print(spPost['m'])
-                integration['status'] = 2
-
                 if integration["key"] != None:
                     lastTuringId = integration['id']
                     allManualsTuring.pop(integration["key"])
@@ -41,11 +35,11 @@ def main():
                         turing.delete(integration['id'])
                         turing.send(spPost)
 
-#         if len(allManualsTuring) == 0 and lastTuringId:
-#             turing.delete(lastTuringId)
-#
-#         for manualTuringToDelete in allManualsTuring:
-#             turing.delete(manualTuringToDelete['id'])
+        if len(allManualsTuring) == 0 and lastTuringId:
+            turing.delete(lastTuringId)
+
+        for manualTuringToDelete in allManualsTuring:
+            turing.delete(manualTuringToDelete['id'])
 
         print("Total registros sprinklr: " + str(qtySprinklr))
 
