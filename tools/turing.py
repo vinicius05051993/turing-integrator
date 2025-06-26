@@ -88,7 +88,7 @@ def send(spPost):
     dateUpdate = datetime.fromtimestamp(spPost["lastActivityAt"] / 1000, tz=timezone.utc).isoformat()
 
     if True:
-        html = get_text_with_images(spPost['m'], spPost['id'])
+        html = get_text_with_images_and_pdf(spPost['m'], spPost['id'])
     else:
         html = get_only_texts(spPost['m'])
 
@@ -190,16 +190,16 @@ def remover_arquivos_do_github_por_id(id):
             else:
                 print(f"Erro ao remover {nome}: {delete_res.text}")
 
-def upload_image_to_github(image_bytes, filename):
+def upload_file_to_github(file_bytes, filename, tipo="arquivo"):
     url = f"{GITHUB_API}/repos/{REPO}/contents/{PASTA}/{filename}"
     headers = {
         "Authorization": f"token {GITHUB_TOKEN}",
         "Accept": "application/vnd.github.v3+json"
     }
     data = {
-        "message": f"Adicionando imagem {filename}",
+        "message": f"Adicionando {tipo} {filename}",
         "branch": BRANCH,
-        "content": base64.b64encode(image_bytes).decode("utf-8")
+        "content": base64.b64encode(file_bytes).decode("utf-8")
     }
 
     response = requests.put(url, headers=headers, json=data)
@@ -208,8 +208,8 @@ def upload_image_to_github(image_bytes, filename):
     else:
         raise Exception(f"Erro ao enviar {filename}: {response.text}")
 
-def get_text_with_images(html: str, id) -> str:
-    image_links = {}
+def get_text_with_images_and_pdf(html: str, id) -> str:
+    links_substituidos = {}
     contador = 0
 
     remover_arquivos_do_github_por_id(id)
@@ -217,11 +217,11 @@ def get_text_with_images(html: str, id) -> str:
     def substituir_img(match):
         nonlocal contador
         src = unescape(match.group(1))
-        marcador_simples = f"__IMG{contador}__"
+        marcador = f"__ARQ{contador}__"
         try:
-            img_response = requests.get(src)
-            img_response.raise_for_status()
-            content_type = img_response.headers.get("Content-Type", "")
+            response = requests.get(src)
+            response.raise_for_status()
+            content_type = response.headers.get("Content-Type", "")
             if "image" not in content_type:
                 raise Exception("Conteúdo não é imagem")
 
@@ -230,35 +230,57 @@ def get_text_with_images(html: str, id) -> str:
                 extension = content_type.split('/')[-1] or "png"
 
             filename = f"{id}_{contador}.{extension}"
-            github_url = upload_image_to_github(img_response.content, filename)
-            image_links[marcador_simples] = f"[{github_url}]"
+            github_url = upload_file_to_github(response.content, filename, tipo="imagem")
+            links_substituidos[marcador] = f"[{github_url}]"
         except Exception as e:
             print(f"Erro ao processar imagem {src}: {e}")
-            image_links[marcador_simples] = "[imagem inválida]"
+            links_substituidos[marcador] = "[imagem inválida]"
         contador += 1
-        return marcador_simples
+        return marcador
 
-    html_com_marcadores = re.sub(
-        r'<img[^>]+src=["\']([^"\']+)["\'][^>]*>',
+    def substituir_pdf(match):
+        nonlocal contador
+        href = unescape(match.group(1))
+        marcador = f"__ARQ{contador}__"
+        try:
+            response = requests.get(href)
+            response.raise_for_status()
+            if "application/pdf" not in response.headers.get("Content-Type", ""):
+                raise Exception("Conteúdo não é PDF")
+
+            filename = f"{id}_{contador}.pdf"
+            github_url = upload_file_to_github(response.content, filename, tipo="PDF")
+            links_substituidos[marcador] = f"[{github_url}]"
+        except Exception as e:
+            print(f"Erro ao processar PDF {href}: {e}")
+            links_substituidos[marcador] = "[PDF inválido]"
+        contador += 1
+        return marcador
+
+    html = re.sub(
+        r'<img[^>]+src="\'["\'][^>]*>',
         substituir_img,
         html,
         flags=re.IGNORECASE
     )
 
-    # Extrai texto de elementos comuns (p, span, etc.)
+    html = re.sub(
+        r'<a[^>]+href="\'["\'][^>]*>.*?</a>',
+        substituir_pdf,
+        html,
+        flags=re.IGNORECASE
+    )
+
     matches = re.findall(
-        r'<(span|p|div)[^>]*>(.*?)<\/\1>',
-        html_com_marcadores,
+        r'<(span|p|div)[^>]*>(.*?)</\1>',
+        html,
         flags=re.IGNORECASE | re.DOTALL
     )
     textos_capturados = ' '.join([unescape(m[1]) for m in matches])
-
-    # Remove tags HTML restantes
     texto_limpo = re.sub(r'<[^>]+>', '', textos_capturados)
     texto_limpo = re.sub(r'[^\w\s\[\]_\-.:/]', '', texto_limpo, flags=re.UNICODE)
 
-    # Substitui marcadores por URLs das imagens
-    for marcador, link in image_links.items():
+    for marcador, link in links_substituidos.items():
         texto_limpo = texto_limpo.replace(marcador, link)
 
     return texto_limpo
