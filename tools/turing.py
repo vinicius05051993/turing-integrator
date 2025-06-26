@@ -70,9 +70,9 @@ def integrationStatus(turingDatas, spPost):
             dateSpPost = datetime.fromtimestamp(spPost["lastActivityAt"] / 1000, tz=timezone.utc)
 
             if dateTuring < dateSpPost:
-                return {"status": 1, "id": turingData["id"], "key": index}
+                return {"status": 2, "id": turingData["id"], "key": index}
             else:
-                return {"status": 1, "id": turingData["id"], "key": index}
+                return {"status": 3, "id": turingData["id"], "key": index}
 
     return {"status": 1, "id": None, "key": None}
 
@@ -88,7 +88,7 @@ def send(spPost):
     dateUpdate = datetime.fromtimestamp(spPost["lastActivityAt"] / 1000, tz=timezone.utc).isoformat()
 
     if len(spPost['m']) < 99999999999:
-        html = get_text_with_images(spPost['m'])
+        html = get_text_with_images(spPost['m'], spPost['id'])
     else:
         html = get_only_texts(spPost['m'])
 
@@ -181,7 +181,7 @@ def upload_image_to_github(image_bytes, filename):
     else:
         raise Exception(f"Erro ao enviar {filename}: {response.text}")
 
-def get_text_with_images(html: str) -> str:
+def get_text_with_images(html: str, id) -> str:
     image_links = {}
     contador = 0
 
@@ -200,7 +200,7 @@ def get_text_with_images(html: str) -> str:
             if not extension or len(extension) > 5:
                 extension = content_type.split('/')[-1] or "png"
 
-            filename = f"img_{contador}.{extension}"
+            filename = f"{id}_{contador}.{extension}"
             github_url = upload_image_to_github(img_response.content, filename)
             image_links[marcador_simples] = f"[{github_url}]"
         except Exception as e:
