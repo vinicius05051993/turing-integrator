@@ -4,6 +4,8 @@ from dateutil import parser
 import re
 from html import unescape
 import json
+import os
+import base64
 
 GITHUB_API = "https://api.github.com"
 REPO = "vinicius05051993/turing-integrator"
