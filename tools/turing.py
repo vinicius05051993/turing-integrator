@@ -187,7 +187,7 @@ def get_text_with_images(html: str) -> str:
 
     def substituir_img(match):
         nonlocal contador
-        src = match.group(1)
+        src = html.unescape(match.group(1))
         marcador_simples = f"__IMG{contador}__"
         try:
             img_response = requests.get(src)
