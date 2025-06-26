@@ -171,7 +171,7 @@ def remover_arquivos_do_github_por_id(id):
     }
     resposta = requests.get(url_lista, headers=headers)
     if resposta.status_code != 200:
-        print(f"Erro ao listar arquivos: {resposta.text}")
+        print(f"Erro ao listar arquivos: {resposta.text}", url_lista)
         return
 
     arquivos = resposta.json()
