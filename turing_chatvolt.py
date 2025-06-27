@@ -21,7 +21,7 @@ def main():
                 statusInChatvolt = chatvolt.integrationStatusFAQ(chatVoltDataSources, turingData['fields'])
                 print("é FAQ", statusInChatvolt, turingData['fields'].get('title', ''))
                 for chatVoltsFaqId in statusInChatvolt['allChatVoltsFaqIds']:
-                    print("Dentro for", chatVoltsFaqId))
+                    print("Dentro for FAQ", chatVoltsFaqId))
                     chatVoltDataSources.pop(chatVoltsFaqId["key"])
 
                 match statusInChatvolt['status']:
