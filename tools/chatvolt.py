@@ -213,7 +213,7 @@ def integrationStatusFAQ(chatVoltDatas, turingData):
     status = 1
     for index, chatVoltData in enumerate(chatVoltDatas):
         if getIdName(turingData) in chatVoltData["name"]:
-            status = 3
+            status = 2
             allChatVoltsFaqIds.append({"id": chatVoltData["id"], "key": index})
 
             dateChatVolt = parser.isoparse(chatVoltData["updatedAt"])
