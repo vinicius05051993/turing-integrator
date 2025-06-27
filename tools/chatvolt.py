@@ -211,7 +211,7 @@ def integrationStatus(chatVoltDatas, turingData):
 def integrationStatusFAQ(chatVoltDatas, turingData):
     allChatVoltsFaqIds = []
     status = 1
-    for index, chatVoltData in enumerate(chatVoltDatas):
+    for chatVoltData in chatVoltDatas:
         if getIdName(turingData) in chatVoltData["name"]:
             status = 2
             allChatVoltsFaqIds.append(chatVoltData["id"])
