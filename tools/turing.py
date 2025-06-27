@@ -312,7 +312,7 @@ def get_text_with_images_and_pdf(html: str, id) -> str:
     )
     textos_capturados = ' '.join([unescape(m[1]) for m in matches])
     texto_limpo = re.sub(r'<[^>]+>', '', textos_capturados)
-    texto_limpo = re.sub(r'[^\w\s\[\]_\-.:/]', '', texto_limpo, flags=re.UNICODE)
+    texto_limpo = re.sub(r'[^\w\s\[\]_\-.:/?]', '', texto_limpo, flags=re.UNICODE)
 
     for marcador, link in links_substituidos.items():
         texto_limpo = texto_limpo.replace(marcador, link)
