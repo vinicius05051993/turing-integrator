@@ -247,7 +247,7 @@ def get_text_with_images_and_pdf(html: str, id) -> str:
             links_substituidos[marcador] = f"[{github_url}]"
         except Exception as e:
             print(f"Erro ao processar imagem {src}: {e}")
-            links_substituidos[marcador] = "["+ src +"]"
+            links_substituidos[marcador] = "[" + src + "]"
         contador += 1
         return marcador
 
@@ -266,7 +266,17 @@ def get_text_with_images_and_pdf(html: str, id) -> str:
             links_substituidos[marcador] = f"[{github_url}]"
         except Exception as e:
             print(f"Erro ao processar PDF {href}: {e}")
-            links_substituidos[marcador] = "["+ href +"]"
+            links_substituidos[marcador] = "[" + href + "]"
+        contador += 1
+        return marcador
+
+    def substituir_link(match):
+        nonlocal contador
+        href = unescape(match.group(1))
+        if href.lower().endswith('.pdf'):
+            return match.group(0)  # Ignora, já tratado no bloco PDF
+        marcador = f"__ARQ{contador}__"
+        links_substituidos[marcador] = f"[{href}]"
         contador += 1
         return marcador
 
@@ -282,6 +292,14 @@ def get_text_with_images_and_pdf(html: str, id) -> str:
     html = re.sub(
         r'<a[^>]+href=["\']([^"\']+\.pdf(\?[^"\']*)?)["\'][^>]*>.*?</a>',
         substituir_pdf,
+        html,
+        flags=re.IGNORECASE | re.DOTALL
+    )
+
+    # Substitui links genéricos (não PDF)
+    html = re.sub(
+        r'<a[^>]+href=["\']([^"\']+)["\'][^>]*>.*?</a>',
+        substituir_link,
         html,
         flags=re.IGNORECASE | re.DOTALL
     )
