@@ -19,11 +19,12 @@ def main():
         for turingData in turingDatas:
             if "FAQ" in turingData['fields'].get('title', ''):
                 statusInChatvolt = chatvolt.integrationStatusFAQ(chatVoltDataSources, turingData['fields'])
-                print("é FAQ", statusInChatvolt, turingData['fields'].get('title', ''))
-                for chatVoltsFaqId in statusInChatvolt['allChatVoltsFaqIds']:
-                    print("Dentro for FAQ", chatVoltsFaqId)
-                    print("Source", chatVoltDataSources)
-                    chatVoltDataSources.pop(chatVoltsFaqId["key"])
+                idsParaRemover = set(statusInChatvolt['allChatVoltsFaqIds'])
+
+                chatVoltDataSources = [
+                    ds for ds in chatVoltDataSources
+                    if ds["id"] not in idsParaRemover
+                ]
 
                 match statusInChatvolt['status']:
                     case 1:
