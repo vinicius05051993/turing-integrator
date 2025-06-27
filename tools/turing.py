@@ -166,31 +166,34 @@ def get_only_texts(html: str) -> str:
     return text_captured.strip()
 
 def remover_arquivos_do_github_por_id(id):
-    url_lista = f"{GITHUB_API}/repos/{REPO}/contents/{PASTA}"
+    url_tree = f"{GITHUB_API}/repos/{REPO}/git/trees/{BRANCH}?recursive=1"
     headers = {
         "Authorization": f"token {GITHUB_TOKEN}",
         "Accept": "application/vnd.github.v3+json"
     }
-    resposta = requests.get(url_lista, headers=headers)
+
+    resposta = requests.get(url_tree, headers=headers)
     if resposta.status_code != 200:
-        print(f"Erro ao listar arquivos: {resposta.text}", url_lista)
+        print(f"Erro ao listar arquivos: {resposta.text}")
         return
 
-    arquivos = resposta.json()
+    arquivos = resposta.json().get("tree", [])
     for arquivo in arquivos:
-        nome = arquivo["name"]
-        if nome.startswith(f"{id}_"):
-            url_delete = f"{GITHUB_API}/repos/{REPO}/contents/{PASTA}/{nome}"
+        path = arquivo["path"]
+        if path.startswith(f"{PASTA}/{id}_"):  # Ex: blob/123_abc.png
+            filename = path.split("/")[-1]
+            url_delete = f"{GITHUB_API}/repos/{REPO}/contents/{path}"
             sha = arquivo["sha"]
             delete_payload = {
-                "message": f"Remover arquivo {nome}",
-                "sha": sha
+                "message": f"Remover arquivo {filename}",
+                "sha": sha,
+                "branch": BRANCH
             }
             delete_res = requests.delete(url_delete, headers=headers, json=delete_payload)
             if delete_res.status_code == 200:
-                print(f"Arquivo {nome} removido com sucesso.")
+                print(f"Arquivo {filename} removido com sucesso.")
             else:
-                print(f"Erro ao remover {nome}: {delete_res.text}")
+                print(f"Erro ao remover {filename}: {delete_res.text}")
 
 def upload_file_to_github(file_bytes, filename, tipo="arquivo"):
     url = f"{GITHUB_API}/repos/{REPO}/contents/{PASTA}/{filename}"
