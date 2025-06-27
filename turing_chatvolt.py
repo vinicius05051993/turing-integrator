@@ -31,7 +31,7 @@ def main():
                         chatvolt.send(turingData['fields'], generalAI)
                     case 2:
                         for chatVoltsFaqId in statusInChatvolt['allChatVoltsFaqIds']:
-                            chatvolt.delete(chatVoltsFaqId["id"])
+                            chatvolt.delete(chatVoltsFaqId)
                         chatvolt.send(turingData['fields'], generalAI)
             else:
                 statusInChatvolt = chatvolt.integrationStatus(chatVoltDataSources, turingData['fields'])
