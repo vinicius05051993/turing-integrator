@@ -37,7 +37,7 @@ def main():
                 if statusInChatvolt["key"] != None:
                     chatVoltDataSources.pop(statusInChatvolt["key"])
 
-                    if turingData['fields']['mbtype'] == "manual:"
+                    if turingData['fields']['mbtype'] == "manual":
                         statusInChatvolt['status'] = 2
 
                 match statusInChatvolt['status']:
