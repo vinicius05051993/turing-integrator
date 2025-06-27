@@ -25,7 +25,7 @@ def send(docFields : dict, generalAI):
         case 'event':
             sendEvent(docFields)
         case 'manual':
-            if "FAQ" in docFields.get('content_tags', ""):
+            if "FAQ" in docFields.get('title', ""):
                 sendFAQ(docFields)
             else:
                 sendManual(docFields)
