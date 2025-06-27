@@ -28,6 +28,9 @@ def main():
                     lastTuringId = integration['id']
                     allManualsTuring.pop(integration["key"])
 
+                    if 'FAQ' in spPost['t']:
+                        integration['status'] = 2
+
                 match integration['status']:
                     case 1:
                         turing.send(spPost)
