@@ -125,14 +125,15 @@ def send(spPost):
     response.raise_for_status()
     print('Publicação enviada com sucesso:', response.status_code, response.text, response.json(), json.dumps(data), len(data['turingDocuments'][0]['attributes']['html']))
 
-def delete(id):
+def delete(id, remove_images = False):
     headers = {
         'Key': DATA_IN_USE['key'],
         'Content-Type': 'application/json',
         'Cookie': 'XSRF-TOKEN=7b04df8b-ac27-4e84-b1f2-ed227537aa5d'
     }
 
-    remover_arquivos_do_github_por_id(id)
+    if remove_images:
+        remover_arquivos_do_github_por_id(id)
 
     data = {
         'turingDocuments': [

@@ -39,7 +39,7 @@ def main():
             turing.delete(lastTuringId)
 
         for manualTuringToDelete in allManualsTuring:
-            turing.delete(manualTuringToDelete['id'])
+            turing.delete(manualTuringToDelete['id'], True)
 
         print("Total registros sprinklr: " + str(qtySprinklr))
 
