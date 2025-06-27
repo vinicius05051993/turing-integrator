@@ -22,6 +22,7 @@ def main():
                 print("é FAQ", statusInChatvolt, turingData['fields'].get('title', ''))
                 for chatVoltsFaqId in statusInChatvolt['allChatVoltsFaqIds']:
                     print("Dentro for FAQ", chatVoltsFaqId)
+                    print("Source", chatVoltDataSources)
                     chatVoltDataSources.pop(chatVoltsFaqId["key"])
 
                 match statusInChatvolt['status']:
