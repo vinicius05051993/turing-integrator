@@ -33,11 +33,10 @@ def main():
             else:
                 statusInChatvolt = chatvolt.integrationStatus(chatVoltDataSources, turingData['fields'])
 
-                if turingData['fields']['mbtype'] == "manual":
-                    statusInChatvolt['status'] = 2
-
                 if statusInChatvolt["key"] != None:
                     chatVoltDataSources.pop(statusInChatvolt["key"])
+                    if turingData['fields']['mbtype'] == "manual":
+                        statusInChatvolt['status'] = 2
 
                 match statusInChatvolt['status']:
                     case 1:
