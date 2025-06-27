@@ -36,6 +36,7 @@ def main():
 
                 if statusInChatvolt["key"] != None:
                     chatVoltDataSources.pop(statusInChatvolt["key"])
+                    statusInChatvolt['status'] = 2
 
                 match statusInChatvolt['status']:
                     case 1:
