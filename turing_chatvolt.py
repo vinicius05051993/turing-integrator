@@ -36,9 +36,6 @@ def main():
                 if statusInChatvolt["key"] != None:
                     chatVoltDataSources.pop(statusInChatvolt["key"])
 
-                    if turingData['fields']['mbtype'] == "manual":
-                        statusInChatvolt['status'] = 2
-
                 match statusInChatvolt['status']:
                     case 1:
                         chatvolt.send(turingData['fields'], generalAI)
