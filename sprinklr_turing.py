@@ -27,7 +27,6 @@ def main():
                 if integration["key"] != None:
                     lastTuringId = integration['id']
                     allManualsTuring.pop(integration["key"])
-                    integration['status'] = 2
 
                 match integration['status']:
                     case 1:
