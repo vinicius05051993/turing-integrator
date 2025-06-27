@@ -183,7 +183,14 @@ def remover_arquivos_do_github_por_id(id):
         if path.startswith(f"{PASTA}/{id}_"):  # Ex: blob/123_abc.png
             filename = path.split("/")[-1]
             url_delete = f"{GITHUB_API}/repos/{REPO}/contents/{path}"
-            sha = arquivo["sha"]
+
+            get_res = requests.get(url_delete, headers=headers)
+            if get_res.status_code != 200:
+                print(f"Erro ao obter SHA de {path}: {get_res.text}")
+                continue
+
+            sha = get_res.json().get("sha")
+
             delete_payload = {
                 "message": f"Remover arquivo {filename}",
                 "sha": sha,
