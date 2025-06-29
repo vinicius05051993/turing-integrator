@@ -210,8 +210,8 @@ def upload_file_to_github(file_bytes, filename, tipo="arquivo"):
         "content": base64.b64encode(file_bytes).decode("utf-8")
     }
 
-#     response = requests.put(url, headers=headers, json=data)
-    if 200 in [200, 201]:
+    response = requests.put(url, headers=headers, json=data)
+    if response.status_code in [200, 201]:
         return f"https://raw.githubusercontent.com/{REPO}/{BRANCH}/{PASTA}/{filename}"
     else:
         raise Exception(f"Erro ao enviar {filename}: {response.text}")
@@ -220,7 +220,7 @@ def get_text_with_images_and_pdf(html: str, id) -> str:
     links_substituidos = {}
     contador = 0
 
-#     remover_arquivos_do_github_por_id(id)
+    remover_arquivos_do_github_por_id(id)
 
     def substituir_img(match):
         nonlocal contador
