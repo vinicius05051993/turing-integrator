@@ -24,9 +24,10 @@ def main():
             for spPost in spPosts:
                 integration = turing.integrationStatus(allManualsTuring, spPost)
 
-                if integration["key"] != None:
-                    lastTuringId = integration['id']
-                    allManualsTuring.pop(integration["key"])
+                allManualsTuring = [
+                    ds for ds in allManualsTuring
+                    if ds["id"] != integration['id']
+                ]
 
                 match integration['status']:
                     case 1:

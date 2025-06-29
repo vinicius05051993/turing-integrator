@@ -64,17 +64,17 @@ def getAllTuringIds(type='all'):
     return ids
 
 def integrationStatus(turingDatas, spPost):
-    for index, turingData in enumerate(turingDatas):
+    for turingData in turingDatas:
         if turingData['id'] == spPost['id']:
             dateTuring = parser.isoparse(turingData['publication_date'])
             dateSpPost = datetime.fromtimestamp(spPost["lastActivityAt"] / 1000, tz=timezone.utc)
 
             if dateTuring < dateSpPost:
-                return {"status": 2, "id": turingData["id"], "key": index}
+                return {"status": 2, "id": turingData["id"]}
             else:
-                return {"status": 3, "id": turingData["id"], "key": index}
+                return {"status": 3, "id": turingData["id"]}
 
-    return {"status": 1, "id": None, "key": None}
+    return {"status": 1, "id": None}
 
 def send(spPost):
     headers = {
