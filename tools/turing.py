@@ -87,11 +87,6 @@ def send(spPost):
 
     dateUpdate = datetime.fromtimestamp(spPost["lastActivityAt"] / 1000, tz=timezone.utc).isoformat()
 
-    if True:
-        html = get_text_with_images_and_pdf(spPost['m'], spPost['id'])
-    else:
-        html = get_only_texts(spPost['m'])
-
     data = {
         'turingDocuments': [
             {
@@ -102,7 +97,7 @@ def send(spPost):
                     'id': spPost['id'],
                     'title': spPost['t'],
                     'abstract': ' - '.join(spPost['tagLabels']) + "\n " + get_only_texts(spPost['m'])[:5000],
-                    'text': html,
+                    'text': get_text_with_images_and_pdf(spPost['m'], spPost['id']),
                     'url': getUrlWithAuth(spPost['path']),
                     'mbtype': 'manual',
                     'area': get_tags(spPost['categoryIds'], 'area'),
@@ -215,7 +210,8 @@ def upload_file_to_github(file_bytes, filename, tipo="arquivo"):
         "content": base64.b64encode(file_bytes).decode("utf-8")
     }
 
-    response = requests.put(url, headers=headers, json=data)
+    response = 200
+#     response = requests.put(url, headers=headers, json=data)
     if response.status_code in [200, 201]:
         return f"https://raw.githubusercontent.com/{REPO}/{BRANCH}/{PASTA}/{filename}"
     else:
@@ -225,7 +221,7 @@ def get_text_with_images_and_pdf(html: str, id) -> str:
     links_substituidos = {}
     contador = 0
 
-    remover_arquivos_do_github_por_id(id)
+#     remover_arquivos_do_github_por_id(id)
 
     def substituir_img(match):
         nonlocal contador
