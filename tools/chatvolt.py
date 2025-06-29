@@ -94,7 +94,7 @@ def sendEvent(docFields : dict):
 
 def sendFAQ(docFields : dict):
     try:
-        blocks = separar_perguntas_respostas(docFields['html'])
+        blocks = separar_perguntas_respostas(docFields['text'])
         for i, block in enumerate(blocks):
             payload = {
                "name": getIdName(docFields) + " - " + str(i),
@@ -124,7 +124,7 @@ def sendManual(docFields : dict):
         payload = {
            "name": getIdName(docFields),
            "datastoreId": DATASTORE_ID,
-           "datasourceText": "[manual] " + docFields.get('html', ''),
+           "datasourceText": "[manual] " + docFields.get('text', ''),
            "type": "file",
            "config": {
                "tags": tagsList,
