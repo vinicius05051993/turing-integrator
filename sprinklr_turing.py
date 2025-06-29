@@ -39,7 +39,7 @@ def main():
         if len(allManualsTuring) == 0 and lastTuringId:
             turing.delete(lastTuringId)
 
-        for manualTuringToDelete in allManualsTuring[:2]:
+        for manualTuringToDelete in allManualsTuring[:1]:
             turing.delete(manualTuringToDelete['id'], True)
 
         print("Total registros sprinklr: " + str(qtySprinklr))
