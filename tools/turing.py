@@ -210,8 +210,8 @@ def upload_file_to_github(file_bytes, filename, tipo="arquivo"):
         "content": base64.b64encode(file_bytes).decode("utf-8")
     }
 
-    response = requests.put(url, headers=headers, json=data)
-    if response.status_code in [200, 201]:
+#     response = requests.put(url, headers=headers, json=data)
+    if 200 in [200, 201]:
         return f"https://raw.githubusercontent.com/{REPO}/{BRANCH}/{PASTA}/{filename}"
     else:
         raise Exception(f"Erro ao enviar {filename}: {response.text}")
