@@ -3,7 +3,7 @@ from dateutil import parser
 import re
 import json
 import time
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 # CHATVOLT_API_URL = 'https://api.chatvolt.ai/'
 # DATASTORE_ID = 'cmbauo40600brx87n8gazln1j'
@@ -71,8 +71,27 @@ def sendEvent(docFields : dict):
         else:
             dataSourcetext += "Evento não é dia todo. "
 
-        dataSourcetext += "Data inicial: " + docFields.get("initialDate", "") + ". "
-        dataSourcetext += "Data final: " + docFields.get("finishDate", "") + ". "
+        initial_date = docFields.get("initialDate", "")
+        finish_date = docFields.get("finishDate", "")
+
+        if initial_date:
+            dt_initial = parser.isoparse(initial_date) - timedelta(hours=3)
+            initial_date_str = dt_initial.isoformat()
+        else:
+            initial_date_str = ""
+
+        if finish_date:
+            dt_finish = parser.isoparse(finish_date) - timedelta(hours=3)
+            finish_date_str = dt_finish.isoformat()
+        else:
+            finish_date_str = ""
+
+        dt_now = datetime.now(timezone.utc)
+        evento_ocorreu = dt_finish < dt_now if finish_date else False
+
+        dataSourcetext += "Data inicial: " + initial_date_str + ". "
+        dataSourcetext += "Data final: " + finish_date_str + ". "
+        dataSourcetext += "Evento já ocorreu. " if evento_ocorreu else "Evento ainda vai acontecer. "
 
         payload = {
            "name": getIdName(docFields),
@@ -198,14 +217,6 @@ def getMarkArea(docFields):
 def integrationStatus(chatVoltDatas, turingData):
     for index, chatVoltData in enumerate(chatVoltDatas):
         if getIdName(turingData) == chatVoltData["name"]:
-
-            if (
-                turingData.get('mbtype') == 'event'
-                and turingData.get("initialDate")
-                and parser.isoparse(turingData["initialDate"]) < datetime.now(timezone.utc)
-            ):
-                return {"status": 4, "id": None, "key": None}
-
             dateChatVolt = parser.isoparse(chatVoltData["updatedAt"])
             dateTuring = parser.isoparse(turingData.get("modification_date", datetime.now(timezone.utc).isoformat()))
 
