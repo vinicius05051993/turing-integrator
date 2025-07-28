@@ -1,44 +1,47 @@
 import requests
-from requests.auth import HTTPBasicAuth
 
-CMS_URL = "https://author-p120717-e1174076.adobeaemcloud.com"
-USERNAME = "turing_user"
-PASSWORD = "5DIzbK4@"
+# 1. Configurações
+author_url = "https://author-p120717-e1174076.adobeaemcloud.com"
+public_url_base = "https://portal.maplebear.com.br"
+query_path = "/bin/querybuilder.json"
+credentials = ("turing_user", "5DIzbK4@")  # coloque seu login do AEM Author
 
-ROOT_PATH = "/content/maple-bear"
-PUBLISH_URL_PREFIX = "https://portal.maplebear.com.br"
+# 2. Parâmetros para buscar páginas publicadas
+params = {
+    "path": "/content/maple-bear",
+    "type": "cq:Page",
+    "property": "jcr:content/cq:lastReplicationAction",
+    "property.value": "Activate",
+    "p.limit": "-1",
+    "orderby": "path"
+}
 
-def get_pages(path):
-    url = f"{CMS_URL}{path}.infinity.json"
-    resp = requests.get(url, auth=HTTPBasicAuth(USERNAME, PASSWORD))
-    data = resp.json()
+# 3. Faz a requisição ao Query Builder
+response = requests.get(author_url + query_path, params=params, auth=credentials)
 
-    pages = []
+if response.status_code != 200:
+    print("Erro ao consultar páginas:", response.status_code, response.text)
+    exit()
 
-    def walk(node, current_path):
-        if isinstance(node, dict):
-            if node.get("jcr:primaryType") == "cq:Page":
-                pages.append(current_path)
-            for key, value in node.items():
-                if isinstance(value, dict):
-                    walk(value, f"{current_path}/{key}")
+data = response.json()
+hits = data.get("hits", [])
 
-    walk(data, ROOT_PATH)
-    return pages
+# 4. Gera URLs públicas e consulta HTML
+for hit in hits:
+    path = hit.get("path", "")
+    if not path.startswith("/content/maple-bear"):
+        continue
 
-def get_html(url):
-    resp = requests.get(url)
-    if resp.status_code == 200:
-        return resp.text
-    return None
+    # Remove '/content/maple-bear' e monta URL pública
+    relative_path = path.replace("/content/maple-bear", "")
+    if relative_path.endswith("/jcr:content"):
+        relative_path = relative_path.replace("/jcr:content", "")
 
-if __name__ == "__main__":
-    pages = get_pages(ROOT_PATH)
-    for path in pages:
-        public_url = f"{PUBLISH_URL_PREFIX}{path.replace('/content/maple-bear', '')}.html"
-        print(f"Fetching: {public_url}")
-        html = get_html(public_url)
-        if html:
-            print(f"✔️ Fetched HTML for {public_url}")
-        else:
-            print(f"❌ Failed to fetch {public_url}")
+    page_url = f"{public_url_base}{relative_path}.html"
+
+    try:
+        html_response = requests.get(page_url, timeout=10)
+        print(f"\n✅ {page_url} - Status: {html_response.status_code}")
+        print(html_response.text[:200])  # imprime os primeiros 200 caracteres
+    except Exception as e:
+        print(f"❌ Erro ao acessar {page_url}: {e}")
