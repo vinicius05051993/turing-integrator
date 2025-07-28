@@ -37,13 +37,13 @@ def main():
                 cf_response = requests.get(cf_json_url, auth=HTTPBasicAuth(username, password))
                 if cf_response.status_code == 200:
                     cf_data = cf_response.json()
-                    print(f"📄 Fragmento: {path}")
+                    print(f"Fragmento: {path}")
                     print(cf_data)
                     print("-" * 40)
                 else:
-                    print(f"❌ Erro ao acessar {cf_json_url} — Status: {cf_response.status_code}")
+                    print(f"Erro ao acessar {cf_json_url} — Status: {cf_response.status_code}")
     else:
-        print(f"❌ Falha ao buscar conteúdo. Status: {response.status_code}")
+        print(f"Falha ao buscar conteúdo. Status: {response.status_code}")
         print(response.text)
 
 if __name__ == '__main__':
