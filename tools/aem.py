@@ -49,7 +49,7 @@ def getHtmlOfPost(hit):
 
         # Aguarda até que algum conteúdo visível esteja presente
         WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.CLASS_NAME, "aem-container"))
+            EC.presence_of_element_located((By.CLASS_NAME, "container"))
         )
 
         html = driver.page_source
