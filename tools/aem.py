@@ -36,7 +36,7 @@ def find_all_objects(data):
         if isinstance(obj, dict):
             if "accordionItems" in obj:
                 for accordion in obj['accordionItems']:
-                    results.append(accordion['accordionTitle'] + ' ' + remove_html_tags(accordion['paragraph']))
+                    results.append(accordion['accordionTitle'] + ' ' + remove_html_tags_and_special_chars(accordion['paragraph']))
             for value in obj.values():
                 recursive_search(value)
         elif isinstance(obj, list):
@@ -57,7 +57,8 @@ def getAllPosts():
     data = response.json()
     return data.get("hits", [])
 
-def remove_html_tags(text):
-    clean = re.sub(r'<[^>]+>', '', text)
-    return clean.strip()
+def remove_html_tags_and_special_chars(text):
+    text = re.sub(r'<[^>]+>', '', text)
+    text = re.sub(r'[\r\n\t]', '', text)
+    return text.strip()
 
