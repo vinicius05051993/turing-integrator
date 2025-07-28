@@ -4,6 +4,7 @@ def main():
     allPosts = aem.getAllPosts()
 
     for post in allPosts:
+        print(post)
         html = aem.getHtmlOfPost(post)
         print(aem.get_only_texts(html))
 
