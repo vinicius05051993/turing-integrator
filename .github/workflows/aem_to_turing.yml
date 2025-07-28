@@ -21,16 +21,6 @@ jobs:
       - name: Instalar dependências
         run: pip install -r requirements/aem_turing.txt
 
-      - name: Install Google Chrome
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y google-chrome-stable
-
-      - name: Install Selenium and Chromedriver
-        run: |
-          npm install selenium-webdriver
-          npm install chromedriver
-
       - name: Executar script Python
         env:
           API_TOKEN: ${{ secrets.API_TOKEN }}
