@@ -4,13 +4,15 @@ import re
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
 import time
 
 options = Options()
-options.add_argument('--headless')
-options.add_argument('--disable-gpu')
-options.add_argument('--no-sandbox')
-driver = webdriver.Chrome(options=options)
+options.add_argument("--headless=new")  # Use o modo headless moderno
+options.add_argument("--disable-gpu")
+options.add_argument("--window-size=1920,1080")
+options.add_argument("--no-sandbox")
+options.add_argument("--disable-dev-shm-usage")
 
 # 1. Configurações
 author_url = "https://author-p120717-e1174076.adobeaemcloud.com"
@@ -40,7 +42,10 @@ def getHtmlOfPost(hit):
 
     try:
         driver.get(page_url)
-        time.sleep(3)
+
+        # Aguarda tempo para React carregar. Pode aumentar se necessário.
+        time.sleep(5)
+
         html = driver.page_source
         return html
 
