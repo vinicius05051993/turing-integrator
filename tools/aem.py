@@ -1,6 +1,17 @@
 import requests
 import re
 
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+import time
+
+options = Options()
+options.add_argument('--headless')
+options.add_argument('--disable-gpu')
+options.add_argument('--no-sandbox')
+driver = webdriver.Chrome(options=options)
+
 # 1. Configurações
 author_url = "https://author-p120717-e1174076.adobeaemcloud.com"
 public_url_base = "https://portal.maplebear.com.br"
@@ -19,7 +30,7 @@ params = {
 def getHtmlOfPost(hit):
     path = hit.get("path", "")
     if not path.startswith("/content/maple-bear/posts"):
-        return false
+        return False
 
     relative_path = path.replace("/content/maple-bear", "")
     if relative_path.endswith("/jcr:content"):
@@ -28,10 +39,14 @@ def getHtmlOfPost(hit):
     page_url = f"{public_url_base}{relative_path}"
 
     try:
-        html_response = requests.get(page_url, timeout=10)
-        return html_response.text
+        driver.get(page_url)
+        time.sleep(3)
+        html = driver.page_source
+        return html
+
     except Exception as e:
         print(f"❌ Erro ao acessar {page_url}: {e}")
+        return False
 
 def getAllPosts():
     response = requests.get(author_url + query_path, params=params, auth=credentials)
