@@ -27,6 +27,7 @@ def main():
 
     if response.status_code == 200:
         data = response.json()
+        print (data)
         hits = data.get("hits", [])
         print(f"Total de fragments encontrados: {len(hits)}\n")
 
