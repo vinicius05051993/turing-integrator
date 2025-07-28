@@ -1,5 +1,5 @@
 import requests
-import re
+import json
 
 # 1. Configurações
 author_url = "https://author-p120717-e1174076.adobeaemcloud.com"
@@ -23,7 +23,7 @@ def getPageOfPost(hit):
     try:
         response = requests.get(page_url, timeout=10)
         response.raise_for_status()
-        return response.text.json()
+        return json.loads(response.text)
     except Exception as e:
         print(f"❌ Erro ao acessar {page_url}: {e}")
         return False
@@ -55,16 +55,4 @@ def getAllPosts():
 
     data = response.json()
     return data.get("hits", [])
-
-def get_only_texts(html: str) -> str:
-    text_captured = ''
-    matches = re.findall(r'<(?:span|p)[^>]*>(.*?)</(?:span|p)>', html, flags=re.IGNORECASE | re.DOTALL)
-
-    if matches:
-        text_captured = ' '.join(matches)
-
-    text_captured = re.sub(r'<[^>]*>', '', text_captured)  # Remove any remaining tags
-    text_captured = re.sub(r'[^\w\s\?]', '', text_captured)  # Remove non-alphanumeric chars, except ?
-
-    return text_captured.strip()
 
