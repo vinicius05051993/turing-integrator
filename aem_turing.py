@@ -6,7 +6,7 @@ def main():
     for post in allPosts:
         pageContent = aem.getPageOfPost(post)
         if pageContent:
-            results = find_all_objects(pageContent)
+            results = aem.find_all_objects(pageContent)
             print(results)
             break
 
