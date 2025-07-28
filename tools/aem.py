@@ -41,6 +41,7 @@ def getAllPosts():
         exit()
 
     data = response.json()
+    print(data)
     return data.get("hits", [])
 
 def get_only_texts(html: str) -> str:
