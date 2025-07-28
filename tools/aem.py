@@ -1,4 +1,5 @@
 import requests
+import re
 
 # 1. Configurações
 author_url = "https://author-p120717-e1174076.adobeaemcloud.com"
