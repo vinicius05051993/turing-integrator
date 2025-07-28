@@ -29,6 +29,8 @@ params = {
     "orderby": "path"
 }
 
+driver = webdriver.Chrome(options=options)
+
 def getHtmlOfPost(hit):
     path = hit.get("path", "")
     if not path.startswith("/content/maple-bear/posts"):
