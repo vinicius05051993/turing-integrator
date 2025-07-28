@@ -19,7 +19,7 @@ params = {
 def getHtmlOfPost(hit):
     path = hit.get("path", "")
     if not path.startswith("/content/maple-bear/posts"):
-        return ""
+        return false
 
     relative_path = path.replace("/content/maple-bear", "")
     if relative_path.endswith("/jcr:content"):
