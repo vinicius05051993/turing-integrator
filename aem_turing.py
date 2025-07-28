@@ -37,7 +37,7 @@ for hit in hits:
     if relative_path.endswith("/jcr:content"):
         relative_path = relative_path.replace("/jcr:content", "")
 
-    page_url = f"{public_url_base}{relative_path}.html"
+    page_url = f"{public_url_base}{relative_path}"
 
     try:
         html_response = requests.get(page_url, timeout=10)
