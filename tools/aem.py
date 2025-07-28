@@ -3,12 +3,14 @@ import re
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import time
 
 options = Options()
-options.add_argument("--headless=new")  # Use o modo headless moderno
+options.add_argument("--headless=new")
 options.add_argument("--disable-gpu")
 options.add_argument("--window-size=1920,1080")
 options.add_argument("--no-sandbox")
@@ -45,8 +47,10 @@ def getHtmlOfPost(hit):
     try:
         driver.get(page_url)
 
-        # Aguarda tempo para React carregar. Pode aumentar se necessário.
-        time.sleep(5)
+        # Aguarda até que algum conteúdo visível esteja presente
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.CLASS_NAME, "aem-container"))
+        )
 
         html = driver.page_source
         return html
