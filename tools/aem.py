@@ -21,8 +21,9 @@ def getHtmlOfPost(hit):
     page_url = f"{public_url_base}/posts/{siteName}.model.json"
 
     try:
-        pageContent = requests.get(page_url)
-        return pageContent
+        response = requests.get(page_url, timeout=10)
+        response.raise_for_status()  # Lança erro se o status for 4xx ou 5xx
+        return response.text  # Retorna o conteúdo HTML da página
 
     except Exception as e:
         print(f"❌ Erro ao acessar {page_url}: {e}")
