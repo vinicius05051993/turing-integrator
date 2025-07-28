@@ -6,7 +6,9 @@ def main():
     for post in allPosts:
         html = aem.getHtmlOfPost(post)
         if html:
+            print(html)
             print(aem.get_only_texts(html))
+            break
 
 if __name__ == '__main__':
     main()
