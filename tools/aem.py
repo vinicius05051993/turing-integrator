@@ -1,21 +1,6 @@
 import requests
 import re
 
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-import time
-
-options = Options()
-options.add_argument("--headless=new")
-options.add_argument("--disable-gpu")
-options.add_argument("--window-size=1920,1080")
-options.add_argument("--no-sandbox")
-options.add_argument("--disable-dev-shm-usage")
-
 # 1. Configurações
 author_url = "https://author-p120717-e1174076.adobeaemcloud.com"
 public_url_base = "https://portal.maplebear.com.br"
@@ -31,29 +16,13 @@ params = {
     "orderby": "path"
 }
 
-driver = webdriver.Chrome(options=options)
-
 def getHtmlOfPost(hit):
-    path = hit.get("path", "")
-    if not path.startswith("/content/maple-bear/posts"):
-        return False
-
-    relative_path = path.replace("/content/maple-bear", "")
-    if relative_path.endswith("/jcr:content"):
-        relative_path = relative_path.replace("/jcr:content", "")
-
-    page_url = f"{public_url_base}{relative_path}"
+    siteName = hit.get("name", "")
+    page_url = f"{public_url_base}/posts/{siteName}.model.json"
 
     try:
-        driver.get(page_url)
-
-        # Aguarda até que algum conteúdo visível esteja presente
-        WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.CLASS_NAME, "richtext"))
-        )
-
-        html = driver.page_source
-        return html
+        pageContent = requests.get(page_url)
+        return pageContent
 
     except Exception as e:
         print(f"❌ Erro ao acessar {page_url}: {e}")

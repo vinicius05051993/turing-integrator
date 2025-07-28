@@ -4,10 +4,9 @@ def main():
     allPosts = aem.getAllPosts()
 
     for post in allPosts:
-        html = aem.getHtmlOfPost(post)
-        if html:
-            print(html)
-            print(aem.get_only_texts(html))
+        pageContent = aem.getHtmlOfPost(post)
+        if pageContent:
+            print(pageContent)
             break
 
 if __name__ == '__main__':
