@@ -6,9 +6,9 @@ public_url_base = "https://portal.maplebear.com.br"
 query_path = "/bin/querybuilder.json"
 credentials = ("turing_user", "5DIzbK4@")  # coloque seu login do AEM Author
 
-# 2. Parâmetros para buscar páginas publicadas
+# 2. Parâmetros do Query Builder – busca páginas publicadas em /content/maple-bear/posts
 params = {
-    "path": "/content/maple-bear",
+    "path": "/content/maple-bear/posts",
     "type": "cq:Page",
     "property": "jcr:content/cq:lastReplicationAction",
     "property.value": "Activate",
@@ -16,7 +16,7 @@ params = {
     "orderby": "path"
 }
 
-# 3. Faz a requisição ao Query Builder
+# 3. Consulta ao AEM Author
 response = requests.get(author_url + query_path, params=params, auth=credentials)
 
 if response.status_code != 200:
@@ -26,13 +26,13 @@ if response.status_code != 200:
 data = response.json()
 hits = data.get("hits", [])
 
-# 4. Gera URLs públicas e consulta HTML
+# 4. Para cada página encontrada, gera a URL pública e consulta o HTML
 for hit in hits:
     path = hit.get("path", "")
-    if not path.startswith("/content/maple-bear"):
+    if not path.startswith("/content/maple-bear/posts"):
         continue
 
-    # Remove '/content/maple-bear' e monta URL pública
+    # Gera URL pública removendo o prefixo e adicionando .html
     relative_path = path.replace("/content/maple-bear", "")
     if relative_path.endswith("/jcr:content"):
         relative_path = relative_path.replace("/jcr:content", "")
@@ -42,6 +42,6 @@ for hit in hits:
     try:
         html_response = requests.get(page_url, timeout=10)
         print(f"\n✅ {page_url} - Status: {html_response.status_code}")
-        print(html_response.text[:200])  # imprime os primeiros 200 caracteres
+        print(html_response.text[:200])  # Mostra os primeiros 200 caracteres do HTML
     except Exception as e:
         print(f"❌ Erro ao acessar {page_url}: {e}")
