@@ -45,7 +45,7 @@ def find_all_objects(data):
             if "accordionItems" in obj:
                 for accordion in obj["accordionItems"]:
                     results.append(
-                        accordion.get("accordionTitle", "") + " " +
+                        accordion.get("accordionTitle", "") + ": " +
                         remove_html_tags_and_special_chars(accordion.get("paragraph", ""))
                     )
 
