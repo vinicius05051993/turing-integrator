@@ -18,8 +18,8 @@ params = {
     "orderby": "path"
 }
 
-def getPageOfPost(hit):
-    siteName = hit.get("name", "")
+def getPageOfPost(id):
+    siteName = id.replace('/content/dam/maple-bear/posts/', '')
     page_url = f"{public_url_base}/posts/{siteName}.model.json"
 
     try:
@@ -68,15 +68,15 @@ def find_all_objects(data):
     recursive_search(data)
     return results
 
-def getAllPosts():
-    response = requests.get(author_url + query_path, params=params, auth=credentials)
-
-    if response.status_code != 200:
-        print("Erro ao consultar páginas:", response.status_code, response.text)
-        exit()
-
-    data = response.json()
-    return data.get("hits", [])
+# def getAllPosts():
+#     response = requests.get(author_url + query_path, params=params, auth=credentials)
+#
+#     if response.status_code != 200:
+#         print("Erro ao consultar páginas:", response.status_code, response.text)
+#         exit()
+#
+#     data = response.json()
+#     return data.get("hits", [])
 
 def remove_html_tags_and_special_chars(text):
     # Converte entidades HTML (&nbsp;, etc.)
