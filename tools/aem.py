@@ -1,6 +1,7 @@
 import requests
 import json
 import re
+import html
 
 # 1. Configurações
 author_url = "https://author-p120717-e1174076.adobeaemcloud.com"
@@ -77,19 +78,20 @@ def getAllPosts():
     data = response.json()
     return data.get("hits", [])
 
-import re
-
 def remove_html_tags_and_special_chars(text):
+    # Converte entidades HTML como &nbsp; para espaços normais
+    text = html.unescape(text)
+
     # Converte <a href="...">texto</a> em texto [link]
     text = re.sub(r'<a [^>]*href=["\'](.*?)["\'][^>]*>(.*?)</a>', r'\2 [\1]', text, flags=re.IGNORECASE)
 
     # Remove todas as outras tags HTML
     text = re.sub(r'<[^>]+>', '', text)
 
-    # Remove emojis (inclui figurinhas como 📷)
+    # Remove emojis (como 📷, 😃, etc.)
     text = re.sub(r'[\U0001F300-\U0001FAFF\u2600-\u26FF\u2700-\u27BF]+', '', text)
 
-    # Remove \r \n \t e espaços duplicados
+    # Remove \r \n \t e múltiplos espaços
     text = re.sub(r'[\r\n\t]', '', text)
     text = re.sub(r' +', ' ', text)
 
