@@ -15,7 +15,7 @@ def main():
                 pageContent = aem.getPageOfPost(turingData['fields']['id'])
                 if pageContent:
                     textContent = aem.find_all_objects(pageContent)
-                    turingData['fields']['text'] = textContent.join()
+                    turingData['fields']['text'] = " ".join(textContent)
                     print(turingData)
                     break
 #                     turing.delete(turingData['fields']['id'])
