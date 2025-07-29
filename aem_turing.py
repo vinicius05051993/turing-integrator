@@ -14,9 +14,12 @@ def main():
             if turingData['fields'].get('mbtype', '') == "post":
                 pageContent = aem.getPageOfPost(turingData['fields']['id'])
                 if pageContent:
-                    results = aem.find_all_objects(pageContent)
-                    print(results)
+                    textContent = aem.find_all_objects(pageContent)
+                    turingData['fields']['text'] = textContent.join()
+                    print(turingData)
                     break
+#                     turing.delete(turingData['fields']['id'])
+#                     turing.send(spPost)
 
 if __name__ == '__main__':
     main()
