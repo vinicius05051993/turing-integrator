@@ -2,7 +2,7 @@ import tools.aem as aem
 import tools.turing as turing
 
 def main():
-    for page in range(1, 1):
+    for page in range(1, 2):
         datas = turing.getAllTuring(page)
         queryContext = datas.get("queryContext", {})
 
