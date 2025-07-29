@@ -38,7 +38,7 @@ def find_all_objects(data):
                 for accordion in obj['accordionItems']:
                     results.append(accordion['accordionTitle'] + ' ' + remove_html_tags_and_special_chars(accordion['paragraph']))
             if "richtext" in obj:
-                 results.append(remove_html_tags_and_special_chars(obj.get("text", "")))
+                 results.append(remove_html_tags_and_special_chars(obj['richtext']['text']))
         elif isinstance(obj, list):
             for item in obj:
                 recursive_search(item)
