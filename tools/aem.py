@@ -35,6 +35,13 @@ def find_all_objects(data):
 
     def recursive_search(obj):
         if isinstance(obj, dict):
+            # Verifica se existe alguma chave que começa com "richtext"
+            for key, value in obj.items():
+                if key.startswith("richtext"):
+                    if isinstance(value, dict) and "text" in value:
+                        results.append(remove_html_tags_and_special_chars(value["text"]))
+
+            # Verifica se existe "accordionItems"
             if "accordionItems" in obj:
                 for accordion in obj["accordionItems"]:
                     results.append(
@@ -42,19 +49,16 @@ def find_all_objects(data):
                         remove_html_tags_and_special_chars(accordion.get("paragraph", ""))
                     )
 
-            # Verifica se existe alguma chave que começa com "richtext"
-            for key, value in obj.items():
-                if key.startswith("richtext"):
-                    if isinstance(value, dict) and "text" in value:
-                        results.append(remove_html_tags_and_special_chars(value["text"]))
-
-            # ⚠️ Continua percorrendo os filhos
+            # Continua percorrendo os filhos
             for value in obj.values():
                 recursive_search(value)
 
         elif isinstance(obj, list):
             for item in obj:
                 recursive_search(item)
+
+    recursive_search(data)
+    return results
 
 def getAllPosts():
     response = requests.get(author_url + query_path, params=params, auth=credentials)
