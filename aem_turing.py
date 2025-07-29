@@ -16,7 +16,7 @@ def main():
                 if pageContent:
                     textContent = aem.find_all_objects(pageContent)
                     turingData['fields']['text'] = " ".join(textContent)
-
+                    del turingData['fields']['_version_']
                     turing.delete(turingData['fields']['id'])
                     turing.sendOnlyFields(turingData['fields'])
                     break
