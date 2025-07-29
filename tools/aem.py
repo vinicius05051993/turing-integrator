@@ -78,7 +78,14 @@ def getAllPosts():
     return data.get("hits", [])
 
 def remove_html_tags_and_special_chars(text):
+    # Substitui <a href="...">texto</a> por: texto [link]
+    text = re.sub(r'<a [^>]*href=["\'](.*?)["\'][^>]*>(.*?)</a>', r'\2 [\1]', text, flags=re.IGNORECASE)
+
+    # Remove todas as outras tags HTML
     text = re.sub(r'<[^>]+>', '', text)
+
+    # Remove caracteres especiais como \r \n \t
     text = re.sub(r'[\r\n\t]', '', text)
+
     return text.strip()
 
