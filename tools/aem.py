@@ -49,6 +49,13 @@ def find_all_objects(data):
                         remove_html_tags_and_special_chars(accordion.get("paragraph", ""))
                     )
 
+            if "tabsItems" in obj:
+                for tabs in obj["tabsItems"]:
+                    results.append(
+                        tabs.get("tabsItemTitle", "") + ": " +
+                        remove_html_tags_and_special_chars(tabs.get("tabsItemText", ""))
+                    )
+
             # Continua percorrendo os filhos
             for value in obj.values():
                 recursive_search(value)
