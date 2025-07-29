@@ -77,15 +77,21 @@ def getAllPosts():
     data = response.json()
     return data.get("hits", [])
 
+import re
+
 def remove_html_tags_and_special_chars(text):
-    # Substitui <a href="...">texto</a> por: texto [link]
+    # Converte <a href="...">texto</a> em texto [link]
     text = re.sub(r'<a [^>]*href=["\'](.*?)["\'][^>]*>(.*?)</a>', r'\2 [\1]', text, flags=re.IGNORECASE)
 
     # Remove todas as outras tags HTML
     text = re.sub(r'<[^>]+>', '', text)
 
-    # Remove caracteres especiais como \r \n \t
+    # Remove emojis (inclui figurinhas como 📷)
+    text = re.sub(r'[\U0001F300-\U0001FAFF\u2600-\u26FF\u2700-\u27BF]+', '', text)
+
+    # Remove \r \n \t e espaços duplicados
     text = re.sub(r'[\r\n\t]', '', text)
+    text = re.sub(r' +', ' ', text)
 
     return text.strip()
 
