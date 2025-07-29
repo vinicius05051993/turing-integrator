@@ -41,22 +41,20 @@ def find_all_objects(data):
                         accordion.get("accordionTitle", "") + " " +
                         remove_html_tags_and_special_chars(accordion.get("paragraph", ""))
                     )
-            if (
-                "richtext" in obj and isinstance(obj["richtext"], dict)
-                and "text" in obj["richtext"]
-            ):
-                results.append(remove_html_tags_and_special_chars(obj["richtext"]["text"]))
 
-            # ⚠️ ESSENCIAL: continuar percorrendo os filhos
+            # Verifica se existe alguma chave que começa com "richtext"
+            for key, value in obj.items():
+                if key.startswith("richtext"):
+                    if isinstance(value, dict) and "text" in value:
+                        results.append(remove_html_tags_and_special_chars(value["text"]))
+
+            # ⚠️ Continua percorrendo os filhos
             for value in obj.values():
                 recursive_search(value)
 
         elif isinstance(obj, list):
             for item in obj:
                 recursive_search(item)
-
-    recursive_search(data)
-    return results
 
 def getAllPosts():
     response = requests.get(author_url + query_path, params=params, auth=credentials)
