@@ -24,6 +24,7 @@ def getPageOfPost(hit):
     try:
         response = requests.get(page_url, timeout=10)
         response.raise_for_status()
+        print(response.text)
         return json.loads(response.text)
     except Exception as e:
         print(f"❌ Erro ao acessar {page_url}: {e}")
