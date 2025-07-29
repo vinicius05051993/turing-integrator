@@ -2,7 +2,7 @@ import tools.aem as aem
 import tools.turing as turing
 
 def main():
-    for page in range(1, 100):
+    for page in range(1, 1):
         datas = turing.getAllTuring(page)
         queryContext = datas.get("queryContext", {})
 
@@ -16,10 +16,8 @@ def main():
                 if pageContent:
                     textContent = aem.find_all_objects(pageContent)
                     turingData['fields']['text'] = " ".join(textContent)
-                    print(turingData)
+                    turing.sendOnlyFields(turingData['fields'])
                     break
-#                     turing.delete(turingData['fields']['id'])
-#                     turing.send(spPost)
 
 if __name__ == '__main__':
     main()

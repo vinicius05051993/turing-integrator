@@ -76,6 +76,30 @@ def integrationStatus(turingDatas, spPost):
 
     return {"status": 1, "id": None}
 
+def sendOnlyFields(fields):
+    headers = {
+        'Key': DATA_IN_USE['key'],
+        'Content-Type': 'application/json',
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "0"
+    }
+
+    data = {
+        'turingDocuments': [
+            {
+                'turSNJobAction': 'CREATE',
+                'locale': DATA_IN_USE['locale'],
+                'siteNames': [DATA_IN_USE['site']],
+                'attributes': fields
+            }
+        ]
+    }
+
+    response = requests.post(DATA_IN_USE['url_import'], json=data, headers=headers, verify=False)
+    response.raise_for_status()
+    print('Publicação campos enviada com sucesso:', response.status_code, response.text, response.json(), json.dumps(data))
+
 def send(spPost):
     headers = {
         'Key': DATA_IN_USE['key'],
