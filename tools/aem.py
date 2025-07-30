@@ -62,21 +62,23 @@ def find_all_objects(data):
             for key, value in obj.items():
                 if key.startswith("richtext"):
                     if isinstance(value, dict) and "text" in value:
-                        results.append(remove_html_tags_and_special_chars(value["text"]))
+                        results.append('<span>' + remove_html_tags_and_special_chars(value["text"]) + '</span>')
 
             # Verifica se existe "accordionItems"
             if "accordionItems" in obj:
                 for accordion in obj["accordionItems"]:
-                    results.append(
+                    results.append('<span>' +
                         accordion.get("accordionTitle", "") + ": " +
                         remove_html_tags_and_special_chars(accordion.get("paragraph", ""))
+                        + '</span>'
                     )
 
             if "tabsItems" in obj:
                 for tabs in obj["tabsItems"]:
-                    results.append(
+                    results.append('<span>' +
                         tabs.get("tabsItemTitle", "") + ": " +
                         remove_html_tags_and_special_chars(tabs.get("tabsItemText", ""))
+                        + '</span>'
                     )
 
             # Continua percorrendo os filhos

@@ -34,8 +34,6 @@ def main():
                     'categoryIds': [],
                     'lastActivityAt': int(time.time() * 1000)
                 }
-                print(spPost)
-                break
 
                 match integration['status']:
                     case 1:
@@ -43,6 +41,8 @@ def main():
                     case 2:
 #                         turing.delete(integration['id'])
                         turing.send(spPost, 'post')
+
+                break
 
 if __name__ == '__main__':
     main()
