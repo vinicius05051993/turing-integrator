@@ -114,23 +114,25 @@ def getAllContentFragment():
 
 def remove_html_tags_and_special_chars(text):
     # Converte entidades HTML (&nbsp;, etc.)
-    text = html.unescape(text)
+    if text:
+        text = html.unescape(text)
 
-    # Remove espaços não separáveis (incluindo \xa0)
-    text = text.replace('\xa0', ' ')
+        # Remove espaços não separáveis (incluindo \xa0)
+        text = text.replace('\xa0', ' ')
 
-    # Converte <a href="...">texto</a> para: texto [link]
-    text = re.sub(r'<a [^>]*href=["\'](.*?)["\'][^>]*>(.*?)</a>', r'\2 [\1]', text, flags=re.IGNORECASE)
+        # Converte <a href="...">texto</a> para: texto [link]
+        text = re.sub(r'<a [^>]*href=["\'](.*?)["\'][^>]*>(.*?)</a>', r'\2 [\1]', text, flags=re.IGNORECASE)
 
-    # Remove todas as outras tags HTML
-    text = re.sub(r'<[^>]+>', '', text)
+        # Remove todas as outras tags HTML
+        text = re.sub(r'<[^>]+>', '', text)
 
-    # Remove emojis comuns (como 📷, 😃)
-    text = re.sub(r'[\U0001F300-\U0001FAFF\u2600-\u26FF\u2700-\u27BF]+', '', text)
+        # Remove emojis comuns (como 📷, 😃)
+        text = re.sub(r'[\U0001F300-\U0001FAFF\u2600-\u26FF\u2700-\u27BF]+', '', text)
 
-    # Remove \r \n \t e espaços múltiplos
-    text = re.sub(r'[\r\n\t]', '', text)
-    text = re.sub(r' +', ' ', text)
+        # Remove \r \n \t e espaços múltiplos
+        text = re.sub(r'[\r\n\t]', '', text)
+        text = re.sub(r' +', ' ', text)
 
-    return text.strip()
-
+        return text.strip()
+    else:
+        return ''
