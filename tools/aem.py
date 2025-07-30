@@ -43,7 +43,6 @@ def integrationStatus(allPostsTuring, contentFragment):
 def getPageContent(id):
     siteName = id.replace('/content/dam/maple-bear/posts/', '')
     page_url = f"{public_url_base}/{siteName}.model.json"
-    print('paggeeee: ' + page_url)
 
     try:
         response = requests.get(page_url, timeout=10)
@@ -97,7 +96,7 @@ def getContentFragmentProprieties(id):
     response = requests.get(url, params=params, auth=credentials)
 
     if response.status_code != 200:
-        print("Erro ao consultar Content Proprieties:", response.status_code, response.text, url)
+        print("Erro ao consultar Content Proprieties:", response.status_code, url)
         return False
 
     return response.json()
