@@ -18,14 +18,31 @@ params = {
     "orderby": "path"
 }
 
-def getPageOfPost(id):
+def isPost(path):
+    return '/content/dam/maple-bear/posts/' in path
+
+def getPathByName(name, type = 'posts'):
+    return f"{public_url_base}/{type}/{name}"
+
+def integrationStatus(allPostsTuring, contentFragment):
+    for postTuring in allPostsTuring:
+        if contentFragment['path'] == postTuring['id']:
+            dateTuring = parser.isoparse(postTuring['publication_date'])
+            dateSpPost = datetime.fromtimestamp(contentFragment["lastModified"] / 1000, tz=timezone.utc)
+
+            if dateTuring < dateSpPost:
+                return {"status": 2, "id": contentFragment['path']}
+            else:
+                return {"status": 3, "id": contentFragment['path']}
+
+
+def getPageContent(id):
     siteName = id.replace('/content/dam/maple-bear/posts/', '')
     page_url = f"{public_url_base}/posts/{siteName}.model.json"
 
     try:
         response = requests.get(page_url, timeout=10)
         response.raise_for_status()
-        print(response.text)
         return json.loads(response.text)
     except Exception as e:
         print(f"❌ Erro ao acessar {page_url}: {e}")
@@ -68,15 +85,24 @@ def find_all_objects(data):
     recursive_search(data)
     return results
 
-# def getAllPosts():
-#     response = requests.get(author_url + query_path, params=params, auth=credentials)
-#
-#     if response.status_code != 200:
-#         print("Erro ao consultar páginas:", response.status_code, response.text)
-#         exit()
-#
-#     data = response.json()
-#     return data.get("hits", [])
+def getContentFragmentProprieties(id):
+    response = requests.get(author_url + id + '/jcr:content/data/master.json', params=params, auth=credentials)
+
+    if response.status_code != 200:
+        print("Erro ao consultar páginas:", response.status_code, response.text)
+        return False
+
+    return response.json()
+
+def getAllContentFragment():
+    response = requests.get(author_url + query_path, params=params, auth=credentials)
+
+    if response.status_code != 200:
+        print("Erro ao consultar páginas:", response.status_code, response.text)
+        exit()
+
+    data = response.json()
+    return data.get("hits", [])
 
 def remove_html_tags_and_special_chars(text):
     # Converte entidades HTML (&nbsp;, etc.)

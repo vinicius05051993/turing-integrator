@@ -100,7 +100,7 @@ def sendOnlyFields(fields):
     response.raise_for_status()
     print('Publicação campos enviada com sucesso:', response.status_code, response.text, response.json(), json.dumps(data))
 
-def send(spPost):
+def send(spPost, mbtype = 'manual'):
     headers = {
         'Key': DATA_IN_USE['key'],
         'Content-Type': 'application/json',
@@ -123,9 +123,9 @@ def send(spPost):
                     'abstract': ' - '.join(spPost['tagLabels']) + "\n " + get_only_texts(spPost['m'])[:5000],
                     'text': get_text_with_images_and_pdf(spPost['m'], spPost['id']),
                     'url': getUrlWithAuth(spPost['path']),
-                    'mbtype': 'manual',
-                    'area': get_tags(spPost['categoryIds'], 'area'),
-                    'theme': get_tags(spPost['categoryIds'], 'theme'),
+                    'mbtype': mbtype,
+                    'area': spPost['tagFragmentArea'] or get_tags(spPost['categoryIds'], 'area'),
+                    'theme': spPost['tagFragmentTheme'] or get_tags(spPost['categoryIds'], 'theme'),
 #                     'area_name': get_tags_name(spPost['categoryIds'], 'area'),
 #                     'theme_name': get_tags_name(spPost['categoryIds'], 'theme'),
                     'functiontags': get_tags(spPost['categoryIds'], 'function'),
