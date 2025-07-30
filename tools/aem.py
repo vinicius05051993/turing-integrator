@@ -19,7 +19,7 @@ params = {
 }
 
 def isPost(path):
-    return '/content/maple-bear/posts/' in path
+    return '/content/dam/maple-bear/posts' in path
 
 def getPathByName(name, type = 'posts'):
     return f"{public_url_base}/{type}/{name}"
