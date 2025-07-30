@@ -87,10 +87,11 @@ def find_all_objects(data):
 
 def getContentFragmentProprieties(id):
     #/content/dam/maple-bear/posts/17--maple-bear-annual-convention--maple-bear-factor
-    response = requests.get(author_url + id + '/jcr:content/data/master.json', params=params, auth=credentials)
+    url = author_url + id + '/jcr:content/data/master.json'
+    response = requests.get(url, params=params, auth=credentials)
 
     if response.status_code != 200:
-        print("Erro ao consultar Content Proprieties:", response.status_code, response.text)
+        print("Erro ao consultar Content Proprieties:", response.status_code, response.text, url)
         return False
 
     return response.json()
