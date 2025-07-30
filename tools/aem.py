@@ -89,7 +89,7 @@ def getContentFragmentProprieties(id):
     response = requests.get(author_url + id + '/jcr:content/data/master.json', params=params, auth=credentials)
 
     if response.status_code != 200:
-        print("Erro ao consultar páginas:", response.status_code, response.text)
+        print("Erro ao consultar Content Proprieties:", response.status_code, response.text)
         return False
 
     return response.json()
@@ -98,7 +98,7 @@ def getAllContentFragment():
     response = requests.get(author_url + query_path, params=params, auth=credentials)
 
     if response.status_code != 200:
-        print("Erro ao consultar páginas:", response.status_code, response.text)
+        print("Erro ao consultar Content Fragment:", response.status_code, response.text)
         exit()
 
     data = response.json()
