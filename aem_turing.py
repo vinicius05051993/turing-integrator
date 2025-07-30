@@ -22,8 +22,6 @@ def main():
                 ]
 
                 textContent = aem.find_all_objects(pageContent)
-                print(textContent)
-                break
 
                 spPost = {
                     'id': id,
@@ -36,6 +34,8 @@ def main():
                     'categoryIds': [],
                     'lastActivityAt': int(time.time() * 1000)
                 }
+                print(spPost)
+                break
 
                 match integration['status']:
                     case 1:
