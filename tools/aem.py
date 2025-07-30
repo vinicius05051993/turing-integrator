@@ -90,8 +90,6 @@ def find_all_objects(data):
     return results
 
 def getContentFragmentProprieties(id):
-    #/content/dam/maple-bear/posts/17--maple-bear-annual-convention--maple-bear-factor
-    #/content/maple-bear/posts/
     url = author_url + id.replace('content/maple-bear/posts', 'content/dam/maple-bear/posts') + '/jcr:content/data/master.json'
     response = requests.get(url, params=params, auth=credentials)
 

@@ -2,9 +2,6 @@ name: AEM to Turing
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
 
 jobs:
   aem-turing:
