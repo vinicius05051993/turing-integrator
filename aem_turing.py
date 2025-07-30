@@ -14,7 +14,8 @@ def main():
             proprieties = aem.getContentFragmentProprieties(id)
             pageContent = aem.getPageContent(id)
             if proprieties and pageContent:
-                print('prop e page')
+                print('page content')
+                print(pageContent)
                 integration = aem.integrationStatus(allPostsTuring, contentFragment)
 
                 allPostsTuring = [
@@ -29,7 +30,7 @@ def main():
                     't': proprieties['title'],
                     'tagLabels': '',
                     'm': " ".join(textContent),
-                    'path': aem.getPathByName(contentFragment['name']),
+                    'pathFragment': aem.getPathByName(contentFragment['name']),
                     'tagFragmentArea': proprieties.get('area', False),
                     'tagFragmentTheme': proprieties.get('theme', False),
                     'categoryIds': [],

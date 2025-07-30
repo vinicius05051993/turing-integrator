@@ -122,7 +122,7 @@ def send(spPost, mbtype = 'manual'):
                     'title': spPost['t'],
                     'abstract': ' - '.join(spPost['tagLabels']) + "\n " + get_only_texts(spPost['m'])[:5000],
                     'text': get_text_with_images_and_pdf(spPost['m'], spPost['id']),
-                    'url': getUrlWithAuth(spPost['path']),
+                    'url': spPost['pathFragment'] or getUrlWithAuth(spPost['path']),
                     'mbtype': mbtype,
                     'area': spPost['tagFragmentArea'] or get_tags(spPost['categoryIds'], 'area'),
                     'theme': spPost['tagFragmentTheme'] or get_tags(spPost['categoryIds'], 'theme'),
