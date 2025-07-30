@@ -6,16 +6,12 @@ def main():
     allContentFragment = aem.getAllContentFragment()
     allPostsTuring =  turing.getAllTuringIds('post')
 
-    print(allContentFragment)
     for contentFragment in allContentFragment:
         id = contentFragment['path']
         if aem.isPost(id):
-            print('is posts')
             proprieties = aem.getContentFragmentProprieties(id)
             pageContent = aem.getPageContent(id)
             if proprieties and pageContent:
-                print('page content')
-                print(pageContent)
                 integration = aem.integrationStatus(allPostsTuring, contentFragment)
 
                 allPostsTuring = [

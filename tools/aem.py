@@ -41,6 +41,7 @@ def integrationStatus(allPostsTuring, contentFragment):
 def getPageContent(id):
     siteName = id.replace('/content/dam/maple-bear/posts/', '')
     page_url = f"{public_url_base}/{siteName}.model.json"
+    print('paggeeee: ' + page_url)
 
     try:
         response = requests.get(page_url, timeout=10)
