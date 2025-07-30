@@ -19,7 +19,7 @@ params = {
 }
 
 def isPost(path):
-    return '/content/dam/maple-bear/posts' in path
+    return '/content/maple-bear/posts' in path
 
 def getPathByName(name, type = 'posts'):
     return f"{public_url_base}/{type}/{name}"
@@ -87,7 +87,8 @@ def find_all_objects(data):
 
 def getContentFragmentProprieties(id):
     #/content/dam/maple-bear/posts/17--maple-bear-annual-convention--maple-bear-factor
-    url = author_url + id + '/jcr:content/data/master.json'
+    #/content/maple-bear/posts/
+    url = author_url + id.replace('content/maple-bear/posts', 'content/dam/maple-bear/posts') + '/jcr:content/data/master.json'
     response = requests.get(url, params=params, auth=credentials)
 
     if response.status_code != 200:
