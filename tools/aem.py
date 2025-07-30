@@ -38,7 +38,7 @@ def integrationStatus(allPostsTuring, contentFragment):
 
 def getPageContent(id):
     siteName = id.replace('/content/dam/maple-bear/posts/', '')
-    page_url = f"{public_url_base}/posts/{siteName}.model.json"
+    page_url = f"{public_url_base}/{siteName}.model.json"
 
     try:
         response = requests.get(page_url, timeout=10)
@@ -86,6 +86,7 @@ def find_all_objects(data):
     return results
 
 def getContentFragmentProprieties(id):
+    #/content/dam/maple-bear/posts/17--maple-bear-annual-convention--maple-bear-factor
     response = requests.get(author_url + id + '/jcr:content/data/master.json', params=params, auth=credentials)
 
     if response.status_code != 200:
