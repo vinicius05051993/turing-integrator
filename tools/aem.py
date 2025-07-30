@@ -33,7 +33,7 @@ def integrationStatus(allPostsTuring, contentFragment):
             dateSpPost = datetime.fromtimestamp(contentFragment["lastModified"] / 1000, tz=timezone.utc)
 
             if dateTuring < dateSpPost:
-                return {"status": 2, "id": contentFragment['path']}
+                return {"status": 1, "id": contentFragment['path']}
             else:
                 return {"status": 3, "id": contentFragment['path']}
 

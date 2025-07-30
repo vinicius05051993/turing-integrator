@@ -37,9 +37,6 @@ def main():
                 match integration['status']:
                     case 1:
                         turing.send(spPost, 'post')
-                    case 2:
-#                         turing.delete(integration['id'])
-                        turing.send(spPost, 'post')
 
 if __name__ == '__main__':
     main()
