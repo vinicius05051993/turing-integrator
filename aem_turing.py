@@ -11,6 +11,9 @@ def main():
         if aem.isPost(id):
             proprieties = aem.getContentFragmentProprieties(id)
             pageContent = aem.getPageContent(id)
+            print(pageContent)
+            break
+
             if proprieties and pageContent:
                 contentFragment['lastModified'] = int(time.time() * 1000)
                 integration = aem.integrationStatus(allPostsTuring, contentFragment)
