@@ -1,6 +1,6 @@
 import tools.aem as aem
 import tools.turing as turing
-from datetime import datetime, timezone
+import time
 
 def main():
     allContentFragment = aem.getAllContentFragment()
@@ -24,10 +24,6 @@ def main():
 
                 textContent = aem.find_all_objects(pageContent)
 
-                dt = datetime.strptime(contentFragment['lastModified'], "%Y-%m-%d %H:%M:%S")
-                dt = dt.replace(tzinfo=timezone.utc)
-                iso_with_ms = dt.isoformat()
-
                 spPost = {
                     'id': id,
                     't': proprieties['title'],
@@ -37,7 +33,7 @@ def main():
                     'tagFragmentArea': proprieties.get('area', False),
                     'tagFragmentTheme': proprieties.get('theme', False),
                     'categoryIds': [],
-                    'lastActivityAt': iso_with_ms
+                    'lastActivityAt': int(time.time() * 1000)
                 }
 
                 match integration['status']:
