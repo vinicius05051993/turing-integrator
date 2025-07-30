@@ -24,7 +24,7 @@ def main():
                     't': proprieties['title'],
                     'tagLabels': '',
                     'm': " ".join(textContent),
-                    'path': aem.getPathByName(contentFragment['name'])
+                    'path': aem.getPathByName(contentFragment['name']),
                     'tagFragmentArea': proprieties.get('area', False),
                     'tagFragmentTheme': proprieties.get('theme', False),
                     'categoryIds': [],
