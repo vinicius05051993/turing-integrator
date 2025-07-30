@@ -24,7 +24,7 @@ def main():
 
                 textContent = aem.find_all_objects(pageContent)
 
-                dt = datetime.strptime(contentFragment['lastModified'], "%Y-%m-%d %H:%M:%S.%f")
+                dt = datetime.strptime(contentFragment['lastModified'], "%Y-%m-%d %H:%M:%S")
                 dt = dt.replace(tzinfo=timezone.utc)
                 iso_with_ms = dt.isoformat()
 
