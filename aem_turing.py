@@ -42,7 +42,5 @@ def main():
 #                         turing.delete(integration['id'])
                         turing.send(spPost, 'post')
 
-                break
-
 if __name__ == '__main__':
     main()
