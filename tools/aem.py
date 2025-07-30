@@ -2,6 +2,7 @@ import requests
 import json
 import re
 import html
+from dateutil import parser
 
 # 1. Configurações
 author_url = "https://author-p120717-e1174076.adobeaemcloud.com"
