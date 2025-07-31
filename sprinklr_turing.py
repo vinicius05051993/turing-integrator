@@ -31,9 +31,6 @@ def main():
                 match integration['status']:
                     case 1:
                         turing.send(spPost)
-                    case 2:
-                        turing.delete(integration['id'])
-                        turing.send(spPost)
 
         for manualTuringToDelete in allManualsTuring[:1]:
             turing.delete(manualTuringToDelete['id'], True)
