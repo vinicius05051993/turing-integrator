@@ -39,12 +39,6 @@ def integrationStatus(allPostsTuring, contentFragment):
 
     return {"status": 1, "id": None}
 
-def getImageUrl(path):
-    if path:
-        return f"{author_url}/{path}"
-    else:
-        return ''
-
 
 def getPageContent(id):
     siteName = id.replace('/content/dam/maple-bear/posts/', '')

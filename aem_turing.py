@@ -21,7 +21,6 @@ def main():
                 ]
 
                 textContent = aem.find_all_objects(pageContent)
-                bannerUrl = aem.getImageUrl(proprieties.get('banner'))
 
                 spPost = {
                     'id': id,
@@ -33,7 +32,7 @@ def main():
                     'tagFragmentTheme': proprieties.get('theme', False),
                     'categoryIds': [],
                     'lastActivityAt': int(time.time() * 1000),
-                    'image': bannerUrl
+                    'image': proprieties.get('banner', '')
                 }
 
                 match integration['status']:
