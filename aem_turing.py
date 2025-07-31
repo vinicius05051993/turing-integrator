@@ -1,7 +1,6 @@
 import tools.aem as aem
 import tools.turing as turing
 import time
-from datetime import datetime, timezone
 
 def main():
     allContentFragment = aem.getAllContentFragment()
@@ -22,7 +21,6 @@ def main():
                 ]
 
                 textContent = aem.find_all_objects(pageContent)
-                lastActivityAt = datetime.fromtimestamp(contentFragment["lastModified"] / 1000, tz=timezone.utc)
                 bannerUrl = aem.getImageUrl(proprieties.get('banner'))
 
                 spPost = {
@@ -34,7 +32,7 @@ def main():
                     'tagFragmentArea': proprieties.get('area', False),
                     'tagFragmentTheme': proprieties.get('theme', False),
                     'categoryIds': [],
-                    'lastActivityAt': lastActivityAt,
+                    'lastActivityAt': int(time.time() * 1000),
                     'image': bannerUrl
                 }
 
