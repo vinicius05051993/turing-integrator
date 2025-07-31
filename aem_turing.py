@@ -23,6 +23,7 @@ def main():
 
                 textContent = aem.find_all_objects(pageContent)
                 lastActivityAt = datetime.fromtimestamp(contentFragment["lastModified"] / 1000, tz=timezone.utc)
+                bannerUrl = aem.getImageUrl(proprieties.get('banner'))
 
                 spPost = {
                     'id': id,
@@ -34,7 +35,7 @@ def main():
                     'tagFragmentTheme': proprieties.get('theme', False),
                     'categoryIds': [],
                     'lastActivityAt': lastActivityAt,
-                    'image': proprieties.get('banner', '')
+                    'image': bannerUrl
                 }
 
                 match integration['status']:
