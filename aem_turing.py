@@ -39,7 +39,7 @@ def main():
                     case 1:
                         turing.send(spPost, 'post')
 
-    for postTuring in allPostsTuring[:10]:
+    for postTuring in allPostsTuring[:100]:
         turing.delete(postTuring['id'], True)
 
 if __name__ == '__main__':
