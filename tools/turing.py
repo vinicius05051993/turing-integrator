@@ -314,6 +314,8 @@ def get_text_with_images_and_pdf(html: str, id) -> str:
     for marcador, link in links_substituidos.items():
         texto_limpo = texto_limpo.replace(marcador, link)
 
+    texto_limpo = texto_limpo.replace('\n', '')
+
     return texto_limpo
 
 def get_tags_name(category_ids: list, tag_type: str) -> list:
