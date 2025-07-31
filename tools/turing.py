@@ -134,7 +134,8 @@ def send(spPost, mbtype = 'manual'):
                     'content_tags': spPost['tagLabels'],
                     'publication_date': dateUpdate,
                     'modification_date': dateUpdate,
-                    'openInNewTab': True
+                    'openInNewTab': True,
+                    'image': spPost.get('image', '')
                 }
             }
         ]

@@ -33,12 +33,16 @@ def main():
                     'tagFragmentArea': proprieties.get('area', False),
                     'tagFragmentTheme': proprieties.get('theme', False),
                     'categoryIds': [],
-                    'lastActivityAt': lastActivityAt
+                    'lastActivityAt': lastActivityAt,
+                    'image': proprieties['banner']
                 }
 
                 match integration['status']:
                     case 1:
                         turing.send(spPost, 'post')
+
+    for postTuring in allPostsTuring[:10]:
+        turing.delete(postTuring['id'], True)
 
 if __name__ == '__main__':
     main()
