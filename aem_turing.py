@@ -21,6 +21,7 @@ def main():
                 ]
 
                 textContent = aem.find_all_objects(pageContent)
+                lastActivityAt = datetime.fromtimestamp(contentFragment["lastModified"] / 1000, tz=timezone.utc)
 
                 spPost = {
                     'id': id,
@@ -31,7 +32,7 @@ def main():
                     'tagFragmentArea': proprieties.get('area', False),
                     'tagFragmentTheme': proprieties.get('theme', False),
                     'categoryIds': [],
-                    'lastActivityAt': int(time.time() * 1000)
+                    'lastActivityAt': lastActivityAt
                 }
 
                 match integration['status']:
