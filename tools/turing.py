@@ -111,7 +111,8 @@ def send(spPost, mbtype = 'manual'):
                     'publication_date': dateUpdate,
                     'modification_date': dateUpdate,
                     'openInNewTab': True,
-                    'image': spPost.get('image', '')
+                    'image': spPost.get('image', ''),
+                    'highlights': spPost.get('highlights', False)
                 }
             }
         ]
