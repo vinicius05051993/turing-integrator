@@ -34,7 +34,7 @@ def main():
                     'tagFragmentTheme': proprieties.get('theme', False),
                     'categoryIds': [],
                     'lastActivityAt': lastActivityAt,
-                    'image': proprieties['banner']
+                    'image': proprieties.get('banner', '')
                 }
 
                 match integration['status']:
