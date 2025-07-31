@@ -1,6 +1,7 @@
 import tools.aem as aem
 import tools.turing as turing
 import time
+from datetime import datetime, timezone
 
 def main():
     allContentFragment = aem.getAllContentFragment()
