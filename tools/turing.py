@@ -76,30 +76,6 @@ def integrationStatus(turingDatas, spPost):
 
     return {"status": 1, "id": None}
 
-def sendOnlyFields(fields):
-    headers = {
-        'Key': DATA_IN_USE['key'],
-        'Content-Type': 'application/json',
-        "Cache-Control": "no-cache, no-store, must-revalidate",
-        "Pragma": "no-cache",
-        "Expires": "0"
-    }
-
-    data = {
-        'turingDocuments': [
-            {
-                'turSNJobAction': 'CREATE',
-                'locale': DATA_IN_USE['locale'],
-                'siteNames': [DATA_IN_USE['site']],
-                'attributes': fields
-            }
-        ]
-    }
-
-    response = requests.post(DATA_IN_USE['url_import'], json=data, headers=headers, verify=False)
-    response.raise_for_status()
-    print('Publicação campos enviada com sucesso:', response.status_code, response.text, response.json(), json.dumps(data))
-
 def send(spPost, mbtype = 'manual'):
     headers = {
         'Key': DATA_IN_USE['key'],
@@ -120,7 +96,7 @@ def send(spPost, mbtype = 'manual'):
                 'attributes': {
                     'id': spPost['id'],
                     'title': spPost['t'],
-                    'abstract': ' - '.join(spPost['tagLabels']) + "\n " + get_only_texts(spPost['m'])[:5000],
+                    'abstract': ' - '.join(spPost['tagLabels']) + "\n " + get_only_texts(spPost['m'])[:100],
                     'text': get_text_with_images_and_pdf(spPost['m'], spPost['id']),
                     'url': spPost.get('pathFragment') or getUrlWithAuth(spPost['path']),
                     'mbtype': mbtype,
