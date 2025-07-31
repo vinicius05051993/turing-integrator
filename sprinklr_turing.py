@@ -30,6 +30,7 @@ def main():
 
                 match integration['status']:
                     case 1:
+                        turing.delete(spPost['id'], False)
                         turing.send(spPost)
 
         for manualTuringToDelete in allManualsTuring[:1]:
