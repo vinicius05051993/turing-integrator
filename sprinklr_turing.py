@@ -38,8 +38,8 @@ def main():
 
         for manualTuringToDelete in allManualsTuring[:1]:
             turing.delete(manualTuringToDelete['id'], True)
-        else:
-            if idToDelete:
+#         else:
+#             if idToDelete:
 #                 turing.delete(idToDelete, False)
 
         print("Total registros sprinklr: " + str(qtySprinklr))
