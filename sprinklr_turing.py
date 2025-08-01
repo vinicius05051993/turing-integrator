@@ -40,7 +40,7 @@ def main():
             turing.delete(manualTuringToDelete['id'], True)
         else:
             if idToDelete:
-                turing.delete(idToDelete, False)
+#                 turing.delete(idToDelete, False)
 
         print("Total registros sprinklr: " + str(qtySprinklr))
 
