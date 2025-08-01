@@ -28,24 +28,27 @@ class General:
         )
 
     def get(self, context, question):
-        context = context[:10000]
-        prompt = f"""### Instrução:
-        Você é um assistente inteligente. Use o contexto abaixo para responder com clareza e precisão.
+        try:
+            context = context[:10000]
+            prompt = f"""### Instrução:
+            Você é um assistente inteligente. Use o contexto abaixo para responder com clareza e precisão.
 
-        ### Contexto:
-        {context}
+            ### Contexto:
+            {context}
 
-        ### Pergunta:
-        {question}
+            ### Pergunta:
+            {question}
 
-        ### Resposta:"""
+            ### Resposta:"""
 
-        resposta = self.llm(
-            prompt,
-            max_tokens=300,
-            stop=["###"],
-            temperature=0.3,
-            top_p=0.95
-        )
+            resposta = self.llm(
+                prompt,
+                max_tokens=300,
+                stop=["###"],
+                temperature=0.3,
+                top_p=0.95
+            )
 
-        return resposta["choices"][0]["text"].strip()
+            return resposta["choices"][0]["text"].strip()
+        except Exception as e:
+            return ''
