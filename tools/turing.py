@@ -72,7 +72,7 @@ def integrationStatus(turingDatas, spPost):
             if dateTuring < dateSpPost:
                 return {"status": 1, "id": turingData["id"]}
             else:
-                return {"status": 3, "id": turingData["id"]}
+                return {"status": 1, "id": turingData["id"]} #voltar para 3
 
     return {"status": 1, "id": None}
 
