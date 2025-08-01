@@ -10,6 +10,8 @@ def main():
 
         allManualsTuring = turing.getAllTuringIds('manual')
 
+        idToDelete = False
+
         qtySprinklr = 0
         for page in range(0, 100):
             spPosts = sprinklr.getPosts(accessToken, page)
@@ -22,6 +24,7 @@ def main():
 
             for spPost in spPosts:
                 integration = turing.integrationStatus(allManualsTuring, spPost)
+                idToDelete = integration['id']
 
                 allManualsTuring = [
                     ds for ds in allManualsTuring
@@ -35,6 +38,9 @@ def main():
 
         for manualTuringToDelete in allManualsTuring[:1]:
             turing.delete(manualTuringToDelete['id'], True)
+        else:
+            if idToDelete:
+                turing.delete(idToDelete, False)
 
         print("Total registros sprinklr: " + str(qtySprinklr))
 
