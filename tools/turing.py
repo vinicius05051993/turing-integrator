@@ -96,7 +96,7 @@ def send(spPost, mbtype = 'manual'):
                 'attributes': {
                     'id': spPost['id'],
                     'title': spPost['t'],
-                    'abstract': ' - '.join(spPost['tagLabels']) + "\n " + get_only_texts(spPost['m'])[:100],
+                    'abstract': ' - '.join(spPost['tagLabels']),
                     'text': get_text_with_images_and_pdf(spPost['m'], spPost['id']),
                     'url': spPost.get('pathFragment') or getUrlWithAuth(spPost['path']),
                     'mbtype': mbtype,
