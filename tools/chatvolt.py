@@ -122,7 +122,7 @@ def sendFAQ(docFields : dict):
                "type": "qa",
                "isUpdateText": True,
                "config": {
-                   "tags": docFields.get('content_tags', "").split('\n'),
+                   "tags": docFields.get('content_tags', []) if isinstance(docFields.get('content_tags', []), list) else docFields.get('content_tags', "").split('\n'),
                    "source_url": docFields.get('url', ''),
                    "question": getMarkArea(docFields) + '\n'.join(block['perguntas']),
                    "answer": '\n'.join(block['respostas'])
