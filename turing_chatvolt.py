@@ -47,7 +47,7 @@ def main():
                         chatvolt.send(turingData['fields'], generalAI)
 
     for chatVoltData in chatVoltDataSources:
-        chatvolt.delete(chatVoltData['id'])
+#         chatvolt.delete(chatVoltData['id'])
 
 if __name__ == '__main__':
     main()
