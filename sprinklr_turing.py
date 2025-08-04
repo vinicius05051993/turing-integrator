@@ -33,14 +33,10 @@ def main():
 
                 match integration['status']:
                     case 1:
-#                         turing.delete(spPost['id'], False)
                         turing.send(spPost)
 
         for manualTuringToDelete in allManualsTuring[:1]:
             turing.delete(manualTuringToDelete['id'], True)
-#         else:
-#             if idToDelete:
-#                 turing.delete(idToDelete, False)
 
         print("Total registros sprinklr: " + str(qtySprinklr))
 

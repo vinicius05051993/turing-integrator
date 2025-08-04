@@ -87,33 +87,35 @@ def send(spPost, mbtype = 'manual'):
 
     dateUpdate = datetime.fromtimestamp(spPost["lastActivityAt"] / 1000, tz=timezone.utc).isoformat()
 
+    turingFields = {
+       'id': spPost['id'],
+       'title': spPost['t'],
+       'abstract': ' - '.join(spPost['tagLabels']),
+       'text': get_text_with_images_and_pdf(spPost['m'], spPost['id']),
+       'url': spPost.get('pathFragment') or getUrlWithAuth(spPost['path']),
+       'mbtype': mbtype,
+       'area': spPost.get('tagFragmentArea') or get_tags(spPost['categoryIds'], 'area'),
+       'theme': spPost.get('tagFragmentTheme') or get_tags(spPost['categoryIds'], 'theme'),
+#                     'area_name': get_tags_name(spPost['categoryIds'], 'area'),
+#                     'theme_name': get_tags_name(spPost['categoryIds'], 'theme'),
+       'functiontags': get_tags(spPost['categoryIds'], 'function'),
+       'otherTags': [],
+       'notify': False,
+       'content_tags': spPost['tagLabels'],
+       'publication_date': dateUpdate,
+       'modification_date': dateUpdate,
+       'openInNewTab': True,
+       'image': spPost.get('image', ''),
+       'highlights': spPost.get('highlights', False)
+   }
+
     data = {
         'turingDocuments': [
             {
                 'turSNJobAction': 'CREATE',
                 'locale': DATA_IN_USE['locale'],
                 'siteNames': [DATA_IN_USE['site']],
-                'attributes': {
-                    'id': spPost['id'],
-                    'title': spPost['t'],
-                    'abstract': ' - '.join(spPost['tagLabels']),
-                    'text': get_text_with_images_and_pdf(spPost['m'], spPost['id']),
-                    'url': spPost.get('pathFragment') or getUrlWithAuth(spPost['path']),
-                    'mbtype': mbtype,
-#                     'area': spPost.get('tagFragmentArea') or get_tags(spPost['categoryIds'], 'area'),
-#                     'theme': spPost.get('tagFragmentTheme') or get_tags(spPost['categoryIds'], 'theme'),
-#                     'area_name': get_tags_name(spPost['categoryIds'], 'area'),
-#                     'theme_name': get_tags_name(spPost['categoryIds'], 'theme'),
-                    'functiontags': get_tags(spPost['categoryIds'], 'function'),
-                    'otherTags': [],
-                    'notify': False,
-                    'content_tags': spPost['tagLabels'],
-                    'publication_date': dateUpdate,
-                    'modification_date': dateUpdate,
-                    'openInNewTab': True,
-                    'image': spPost.get('image', ''),
-                    'highlights': spPost.get('highlights', False)
-                }
+                'attributes': turingFields
             }
         ]
     }
@@ -121,6 +123,8 @@ def send(spPost, mbtype = 'manual'):
     response = requests.post(DATA_IN_USE['url_import'], json=data, headers=headers, verify=False)
     response.raise_for_status()
     print('Publicação enviada com sucesso:', response.status_code, response.text, response.json(), json.dumps(data))
+
+    return turingFields
 
 def delete(id, remove_images = False):
     headers = {
