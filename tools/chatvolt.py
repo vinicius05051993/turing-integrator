@@ -137,7 +137,12 @@ def sendFAQ(docFields : dict):
 
 def sendManual(docFields : dict):
     try:
-        tags = docFields.get('content_tags', "").split('\n')
+        contentTags = docFields.get('content_tags', "")
+        if isinstance(contentTags, str):
+            tags = contentTags.split('\n')
+        else:
+            tags = contentTags
+
         tagsList = [tag for tag in tags if len(tag) <= 25]
 
         payload = {
