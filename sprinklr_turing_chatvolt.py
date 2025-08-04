@@ -65,8 +65,8 @@ def main():
                                     chatvolt.delete(statusInChatvolt['id'])
                                     chatvolt.send(turingFields, False)
 
-        for chatVoltData in chatVoltDataSources[:1]:
-            chatvolt.delete(chatVoltData['id'])
+#         for chatVoltData in chatVoltDataSources[:1]:
+#             chatvolt.delete(chatVoltData['id'])
 
         for manualTuringToDelete in allManualsTuring[:1]:
             turing.delete(manualTuringToDelete['id'], True)
