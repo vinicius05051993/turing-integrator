@@ -35,7 +35,7 @@ def integrationStatus(allPostsTuring, contentFragment):
             if dateTuring < dateSpPost:
                 return {"status": 1, "id": contentFragment['path']}
             else:
-                return {"status": 1, "id": contentFragment['path']} #voltar pra 3
+                return {"status": 3, "id": contentFragment['path']}
 
     return {"status": 1, "id": None}
 
