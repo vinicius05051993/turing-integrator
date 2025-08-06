@@ -36,7 +36,7 @@ def main():
                     'tagFragmentTheme': proprieties.get('theme', False),
                     'categoryIds': [],
                     'lastActivityAt': contentFragment['lastModified'],
-                    'publicationDate': int(dt.timestamp() * 1000),
+                    'publicationDate': dt.isoformat(),
                     'image': proprieties.get('banner', ''),
                     'highlights': proprieties.get('highlights', False)
                 }
