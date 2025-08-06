@@ -1,4 +1,4 @@
-name: Sprinklr to Turing To Chatvolt
+name: Sprinklr to Turing
 
 on:
   workflow_dispatch:
@@ -19,9 +19,9 @@ jobs:
           python-version: '3.11'
 
       - name: Instalar dependências
-        run: pip install -r requirements/sprinklr_turing_chatvolt.txt
+        run: pip install -r requirements/sprinklr_turing.txt
 
       - name: Executar script Python
         env:
           API_TOKEN: ${{ secrets.API_TOKEN }}
-        run: python sprinklr_turing_chatvolt.py
+        run: python sprinklr_turing.py
