@@ -39,6 +39,15 @@ def integrationStatus(allPostsTuring, contentFragment):
 
     return {"status": 1, "id": None}
 
+def getOriginProprieties(id):
+    url = author_url + id + '.json'
+    response = requests.get(url, params=params, auth=credentials)
+
+    if response.status_code != 200:
+        print("Erro ao consultar Content Proprieties:", response.status_code, url)
+        return False
+
+    return response.json()
 
 def getPageContent(id):
     siteName = id.replace('/content/dam/maple-bear/posts/', '')

@@ -102,7 +102,7 @@ def send(spPost, mbtype = 'manual'):
        'otherTags': [],
        'notify': False,
        'content_tags': [],
-       'publication_date': dateUpdate,
+       'publication_date': spPost.get('publicationDate') or dateUpdate,
        'modification_date': dateUpdate,
        'openInNewTab': True,
        'image': spPost.get('image', ''),

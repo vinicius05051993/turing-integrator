@@ -1,6 +1,7 @@
 import tools.aem as aem
 import tools.turing as turing
 import time
+from dateutil import parser
 
 def main():
     allContentFragment = aem.getAllContentFragment()
@@ -11,6 +12,7 @@ def main():
         if aem.isPost(id):
             proprieties = aem.getContentFragmentProprieties(id)
             pageContent = aem.getPageContent(id)
+            originProprieties = aem.getOriginProprieties(id)
             if proprieties and pageContent:
                 contentFragment['lastModified'] = pageContent['lastModifiedDate']
                 integration = aem.integrationStatus(allPostsTuring, contentFragment)
@@ -22,6 +24,8 @@ def main():
 
                 textContent = aem.find_all_objects(pageContent)
 
+                dt = parser.parse(originProprieties.get('jcr:created'))
+
                 spPost = {
                     'id': id,
                     't': proprieties['title'],
@@ -31,7 +35,8 @@ def main():
                     'tagFragmentArea': proprieties.get('area', False),
                     'tagFragmentTheme': proprieties.get('theme', False),
                     'categoryIds': [],
-                    'lastActivityAt': int(time.time() * 1000),
+                    'lastActivityAt': contentFragment['lastModified'],
+                    'publicationDate': int(dt.timestamp() * 1000),
                     'image': proprieties.get('banner', ''),
                     'highlights': proprieties.get('highlights', False)
                 }
