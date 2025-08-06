@@ -101,7 +101,7 @@ def send(spPost, mbtype = 'manual'):
        'functiontags': get_tags(spPost['categoryIds'], 'function'),
        'otherTags': [],
        'notify': False,
-       'content_tags': spPost['tagLabels'],
+       'content_tags': spPost['tagLabels'][:2],
        'publication_date': dateUpdate,
        'modification_date': dateUpdate,
        'openInNewTab': True,
