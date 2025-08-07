@@ -12,7 +12,6 @@ query_path = "/bin/querybuilder.json"
 credentials = ("turing_user", "5DIzbK4@")
 
 params = {
-    "path": "/content/maple-bear/events",
     "type": "cq:Page",
     "property": "jcr:content/cq:lastReplicationAction",
     "property.value": "Activate",
