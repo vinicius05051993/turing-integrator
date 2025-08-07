@@ -48,9 +48,11 @@ def main():
                         turing.send(spPost, 'post')
 
         if aem.isEvent(id):
+            print('is event')
             proprieties = aem.getContentFragmentProprieties(id)
             originProprieties = aem.getOriginProprieties(id)
             if proprieties:
+                print('have proprieties')
                 dt = datetime.datetime.strptime(contentFragment['lastModified'], "%Y-%m-%d %H:%M:%S")
                 contentFragment['lastModified'] = int(dt.timestamp() * 1000)
 
@@ -91,6 +93,8 @@ def main():
 
                 if spPost['allDay']:
                     spPost['m'] += ' - Evento o dia todo'
+
+                print(spPost)
 
                 match integration['status']:
                     case 1:
