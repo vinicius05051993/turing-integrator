@@ -19,7 +19,7 @@ def main():
 
     for contentFragment in allContentFragment:
         id = contentFragment['path']
-        if aem.isPost(id) and False:
+        if aem.isPost(id):
             proprieties = aem.getContentFragmentProprieties(id, params)
             pageContent = aem.getPageContent(id)
             originProprieties = aem.getOriginProprieties(id, params)
@@ -108,7 +108,7 @@ def main():
                 }
 
                 spPost['m'] = f"<span>{str(proprieties.get('description', ''))}</span>"
-                spPost['m'] += f"<span>. link para acessar evento: {str(proprieties.get('buttonLink', ''))}</span>"
+                spPost['m'] += f"<span>link para acessar evento: {str(proprieties.get('buttonLink', ''))}</span>"
 
                 # Obtém e formata a data inicial
                 initial_date_str = proprieties.get('initialDate', '')
@@ -124,22 +124,21 @@ def main():
                 except Exception:
                     finish_date_fmt = finish_date_str
 
-                spPost['m'] += f"<span>. Data Inicial: {initial_date_fmt}</span>"
-                spPost['m'] += f"<span>. Data Final: {finish_date_fmt}</span>"
+                spPost['m'] += f"<span>Data Inicial: {initial_date_fmt}</span>"
+                spPost['m'] += f"<span>Data Final: {finish_date_fmt}</span>"
 
                 if spPost['allDay']:
-                    spPost['m'] += "<span>. Evento o dia todo</span>"
+                    spPost['m'] += "<span>Evento o dia todo</span>"
 
                 match integration['status']:
                     case 1:
-                        print(spPost)
                         turing.send(spPost, 'event')
 
-#     for postTuring in allPostsTuring[:100]:
-#         turing.delete(postTuring['id'], True)
-#
-#     for eventTuring in allEventsTuring[:100]:
-#         turing.delete(eventTuring['id'], False)
+    for postTuring in allPostsTuring[:100]:
+        turing.delete(postTuring['id'], True)
+
+    for eventTuring in allEventsTuring[:100]:
+        turing.delete(eventTuring['id'], False)
 
 if __name__ == '__main__':
     main()
