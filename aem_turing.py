@@ -57,7 +57,7 @@ def main():
 
 
     params = {
-        "type": "cq:Page",
+        "type": "dam:Asset",
         "property": "jcr:content/cq:lastReplicationAction",
         "property.value": "Activate",
         "p.limit": "-1",
