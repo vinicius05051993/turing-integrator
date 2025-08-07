@@ -3,6 +3,12 @@ import tools.turing as turing
 import time
 from dateutil import parser
 import datetime
+from zoneinfo import ZoneInfo
+
+def converter_data(data_str):
+    dt = parser.parse(data_str)
+    dt_utc = dt.astimezone(ZoneInfo("UTC"))
+    return dt_utc.strftime('%Y-%m-%dT%H:%M:%S.000+00:00')
 
 def main():
     params = {
@@ -101,10 +107,10 @@ def main():
                     'buttonTextFragment': proprieties.get('buttonText', 'Acesse aqui'),
                     'descriptionFragment': proprieties.get('description', ''),
                     'eventType': proprieties.get('eventType', []),
-                    'initialDate': proprieties.get('initialDate', ''),
+                    'initialDate': converter_data(proprieties.get('initialDate', '')),
                     'allDay': proprieties.get('allDay', False) == 'true',
                     'buttonLink': proprieties.get('buttonLink', ''),
-                    'finishDate': proprieties.get('finishDate', '')
+                    'finishDate': converter_data(proprieties.get('finishDate', ''))
                 }
 
                 spPost['m'] = f"<span>{str(proprieties.get('description', ''))}.</span>"
