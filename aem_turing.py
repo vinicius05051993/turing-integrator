@@ -5,16 +5,24 @@ from dateutil import parser
 import datetime
 
 def main():
-    allContentFragment = aem.getAllContentFragment()
+    params = {
+        "path": "/content/maple-bear/posts",
+        "type": "cq:Page",
+        "property": "jcr:content/cq:lastReplicationAction",
+        "property.value": "Activate",
+        "p.limit": "-1",
+        "orderby": "path"
+    }
+
+    allContentFragment = aem.getAllContentFragment(params)
     allPostsTuring =  turing.getAllTuringIds('post')
-    allEventsTuring =  turing.getAllTuringIds('event')
 
     for contentFragment in allContentFragment:
         id = contentFragment['path']
         if aem.isPost(id) and False:
-            proprieties = aem.getContentFragmentProprieties(id)
+            proprieties = aem.getContentFragmentProprieties(id, params)
             pageContent = aem.getPageContent(id)
-            originProprieties = aem.getOriginProprieties(id)
+            originProprieties = aem.getOriginProprieties(id, params)
             if proprieties and pageContent:
                 contentFragment['lastModified'] = pageContent['lastModifiedDate']
                 integration = aem.integrationStatus(allPostsTuring, contentFragment)
@@ -47,11 +55,26 @@ def main():
                     case 1:
                         turing.send(spPost, 'post')
 
+
+    params = {
+        "path": "/content/dam/maple-bear/events",
+        "type": "cq:Page",
+        "property": "jcr:content/cq:lastReplicationAction",
+        "property.value": "Activate",
+        "p.limit": "-1",
+        "orderby": "path"
+    }
+
+    allContentFragment = aem.getAllContentFragment(params)
+    allEventsTuring =  turing.getAllTuringIds('event')
+
+    for contentFragment in allContentFragment:
+        id = contentFragment['path']
         print('before event: ' + id)
         if aem.isEvent(id):
             print('is event')
-            proprieties = aem.getContentFragmentProprieties(id)
-            originProprieties = aem.getOriginProprieties(id)
+            proprieties = aem.getContentFragmentProprieties(id, params)
+            originProprieties = aem.getOriginProprieties(id, params)
             if proprieties:
                 print('have proprieties')
                 dt = datetime.datetime.strptime(contentFragment['lastModified'], "%Y-%m-%d %H:%M:%S")
@@ -96,8 +119,6 @@ def main():
 
                 if spPost['allDay']:
                     spPost['m'] += ' - Evento o dia todo'
-
-                print(spPost)
 
                 match integration['status']:
                     case 1:

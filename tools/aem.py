@@ -11,14 +11,6 @@ public_url_base = "https://portal.maplebear.com.br"
 query_path = "/bin/querybuilder.json"
 credentials = ("turing_user", "5DIzbK4@")
 
-params = {
-    "type": "cq:Page",
-    "property": "jcr:content/cq:lastReplicationAction",
-    "property.value": "Activate",
-    "p.limit": "-1",
-    "orderby": "path"
-}
-
 def isEvent(path):
     return '/content/dam/maple-bear/events' in path
 
@@ -41,7 +33,7 @@ def integrationStatus(allPostsTuring, contentFragment):
 
     return {"status": 1, "id": None}
 
-def getOriginProprieties(id):
+def getOriginProprieties(id, params):
     url = author_url + id + '.json'
     response = requests.get(url, params=params, auth=credentials)
 
@@ -100,7 +92,7 @@ def find_all_objects(data):
     recursive_search(data)
     return results
 
-def getContentFragmentProprieties(id):
+def getContentFragmentProprieties(id, params):
     url = author_url + id.replace('content/maple-bear/posts', 'content/dam/maple-bear/posts') + '/jcr:content/data/master.json'
     response = requests.get(url, params=params, auth=credentials)
 
@@ -110,7 +102,7 @@ def getContentFragmentProprieties(id):
 
     return response.json()
 
-def getAllContentFragment():
+def getAllContentFragment(params):
     response = requests.get(author_url + query_path, params=params, auth=credentials)
 
     if response.status_code != 200:
