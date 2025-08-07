@@ -106,7 +106,7 @@ def send(spPost, mbtype = 'manual'):
        'image': spPost.get('image', ''),
        'highlights': spPost.get('highlights', False),
        'buttonText': spPost.get('buttonTextFragment'),
-       'description': spPost.get('descriptionFragment'),
+       'description': get_only_texts(spPost.get('descriptionFragment')),
        'eventType': spPost.get('eventType', []),
        'initialDate': spPost.get('initialDate', ''),
        'finishDate': spPost.get('finishDate', ''),
