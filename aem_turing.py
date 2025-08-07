@@ -107,8 +107,8 @@ def main():
                     'finishDate': proprieties.get('finishDate', '')
                 }
 
-                spPost['m'] = str(proprieties.get('description', ''))
-                spPost['m'] += '. link para acessar evento: ' + str(proprieties.get('buttonLink', ''))
+                spPost['m'] = f"<span>{str(proprieties.get('description', ''))}</span>"
+                spPost['m'] += f"<span>. link para acessar evento: {str(proprieties.get('buttonLink', ''))}</span>"
 
                 # Obtém e formata a data inicial
                 initial_date_str = proprieties.get('initialDate', '')
@@ -124,11 +124,11 @@ def main():
                 except Exception:
                     finish_date_fmt = finish_date_str
 
-                spPost['m'] += '. Data Inicial: ' + initial_date_fmt
-                spPost['m'] += '. Data Final: ' + finish_date_fmt
+                spPost['m'] += f"<span>. Data Inicial: {initial_date_fmt}</span>"
+                spPost['m'] += f"<span>. Data Final: {finish_date_fmt}</span>"
 
                 if spPost['allDay']:
-                    spPost['m'] += '. Evento o dia todo'
+                    spPost['m'] += "<span>. Evento o dia todo</span>"
 
                 match integration['status']:
                     case 1:
