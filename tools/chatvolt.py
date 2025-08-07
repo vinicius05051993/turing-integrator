@@ -65,38 +65,10 @@ def sendPost(docFields : dict, generalAI):
 
 def sendEvent(docFields : dict):
     try:
-        dataSourcetext = ""
-        if docFields.get("allDay", False):
-            dataSourcetext += "Evento dia todo. "
-        else:
-            dataSourcetext += "Evento não é dia todo. "
-
-        initial_date = docFields.get("initialDate", "")
-        finish_date = docFields.get("finishDate", "")
-
-        if initial_date:
-            dt_initial = parser.isoparse(initial_date) - timedelta(hours=3)
-            initial_date_str = dt_initial.isoformat()
-        else:
-            initial_date_str = ""
-
-        if finish_date:
-            dt_finish = parser.isoparse(finish_date) - timedelta(hours=3)
-            finish_date_str = dt_finish.isoformat()
-        else:
-            finish_date_str = ""
-
-        dt_now = datetime.now(timezone.utc)
-        evento_ocorreu = dt_finish < dt_now if finish_date else False
-
-        dataSourcetext += "Data inicial: " + initial_date_str + ". "
-        dataSourcetext += "Data final: " + finish_date_str + ". "
-        dataSourcetext += "Evento já ocorreu. " if evento_ocorreu else "Evento ainda vai acontecer. "
-
         payload = {
            "name": getIdName(docFields),
            "datastoreId": DATASTORE_ID,
-           "datasourceText": "[event] " + dataSourcetext,
+           "datasourceText": "[event] " + docFields.get('text', ''),
            "type": "file",
            "config": {
                "tags": ["evento"],
