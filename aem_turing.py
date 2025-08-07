@@ -69,13 +69,10 @@ def main():
 
     for contentFragment in allContentFragment:
         id = contentFragment['path']
-        print('before event: ' + id)
         if aem.isEvent(id):
-            print('is event')
             proprieties = aem.getContentFragmentProprieties(id, params)
             originProprieties = aem.getOriginProprieties(id, params)
             if proprieties and proprieties.get('title'):
-                print('have proprieties')
                 dt = datetime.datetime.strptime(contentFragment.get('lastModified', '2020-01-01 17:28:58'), "%Y-%m-%d %H:%M:%S")
                 contentFragment['lastModified'] = int(dt.timestamp() * 1000)
 
@@ -120,6 +117,7 @@ def main():
 
                 match integration['status']:
                     case 1:
+                        print(spPost)
                         turing.send(spPost, 'event')
 
 #     for postTuring in allPostsTuring[:100]:
