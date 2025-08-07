@@ -110,17 +110,10 @@ def main():
                     'finishDate': proprieties.get('finishDate', '')
                 }
 
-                spPost['m'] = (
-                    str(spPost.get('descriptionFragment', ''))
-                    + ' - link para acessar evento: ' + str(spPost.get('buttonLink', '[Sem link]'))
-                    + ' - Data Inicial: ' + str(spPost.get('initialDate', '[Sem data inicial]'))
-                    + ' - Data Final: ' + str(spPost.get('finishDate', '[Sem data final]'))
-                )
-
-                spPost['m'] += spPost.get('descriptionFragment', '')
-                spPost['m'] += ' - link para acessar evento: ' + str(spPost.get('buttonLink', ''))
-                spPost['m'] += ' - Data Inicial: ' + str(spPost.get('initialDate', ''))
-                spPost['m'] += ' - Data Final: ' + str(spPost.get('finishDate', ''))
+                spPost['m'] = str(proprieties.get('description', ''))
+                spPost['m'] += ' - link para acessar evento: ' + str(proprieties.get('buttonLink', ''))
+                spPost['m'] += ' - Data Inicial: ' + str(proprieties.get('initialDate', ''))
+                spPost['m'] += ' - Data Final: ' + str(proprieties.get('finishDate', ''))
 
                 if spPost['allDay']:
                     spPost['m'] += ' - Evento o dia todo'
