@@ -11,7 +11,7 @@ def main():
 
     for contentFragment in allContentFragment:
         id = contentFragment['path']
-        if aem.isPost(id):
+        if aem.isPost(id) and False:
             proprieties = aem.getContentFragmentProprieties(id)
             pageContent = aem.getPageContent(id)
             originProprieties = aem.getOriginProprieties(id)
@@ -87,10 +87,12 @@ def main():
                     'finishDate': proprieties.get('finishDate', '')
                 }
 
-                spPost['m'] = spPost['descriptionFragment']
-                + ' - link para acessar evento: ' + spPost['buttonLink']
-                + ' - Data Inicial: ' + spPost['initialDate']
-                + ' - Data Final: ' + spPost['finishDate']
+                spPost['m'] = (
+                    spPost['descriptionFragment']
+                    + ' - link para acessar evento: ' + spPost['buttonLink']
+                    + ' - Data Inicial: ' + spPost['initialDate']
+                    + ' - Data Final: ' + spPost['finishDate']
+                )
 
                 if spPost['allDay']:
                     spPost['m'] += ' - Evento o dia todo'
@@ -101,11 +103,11 @@ def main():
                     case 1:
                         turing.send(spPost, 'event')
 
-    for postTuring in allPostsTuring[:100]:
-        turing.delete(postTuring['id'], True)
-
-    for eventTuring in allEventsTuring[:100]:
-        turing.delete(eventTuring['id'], False)
+#     for postTuring in allPostsTuring[:100]:
+#         turing.delete(postTuring['id'], True)
+#
+#     for eventTuring in allEventsTuring[:100]:
+#         turing.delete(eventTuring['id'], False)
 
 if __name__ == '__main__':
     main()
