@@ -74,7 +74,7 @@ def main():
             print('is event')
             proprieties = aem.getContentFragmentProprieties(id, params)
             originProprieties = aem.getOriginProprieties(id, params)
-            if proprieties:
+            if proprieties and proprieties.get('title'):
                 print('have proprieties')
                 dt = datetime.datetime.strptime(contentFragment.get('lastModified', '2020-01-01 17:28:58'), "%Y-%m-%d %H:%M:%S")
                 contentFragment['lastModified'] = int(dt.timestamp() * 1000)
@@ -90,8 +90,9 @@ def main():
 
                 spPost = {
                     'id': id,
-                    't': proprieties['title'],
+                    't': proprieties.get('title'),
                     'tagLabels': '',
+                    'm': '',
                     'pathFragment': aem.getPathByName(contentFragment['name'], 'events'),
                     'tagFragmentArea': [],
                     'tagFragmentTheme': [],
@@ -110,11 +111,16 @@ def main():
                 }
 
                 spPost['m'] = (
-                    str(spPost.get('descriptionFragment', '[Sem descrição]'))
+                    str(spPost.get('descriptionFragment', ''))
                     + ' - link para acessar evento: ' + str(spPost.get('buttonLink', '[Sem link]'))
                     + ' - Data Inicial: ' + str(spPost.get('initialDate', '[Sem data inicial]'))
                     + ' - Data Final: ' + str(spPost.get('finishDate', '[Sem data final]'))
                 )
+
+                spPost['m'] += spPost.get('descriptionFragment', '')
+                spPost['m'] += ' - link para acessar evento: ' + str(spPost.get('buttonLink', ''))
+                spPost['m'] += ' - Data Inicial: ' + str(spPost.get('initialDate', ''))
+                spPost['m'] += ' - Data Final: ' + str(spPost.get('finishDate', ''))
 
                 if spPost['allDay']:
                     spPost['m'] += ' - Evento o dia todo'
