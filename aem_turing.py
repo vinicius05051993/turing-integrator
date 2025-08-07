@@ -57,7 +57,6 @@ def main():
 
 
     params = {
-        "path": "/content/dam/maple-bear/events",
         "type": "cq:Page",
         "property": "jcr:content/cq:lastReplicationAction",
         "property.value": "Activate",
