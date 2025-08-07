@@ -96,8 +96,6 @@ def send(spPost, mbtype = 'manual'):
        'mbtype': mbtype,
        'area': spPost.get('tagFragmentArea') or get_tags(spPost['categoryIds'], 'area'),
        'theme': spPost.get('tagFragmentTheme') or get_tags(spPost['categoryIds'], 'theme'),
-#                     'area_name': get_tags_name(spPost['categoryIds'], 'area'),
-#                     'theme_name': get_tags_name(spPost['categoryIds'], 'theme'),
        'functiontags': get_tags(spPost['categoryIds'], 'function'),
        'otherTags': [],
        'notify': False,
@@ -106,7 +104,14 @@ def send(spPost, mbtype = 'manual'):
        'modification_date': dateUpdate,
        'openInNewTab': True,
        'image': spPost.get('image', ''),
-       'highlights': spPost.get('highlights', False)
+       'highlights': spPost.get('highlights', False),
+       'buttonText': spPost.get('buttonTextFragment'),
+       'description': spPost.get('descriptionFragment'),
+       'eventType': spPost.get('eventType', []),
+       'initialDate': spPost.get('initialDate', ''),
+       'finishDate': spPost.get('finishDate', ''),
+       'allDay': spPost.get('allDay', ''),
+       'buttonLink': spPost.get('buttonLink', '')
    }
 
     data = {
@@ -122,7 +127,7 @@ def send(spPost, mbtype = 'manual'):
 
     response = requests.post(DATA_IN_USE['url_import'], json=data, headers=headers, verify=False)
     response.raise_for_status()
-    print('Publicação enviada com sucesso:', response.status_code, response.text, response.json(), json.dumps(data))
+    print(mbtype + ' enviada com sucesso:', response.status_code, response.text, response.json(), json.dumps(data))
 
     return turingFields
 

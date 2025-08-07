@@ -20,6 +20,9 @@ params = {
     "orderby": "path"
 }
 
+def isEvent(path):
+    return '/content/dam/maple-bear/events' in path
+
 def isPost(path):
     return '/content/maple-bear/posts' in path
 
