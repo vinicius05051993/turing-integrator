@@ -76,7 +76,7 @@ def main():
             originProprieties = aem.getOriginProprieties(id, params)
             if proprieties:
                 print('have proprieties')
-                dt = datetime.datetime.strptime(contentFragment['lastModified'], "%Y-%m-%d %H:%M:%S")
+                dt = datetime.datetime.strptime(contentFragment.get('lastModified', '2020-01-01 17:28:58'), "%Y-%m-%d %H:%M:%S")
                 contentFragment['lastModified'] = int(dt.timestamp() * 1000)
 
                 integration = aem.integrationStatus(allEventsTuring, contentFragment)
@@ -110,10 +110,10 @@ def main():
                 }
 
                 spPost['m'] = (
-                    spPost['descriptionFragment']
-                    + ' - link para acessar evento: ' + spPost['buttonLink']
-                    + ' - Data Inicial: ' + spPost['initialDate']
-                    + ' - Data Final: ' + spPost['finishDate']
+                    str(spPost.get('descriptionFragment', '[Sem descrição]'))
+                    + ' - link para acessar evento: ' + str(spPost.get('buttonLink', '[Sem link]'))
+                    + ' - Data Inicial: ' + str(spPost.get('initialDate', '[Sem data inicial]'))
+                    + ' - Data Final: ' + str(spPost.get('finishDate', '[Sem data final]'))
                 )
 
                 if spPost['allDay']:
