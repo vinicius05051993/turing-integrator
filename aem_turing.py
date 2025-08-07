@@ -47,6 +47,7 @@ def main():
                     case 1:
                         turing.send(spPost, 'post')
 
+        print('before event: ' + id)
         if aem.isEvent(id):
             print('is event')
             proprieties = aem.getContentFragmentProprieties(id)
