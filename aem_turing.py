@@ -132,6 +132,14 @@ def main():
                 if spPost['allDay']:
                     spPost['m'] += "<span>Evento o dia todo.</span>"
 
+                data_final = parser.parse(finish_date_str) if finish_date_str else None
+                agora = datetime.now(data_final.tzinfo) if data_final and data_final.tzinfo else datetime.now()
+                if data_final:
+                    if data_final < agora:
+                        spPost['m'] += "<span>Evento já aconteceu.</span>"
+                    else:
+                        spPost['m'] += "<span>Evento ainda vai acontecer.</span>"
+
                 match integration['status']:
                     case 1:
                         turing.send(spPost, 'event')
