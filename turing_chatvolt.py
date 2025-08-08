@@ -39,7 +39,7 @@ def main():
                 if statusInChatvolt["key"] != None:
                     chatVoltDataSources.pop(statusInChatvolt["key"])
 
-                if turingData['fields']['mbtype'] == 'event':
+                if turingData['fields']['mbtype'] == 'event' and statusInChatvolt['status'] == 3:
                     statusInChatvolt['status'] = 2
 
                 match statusInChatvolt['status']:
