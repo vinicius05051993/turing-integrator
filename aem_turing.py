@@ -11,8 +11,8 @@ def converter_data(data_str):
     dt = parser.parse(data_str)
     if not dt.tzinfo:
         dt = dt.replace(tzinfo=ZoneInfo('America/Sao_Paulo'))
-    dt_utc = dt.astimezone(ZoneInfo("UTC"))
-    return dt_utc.strftime('%Y-%m-%dT%H:%M:%S.000+00:00')
+    dt = dt + datetime.timedelta(hours=3)
+    return dt.strftime('%Y-%m-%dT%H:%M:%S.000%z')
 
 def main():
     params = {
