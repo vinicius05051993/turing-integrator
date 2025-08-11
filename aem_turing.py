@@ -33,7 +33,7 @@ def main():
             proprieties = aem.getContentFragmentProprieties(id, params)
             pageContent = aem.getPageContent(id)
             originProprieties = aem.getOriginProprieties(id, params)
-            if proprieties and pageContent:
+            if proprieties and proprieties.get('title') and pageContent:
                 contentFragment['lastModified'] = pageContent['lastModifiedDate']
                 integration = aem.integrationStatus(allPostsTuring, contentFragment)
 
@@ -48,7 +48,7 @@ def main():
 
                 spPost = {
                     'id': id,
-                    't': proprieties['title'],
+                    't': proprieties.get('title'),
                     'tagLabels': '',
                     'm': " - ".join(textContent),
                     'pathFragment': aem.getPathByName(contentFragment['name']),
@@ -82,7 +82,7 @@ def main():
         if aem.isEvent(id):
             proprieties = aem.getContentFragmentProprieties(id, params)
             originProprieties = aem.getOriginProprieties(id, params)
-            if proprieties and proprieties.get('title'):
+            if proprieties and proprieties.get('title') and proprieties.get('title'):
                 dt = datetime.datetime.strptime(contentFragment.get('lastModified', '2020-01-01 17:28:58'), "%Y-%m-%d %H:%M:%S")
                 contentFragment['lastModified'] = int(dt.timestamp() * 1000)
 
