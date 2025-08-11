@@ -6,7 +6,11 @@ import datetime
 from zoneinfo import ZoneInfo
 
 def converter_data(data_str):
+    if not data_str:
+        return ''
     dt = parser.parse(data_str)
+    if not dt.tzinfo:
+        dt = dt.replace(tzinfo=ZoneInfo('America/Sao_Paulo'))
     dt_utc = dt.astimezone(ZoneInfo("UTC"))
     return dt_utc.strftime('%Y-%m-%dT%H:%M:%S.000+00:00')
 
@@ -107,9 +111,9 @@ def main():
                     'buttonTextFragment': proprieties.get('buttonText', 'Acesse aqui'),
                     'descriptionFragment': proprieties.get('description', ''),
                     'eventType': proprieties.get('eventType', []),
-                    'initialDate': converter_data(proprieties.get('initialDate', '')),
                     'allDay': proprieties.get('allDay', False) == 'true',
                     'buttonLink': proprieties.get('buttonLink', ''),
+                    'initialDate': converter_data(proprieties.get('initialDate', '')),
                     'finishDate': converter_data(proprieties.get('finishDate', ''))
                 }
 
