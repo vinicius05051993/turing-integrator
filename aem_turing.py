@@ -150,7 +150,7 @@ def main():
                     else:
                         spPost['m'] += "<span>Evento ainda vai acontecer.</span>"
 
-                match integration['status']:
+                match 1:
                     case 1:
                         turing.send(spPost, 'event')
 
