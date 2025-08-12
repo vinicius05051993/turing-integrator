@@ -24,6 +24,7 @@ def main():
     }
 
     allContentFragment = aem.getAllContentFragment(params)
+    allPostsTuring =  turing.getAllTuringIds('post')
 
     for contentFragment in allContentFragment:
         id = contentFragment['path']
@@ -73,7 +74,6 @@ def main():
     }
 
     allContentFragment = aem.getAllContentFragment(params)
-    allPostsTuring =  turing.getAllTuringIds('post')
 
     for contentFragment in allContentFragment:
         id = contentFragment['path']
