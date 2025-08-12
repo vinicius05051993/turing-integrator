@@ -14,6 +14,9 @@ credentials = ("turing_user", "5DIzbK4@")
 def isEvent(path):
     return '/content/dam/maple-bear/events' in path
 
+def isNewsletter(path):
+    return '/content/dam/maple-bear/posts/posts-newsletter' in path
+
 def isPost(path):
     return '/content/maple-bear/posts' in path
 
