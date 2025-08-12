@@ -50,7 +50,7 @@ def main():
                     't': proprieties.get('title'),
                     'tagLabels': '',
                     'm': " - ".join(textContent),
-                    'pathFragment': aem.getPathByName(contentFragment['name']),
+                    'pathFragment': aem.getPathByName(contentFragment['name'], 'posts/posts-newsletter'),
                     'tagFragmentArea': proprieties.get('area', False),
                     'tagFragmentTheme': proprieties.get('theme', False),
                     'categoryIds': [],
