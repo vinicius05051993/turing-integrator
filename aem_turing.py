@@ -60,7 +60,7 @@ def main():
                     'highlights': proprieties.get('highlights', False)
                 }
 
-                match 1:
+                match integration['status']:
                     case 1:
                         turing.send(spPost, 'post')
 
