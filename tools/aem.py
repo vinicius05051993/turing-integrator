@@ -47,7 +47,6 @@ def getOriginProprieties(id, params):
     return response.json()
 
 def getPageContent(id):
-    print(id)
     if 'posts-newsletter' in id:
         siteName = id.replace('/content/dam/maple-bear/', '')
     else:
