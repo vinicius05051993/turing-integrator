@@ -9,10 +9,8 @@ def converter_data(data_str):
     if not data_str:
         return ''
     dt = parser.parse(data_str)
-    if not dt.tzinfo:
-        dt = dt.replace(tzinfo=ZoneInfo('America/Sao_Paulo'))
-    dt = dt + datetime.timedelta(hours=3)
-    return dt.strftime('%Y-%m-%dT%H:%M:%S.000%z')
+    # Remove qualquer conversão de fuso ou soma de horas
+    return dt.replace(tzinfo=None).strftime('%Y-%m-%dT%H:%M:%S') + '+00:00'
 
 def main():
     params = {
