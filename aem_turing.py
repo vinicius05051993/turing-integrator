@@ -29,7 +29,7 @@ def main():
 
     for contentFragment in allContentFragment:
         id = contentFragment['path']
-        if aem.isPost(id) and False:
+        if aem.isPost(id):
             proprieties = aem.getContentFragmentProprieties(id, params)
             pageContent = aem.getPageContent(id)
             originProprieties = aem.getOriginProprieties(id, params)
@@ -79,7 +79,7 @@ def main():
 
     for contentFragment in allContentFragment:
         id = contentFragment['path']
-        if aem.isEvent(id) and False:
+        if aem.isEvent(id):
             proprieties = aem.getContentFragmentProprieties(id, params)
             originProprieties = aem.getOriginProprieties(id, params)
             if proprieties and proprieties.get('title') and proprieties.get('title'):

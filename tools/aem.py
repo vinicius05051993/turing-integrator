@@ -48,6 +48,7 @@ def getOriginProprieties(id, params):
 
 def getPageContent(id):
     siteName = id.replace('/content/dam/maple-bear/posts/', '')
+    siteName = id.replace('posts-newsletter', 'posts/posts-newsletter')
     page_url = f"{public_url_base}/{siteName}.model.json"
 
     try:
