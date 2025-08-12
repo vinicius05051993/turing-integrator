@@ -63,9 +63,6 @@ def main():
                     case 1:
                         turing.send(spPost, 'post')
 
-
-
-
     params = {
         "path": "/content/maple-bear/posts",
         "type": "cq:Page",
