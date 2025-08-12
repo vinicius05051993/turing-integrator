@@ -41,27 +41,27 @@ def main():
                     if ds["id"] != integration['id']
                 ]
 
-                textContent = aem.find_all_objects(pageContent)
-
-                dt = parser.parse(originProprieties.get('jcr:created'))
-
-                spPost = {
-                    'id': id,
-                    't': proprieties.get('title'),
-                    'tagLabels': '',
-                    'm': " - ".join(textContent),
-                    'pathFragment': aem.getPathByName(contentFragment['name'], 'posts/posts-newsletter'),
-                    'tagFragmentArea': proprieties.get('area', False),
-                    'tagFragmentTheme': proprieties.get('theme', False),
-                    'categoryIds': [],
-                    'lastActivityAt': contentFragment['lastModified'],
-                    'publicationDate': dt.isoformat(),
-                    'image': proprieties.get('banner', ''),
-                    'highlights': proprieties.get('highlights', False)
-                }
-
                 match integration['status']:
                     case 1:
+                        textContent = aem.find_all_objects(pageContent)
+
+                        dt = parser.parse(originProprieties.get('jcr:created'))
+
+                        spPost = {
+                            'id': id,
+                            't': proprieties.get('title'),
+                            'tagLabels': '',
+                            'm': " - ".join(textContent),
+                            'pathFragment': aem.getPathByName(contentFragment['name'], 'posts/posts-newsletter'),
+                            'tagFragmentArea': proprieties.get('area', False),
+                            'tagFragmentTheme': proprieties.get('theme', False),
+                            'categoryIds': [],
+                            'lastActivityAt': contentFragment['lastModified'],
+                            'publicationDate': dt.isoformat(),
+                            'image': proprieties.get('banner', ''),
+                            'highlights': proprieties.get('highlights', False)
+                        }
+
                         turing.send(spPost, 'post')
 
     params = {
@@ -90,27 +90,27 @@ def main():
                     if ds["id"] != integration['id']
                 ]
 
-                textContent = aem.find_all_objects(pageContent)
-
-                dt = parser.parse(originProprieties.get('jcr:created'))
-
-                spPost = {
-                    'id': id,
-                    't': proprieties.get('title'),
-                    'tagLabels': '',
-                    'm': " - ".join(textContent),
-                    'pathFragment': aem.getPathByName(contentFragment['name']),
-                    'tagFragmentArea': proprieties.get('area', False),
-                    'tagFragmentTheme': proprieties.get('theme', False),
-                    'categoryIds': [],
-                    'lastActivityAt': contentFragment['lastModified'],
-                    'publicationDate': dt.isoformat(),
-                    'image': proprieties.get('banner', ''),
-                    'highlights': proprieties.get('highlights', False)
-                }
-
                 match integration['status']:
                     case 1:
+                        textContent = aem.find_all_objects(pageContent)
+
+                        dt = parser.parse(originProprieties.get('jcr:created'))
+
+                        spPost = {
+                            'id': id,
+                            't': proprieties.get('title'),
+                            'tagLabels': '',
+                            'm': " - ".join(textContent),
+                            'pathFragment': aem.getPathByName(contentFragment['name']),
+                            'tagFragmentArea': proprieties.get('area', False),
+                            'tagFragmentTheme': proprieties.get('theme', False),
+                            'categoryIds': [],
+                            'lastActivityAt': contentFragment['lastModified'],
+                            'publicationDate': dt.isoformat(),
+                            'image': proprieties.get('banner', ''),
+                            'highlights': proprieties.get('highlights', False)
+                        }
+
                         turing.send(spPost, 'post')
 
 
@@ -141,65 +141,64 @@ def main():
                     if ds["id"] != integration['id']
                 ]
 
-                dt = parser.parse(originProprieties.get('jcr:created'))
-
-                spPost = {
-                    'id': id,
-                    't': proprieties.get('title'),
-                    'tagLabels': '',
-                    'm': '',
-                    'pathFragment': aem.getPathByName(contentFragment['name'], 'events'),
-                    'tagFragmentArea': [],
-                    'tagFragmentTheme': [],
-                    'categoryIds': [],
-                    'lastActivityAt': contentFragment['lastModified'],
-                    'publicationDate': dt.isoformat(),
-                    'image': '',
-                    'highlights': False,
-                    'buttonTextFragment': proprieties.get('buttonText', 'Acesse aqui'),
-                    'descriptionFragment': proprieties.get('description', ''),
-                    'eventType': proprieties.get('eventType', []),
-                    'allDay': proprieties.get('allDay', False) == 'true',
-                    'buttonLink': proprieties.get('buttonLink', ''),
-                    'initialDate': converter_data(proprieties.get('initialDate', '')),
-                    'finishDate': converter_data(proprieties.get('finishDate', ''))
-                }
-
-                spPost['m'] = f"<span>{str(proprieties.get('description', ''))}.</span>"
-
-                if proprieties.get('buttonLink', ''):
-                    spPost['m'] += f"<span>link para acessar evento: {str(proprieties.get('buttonLink', ''))}.</span>"
-
-                # Obtém e formata a data inicial
-                initial_date_str = proprieties.get('initialDate', '')
-                try:
-                    initial_date_fmt = parser.parse(initial_date_str).strftime('%d/%m/%Y %H:%M:%S') if initial_date_str else ''
-                except Exception:
-                    initial_date_fmt = initial_date_str
-
-                # Obtém e formata a data final
-                finish_date_str = proprieties.get('finishDate', '')
-                try:
-                    finish_date_fmt = parser.parse(finish_date_str).strftime('%d/%m/%Y %H:%M:%S') if finish_date_str else ''
-                except Exception:
-                    finish_date_fmt = finish_date_str
-
-                spPost['m'] += f"<span>Data Inicial: {initial_date_fmt}.</span>"
-                spPost['m'] += f"<span>Data Final: {finish_date_fmt}.</span>"
-
-                if spPost['allDay']:
-                    spPost['m'] += "<span>Evento o dia todo.</span>"
-
-                data_final = parser.parse(finish_date_str) if finish_date_str else None
-                agora = datetime.datetime.now(data_final.tzinfo) if data_final and data_final.tzinfo else datetime.datetime.now()
-                if data_final:
-                    if data_final < agora:
-                        spPost['m'] += "<span>Evento já aconteceu.</span>"
-                    else:
-                        spPost['m'] += "<span>Evento ainda vai acontecer.</span>"
-
                 match integration['status']:
                     case 1:
+                        dt = parser.parse(originProprieties.get('jcr:created'))
+
+                        spPost = {
+                            'id': id,
+                            't': proprieties.get('title'),
+                            'tagLabels': '',
+                            'm': '',
+                            'pathFragment': aem.getPathByName(contentFragment['name'], 'events'),
+                            'tagFragmentArea': [],
+                            'tagFragmentTheme': [],
+                            'categoryIds': [],
+                            'lastActivityAt': contentFragment['lastModified'],
+                            'publicationDate': dt.isoformat(),
+                            'image': '',
+                            'highlights': False,
+                            'buttonTextFragment': proprieties.get('buttonText', 'Acesse aqui'),
+                            'descriptionFragment': proprieties.get('description', ''),
+                            'eventType': proprieties.get('eventType', []),
+                            'allDay': proprieties.get('allDay', False) == 'true',
+                            'buttonLink': proprieties.get('buttonLink', ''),
+                            'initialDate': converter_data(proprieties.get('initialDate', '')),
+                            'finishDate': converter_data(proprieties.get('finishDate', ''))
+                        }
+
+                        spPost['m'] = f"<span>{str(proprieties.get('description', ''))}.</span>"
+
+                        if proprieties.get('buttonLink', ''):
+                            spPost['m'] += f"<span>link para acessar evento: {str(proprieties.get('buttonLink', ''))}.</span>"
+
+                        # Obtém e formata a data inicial
+                        initial_date_str = proprieties.get('initialDate', '')
+                        try:
+                            initial_date_fmt = parser.parse(initial_date_str).strftime('%d/%m/%Y %H:%M:%S') if initial_date_str else ''
+                        except Exception:
+                            initial_date_fmt = initial_date_str
+
+                        # Obtém e formata a data final
+                        finish_date_str = proprieties.get('finishDate', '')
+                        try:
+                            finish_date_fmt = parser.parse(finish_date_str).strftime('%d/%m/%Y %H:%M:%S') if finish_date_str else ''
+                        except Exception:
+                            finish_date_fmt = finish_date_str
+
+                        spPost['m'] += f"<span>Data Inicial: {initial_date_fmt}.</span>"
+                        spPost['m'] += f"<span>Data Final: {finish_date_fmt}.</span>"
+
+                        if spPost['allDay']:
+                            spPost['m'] += "<span>Evento o dia todo.</span>"
+
+                        data_final = parser.parse(finish_date_str) if finish_date_str else None
+                        agora = datetime.datetime.now(data_final.tzinfo) if data_final and data_final.tzinfo else datetime.datetime.now()
+                        if data_final:
+                            if data_final < agora:
+                                spPost['m'] += "<span>Evento já aconteceu.</span>"
+                            else:
+                                spPost['m'] += "<span>Evento ainda vai acontecer.</span>"
                         turing.send(spPost, 'event')
 
     for postTuring in allPostsTuring[:100]:
