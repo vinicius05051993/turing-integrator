@@ -167,8 +167,9 @@ def get_only_texts(html: str) -> str:
     if matches:
         text_captured = ' '.join(matches)
 
-    text_captured = re.sub(r'<[^>]*>', '', text_captured)  # Remove any remaining tags
-    text_captured = re.sub(r'[^\w\s\?]', '', text_captured)  # Remove non-alphanumeric chars, except ?
+    text_captured = re.sub(r'<[^>]*>', '', text_captured)  # Remove tags restantes
+    # Permite letras, números, espaço, underline, traço e pontuações .,;:!?
+    text_captured = re.sub(r'[^\w\s\-\.,;:!\?]', '', text_captured)
 
     return text_captured.strip()
 

@@ -139,7 +139,7 @@ def main():
                     if ds["id"] != integration['id']
                 ]
 
-                match integration['status']:
+                match 1:
                     case 1:
                         dt = parser.parse(originProprieties.get('jcr:created'))
 
