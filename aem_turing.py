@@ -160,7 +160,7 @@ def main():
                             'descriptionFragment': proprieties.get('description', ''),
                             'eventType': proprieties.get('eventType', []),
                             'allDay': proprieties.get('allDay', False) == 'true',
-                            'buttonLink': proprieties.get('buttonLink', ''),
+                            'buttonLink': proprieties.get('buttonLink', proprieties.get('local', '')),
                             'initialDate': converter_data(proprieties.get('initialDate', '')),
                             'finishDate': converter_data(proprieties.get('finishDate', ''))
                         }
