@@ -105,6 +105,7 @@ def main():
                             'categoryIds': [],
                             'lastActivityAt': contentFragment['lastModified'],
                             'publicationDate': dt.isoformat(),
+                            'descriptionFragment': proprieties.get('description', ''),
                             'image': proprieties.get('banner', ''),
                             'highlights': proprieties.get('highlights', False)
                         }
