@@ -90,7 +90,7 @@ def send(spPost, mbtype = 'manual'):
     turingFields = {
        'id': spPost['id'],
        'title': spPost['t'],
-       'abstract': ' - '.join(spPost['tagLabels']),
+       'abstract': spPost.get('abstract', ''),
        'text': get_text_with_images_and_pdf(spPost['m'], spPost['id']),
        'url': spPost.get('pathFragment') or getUrlWithAuth(spPost['path']),
        'mbtype': mbtype,

@@ -48,7 +48,7 @@ def main():
                         spPost = {
                             'id': id,
                             't': proprieties.get('title'),
-                            'tagLabels': '',
+                            'abstract': '',
                             'm': " - ".join(textContent),
                             'pathFragment': aem.getPathByName(contentFragment['name'], 'posts/posts-newsletter'),
                             'tagFragmentArea': proprieties.get('area', False),
@@ -88,7 +88,7 @@ def main():
                     if ds["id"] != integration['id']
                 ]
 
-                match integration['status']:
+                match 1:
                     case 1:
                         textContent = aem.find_all_objects(pageContent)
 
@@ -97,7 +97,7 @@ def main():
                         spPost = {
                             'id': id,
                             't': proprieties.get('title'),
-                            'tagLabels': '',
+                            'abstract': proprieties.get('description', ''),
                             'm': " - ".join(textContent),
                             'pathFragment': aem.getPathByName(contentFragment['name']),
                             'tagFragmentArea': proprieties.get('area', False),
@@ -105,7 +105,6 @@ def main():
                             'categoryIds': [],
                             'lastActivityAt': contentFragment['lastModified'],
                             'publicationDate': dt.isoformat(),
-                            'descriptionFragment': proprieties.get('description', ''),
                             'image': proprieties.get('banner', ''),
                             'highlights': proprieties.get('highlights', False)
                         }
@@ -147,7 +146,7 @@ def main():
                         spPost = {
                             'id': id,
                             't': proprieties.get('title'),
-                            'tagLabels': '',
+                            'abstract': '',
                             'm': '',
                             'pathFragment': aem.getPathByName(contentFragment['name'], 'events'),
                             'tagFragmentArea': [],
