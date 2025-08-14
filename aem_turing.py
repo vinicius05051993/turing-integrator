@@ -88,7 +88,7 @@ def main():
                     if ds["id"] != integration['id']
                 ]
 
-                match 1:
+                match integration['status']:
                     case 1:
                         textContent = aem.find_all_objects(pageContent)
 
