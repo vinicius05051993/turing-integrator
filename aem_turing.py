@@ -88,7 +88,7 @@ def main():
                     if ds["id"] != integration['id']
                 ]
 
-                match integration['status']:
+                match 1:
                     case 1:
                         textContent = aem.find_all_objects(pageContent)
 
@@ -97,7 +97,7 @@ def main():
                         spPost = {
                             'id': id,
                             't': proprieties.get('title'),
-                            'abstract': proprieties.get('description', ''),
+                            'abstract': proprieties.get('content', ''),
                             'm': " - ".join(textContent),
                             'pathFragment': aem.getPathByName(contentFragment['name']),
                             'tagFragmentArea': proprieties.get('area', False),
