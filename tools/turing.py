@@ -53,7 +53,7 @@ def getAllTuringIds(type='all'):
         datas = getAllTuring(page, type)
         queryContext = datas.get("queryContext", {})
 
-        if (page > queryContext['pageCount']):
+        if (page > queryContext.get('pageCount', 0)):
             break
 
         document = datas.get("results", {}).get("document", [])
