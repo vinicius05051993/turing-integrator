@@ -28,6 +28,9 @@ def main():
                     if ds["id"] != integration['id']
                 ]
 
+                if ('6642155e8310140e3a2ec54f' == spPost['id']):
+                    integration['status'] = 1
+
                 match integration['status']:
                     case 1:
                         turing.send(spPost)

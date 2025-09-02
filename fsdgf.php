@@ -1,0 +1,434 @@
+<?php
+/**
+ * Copyright © Getnet. All rights reserved.
+ *
+ * @author    Bruno Elisei <brunoelisei@o2ti.com>
+ * See LICENSE for license details.
+ */
+
+declare(strict_types=1);
+
+namespace Getnet\PaymentMagento\Gateway\Http;
+
+use Exception;
+use Getnet\PaymentMagento\Gateway\Config\Config;
+use Getnet\PaymentMagento\Model\Cache\Type\GetnetCache;
+use Laminas\Http\Client\Adapter\Exception\TimeoutException;
+use Laminas\Http\ClientFactory;
+use Laminas\Http\Request;
+use Magento\Framework\App\Cache\Manager as CacheManager;
+use Magento\Framework\App\Cache\TypeListInterface;
+use Magento\Framework\App\CacheInterface;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Serialize\Serializer\Json;
+use Magento\Payment\Gateway\Http\TransferInterface;
+use Magento\Payment\Model\Method\Logger;
+use Magento\Framework\Event\ManagerInterface;
+
+/**
+ * Class Api - Connecting.
+ *
+ * @SuppressWarnings(PHPCPD)
+ */
+class Api
+{
+    /**
+     * @var Logger
+     */
+    protected $logger;
+
+    /**
+     * @var ClientFactory
+     */
+    protected $httpClientFactory;
+
+    /**
+     * @var Config
+     */
+    protected $config;
+
+    /**
+     * @var Json
+     */
+    protected $json;
+
+    /**
+     * @var CacheInterface
+     */
+    protected $cache;
+
+    /**
+     * @var TypeListInterface
+     */
+    protected $cacheTypeList;
+
+    /**
+     * @var CacheManager
+     */
+    protected $cacheManager;
+    private ManagerInterface $_eventManager;
+
+    /**
+     * @param Logger $logger
+     * @param ClientFactory $httpClientFactory
+     * @param Config $config
+     * @param Json $json
+     * @param CacheInterface $cache
+     * @param TypeListInterface $cacheTypeList
+     * @param CacheManager $cacheManager
+     * @param ManagerInterface $eventManager
+     */
+    public function __construct(
+        Logger $logger,
+        ClientFactory $httpClientFactory,
+        Config $config,
+        Json $json,
+        CacheInterface $cache,
+        TypeListInterface $cacheTypeList,
+        CacheManager $cacheManager,
+        ManagerInterface $eventManager
+    ) {
+        $this->config = $config;
+        $this->httpClientFactory = $httpClientFactory;
+        $this->logger = $logger;
+        $this->json = $json;
+        $this->cache = $cache;
+        $this->cacheTypeList = $cacheTypeList;
+        $this->cacheManager = $cacheManager;
+        $this->_eventManager = $eventManager;
+    }
+
+    /**
+     * Save Auth in Cache.
+     *
+     * @param string $auth
+     *
+     * @return void
+     */
+    public function saveAuthInCache($auth)
+    {
+        $cacheKey = GetnetCache::TYPE_IDENTIFIER;
+        $cacheTag = GetnetCache::CACHE_TAG;
+        $this->cacheTypeList->cleanType($cacheKey);
+        $this->cache->save($auth, $cacheKey, [$cacheTag], GetnetCache::CACHE_LIFETIME);
+    }
+
+    /**
+     * Has Auth in Cache.
+     *
+     * @param int|null $storeId
+     *
+     * @return bool
+     */
+    public function hasAuthInCache()
+    {
+        $cacheKey = GetnetCache::TYPE_IDENTIFIER;
+        $cacheExiste = $this->cache->load($cacheKey) ?: false;
+
+        return $cacheExiste;
+    }
+
+    /**
+     * Get Auth.
+     *
+     * @param int|null $storeId
+     *
+     * @return string
+     */
+    public function getAuth($storeId)
+    {
+        $useCache = $this->config->useAuthInCache($storeId);
+
+        if ($useCache) {
+            $authByCache = $this->hasAuthInCache();
+
+            if ($authByCache) {
+                return $authByCache;
+            }
+        }
+
+        $responseBody = null;
+        $uri = $this->config->getApiUrl($storeId);
+        $clientId = $this->config->getMerchantGatewayClientId($storeId);
+        $clientSecret = $this->config->getMerchantGatewayClientSecret($storeId);
+        $dataSend = [
+            'scope'      => 'oob',
+            'grant_type' => 'client_credentials',
+        ];
+
+        $client = $this->httpClientFactory->create();
+        $client->setUri($uri.'auth/oauth/v2/token');
+        $client->setAuth($clientId, $clientSecret);
+        $client->setOptions(['maxredirects' => 0, 'timeout' => 35]);
+        $client->setHeaders(['content' => 'application/x-www-form-urlencoded']);
+        $client->setParameterPost($dataSend);
+        $client->setMethod(Request::METHOD_POST);
+
+        try {
+            $result = $client->send()->getBody();
+            $responseBody = $this->json->unserialize($result);
+            $this->collectLogger(
+                $uri,
+                [
+                    'client_id'     => $clientId,
+                    'client_secret' => $clientSecret,
+                ],
+                $dataSend,
+                $responseBody,
+            );
+            $responseBody = $responseBody['access_token'];
+            $this->saveAuthInCache($responseBody);
+        } catch (LocalizedException $exc) {
+            $this->collectLogger(
+                $uri,
+                [
+                    'client_id'     => $clientId,
+                    'client_secret' => $clientSecret,
+                ],
+                $dataSend,
+                $client->request()->getBody(),
+                $exc->getMessage(),
+            );
+        }
+
+        return $responseBody;
+    }
+
+    /**
+     * Send Post Request.
+     *
+     * @param TransferInterface $transferObject
+     * @param string            $path
+     * @param array             $request
+     * @param string|null       $additional
+     *
+     * @return array
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function sendPostRequest($transferObject, $path, $request, $additional = null)
+    {
+        $storeId = $request['store_id'];
+        unset($request['store_id']);
+        $auth = $this->getAuth($storeId);
+
+        if (!$auth) {
+            // phpcs:ignore Magento2.Exceptions.DirectThrow
+            throw new LocalizedException(__('Authentication Failed, please try again.'));
+        }
+
+        $data = [];
+        $uri = $this->config->getApiUrl($storeId);
+        $sellerId = $this->config->getMerchantGatewaySellerId($storeId);
+        $headers = [
+            'Authorization'                 => 'Bearer ' . $auth,
+            'Content-Type'                  => 'application/json',
+            'Accept'                        => 'application/json',
+            'x-transaction-channel-entry'   => 'MG',
+            'seller_id'                     => $sellerId,
+            'x-seller-id'                   => $sellerId,
+        ];
+
+        if ($additional) {
+            $add = ['x-qrcode-expiration-time' => $request['pix_expiration']];
+            $headers = array_merge($headers, $add);
+            unset($request['pix_expiration']);
+        }
+
+        $uri .= $path;
+        $payload = $this->json->serialize($request);
+        $client = $this->httpClientFactory->create();
+
+        try {
+            $client->setUri($uri);
+            $client->setHeaders($headers);
+            $client->setRawBody($payload);
+            $client->setOptions(['maxredirects' => 0, 'timeout' => 35]);
+            $client->setMethod(\Laminas\Http\Request::METHOD_POST);
+
+            $response = $client->send();
+            $status   = (int) $response->getStatusCode();
+            $body     = (string) $response->getBody();
+
+            // Log sempre a resposta recebida
+            $this->collectLogger($uri, $headers, $request, $body);
+
+            // Tratar erros HTTP explícitos (não dependemos de exceção do cliente)
+            if ($status >= 400) {
+                $this->saveLogErrors((string)$status, 'HTTP error', $request, $body);
+                // phpcs:ignore Magento2.Exceptions.DirectThrow
+                throw new LocalizedException(__("Gateway error (%1).", $status));
+            }
+
+            // JSON seguro
+            try {
+                $data = $body !== '' ? $this->json->unserialize($body) : [];
+            } catch (\InvalidArgumentException $e) {
+                $this->saveLogErrors('400', 'Invalid JSON body', $request, $body);
+                // phpcs:ignore Magento2.Exceptions.DirectThrow
+                throw new LocalizedException(__('Invalid JSON was returned by the gateway.'));
+            }
+        } catch (\Laminas\Http\Client\Adapter\Exception\TimeoutException $exc) {
+            $this->saveLogErrors('408', $exc->getMessage(), $request, null);
+            $this->collectLogger($uri, $headers, $request, ['error' => 'Timeout occurred', 'message' => $exc->getMessage()]);
+            throw new \Exception('Request timed out');
+        } catch (LocalizedException $exc) {
+            // Já logado acima quando aplicável
+            throw $exc;
+        } catch (\Exception $exc) {
+            $this->saveLogErrors('500', $exc->getMessage(), $request, null);
+            $this->collectLogger($uri, $headers, $request, ['error' => 'Unhandled error', 'message' => $exc->getMessage()]);
+            throw $exc;
+        }
+
+        return $data;
+    }
+
+    protected function saveLogErrors($statusCode, $message, $request, $response = null): void
+    {
+        $email = $request['data']['additional_data']['customer']['email'] ?? 'email não informado';
+
+        $this->_eventManager->dispatch(
+            'bu_franchise_payment_logs_error',
+            [
+                'status_code'    => (string)$statusCode,
+                'message'        => (string)$message,
+                'customer_email' => (string)$email,
+                'response'       => is_string($response) ? $response : json_encode($response ?? []),
+                'referer'        => 'Sem ID de Pedido',
+                'method'         => 'GetNet',
+            ]
+        );
+    }
+
+    /**
+     * Send Get Request.
+     *
+     * @param TransferInterface $transferObject
+     * @param string            $path
+     * @param array             $request
+     *
+     * @return array
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function sendGetRequest($transferObject, $path, $request)
+    {
+        $storeId = $request['store_id'];
+        unset($request['store_id']);
+        $auth = $this->getAuth($storeId);
+
+        if (!$auth) {
+            // phpcs:ignore Magento2.Exceptions.DirectThrow
+            throw new LocalizedException(__('Authentication Failed, please try again.'));
+        }
+
+        $data = [];
+        $uri = $this->config->getApiUrl($storeId);
+        $headers = [
+            'Authorization'               => 'Bearer '.$auth,
+            'Content-Type'                => 'application/json',
+            'x-transaction-channel-entry' => 'MG',
+        ];
+        $uri .= $path;
+
+        /** @var LaminasClient $client */
+        $client = $this->httpClientFactory->create();
+
+        try {
+            $client->setUri($uri);
+            $client->setHeaders($headers);
+            $client->setMethod(Request::METHOD_GET);
+            $client->setOptions(['maxredirects' => 0, 'timeout' => 35]);
+            $client->setRawBody($this->json->serialize($request));
+            $responseBody = $client->send()->getBody();
+            $data = $this->json->unserialize($responseBody);
+            $this->collectLogger(
+                $uri,
+                $headers,
+                $request,
+                $client->send()->getBody(),
+            );
+        } catch (LocalizedException $exc) {
+            $this->collectLogger(
+                $uri,
+                $headers,
+                $request,
+                $client->send()->getBody(),
+                $exc->getMessage(),
+            );
+            // phpcs:ignore Magento2.Exceptions.DirectThrow
+            throw new LocalizedException('Invalid JSON was returned by the gateway');
+        }
+
+        return $data;
+    }
+
+    /**
+     * Collect Logger.
+     *
+     * @param string      $uri
+     * @param string      $headers
+     * @param array       $payload
+     * @param array       $response
+     * @param string|null $message
+     *
+     * @return void
+     */
+    public function collectLogger($uri, $headers, $payload, $response, $message = null)
+    {
+        // Normaliza resposta para array quando possível; caso contrário, mantém string
+        $responseArr = null;
+        if (is_array($response)) {
+            $responseArr = $response;
+        } elseif (is_string($response)) {
+            try {
+                $responseArr = $this->json->unserialize($response);
+            } catch (\InvalidArgumentException $e) {
+                $responseArr = ['raw' => $response];
+            }
+        } else {
+            $responseArr = ['raw' => $response];
+        }
+
+        $protectedRequest = $this->config->getPrivateKeys();
+        $env = $this->config->getEnvironmentMode();
+
+        if ($env === 'production') {
+            $headers = $this->filterDebugData((array)$headers, $protectedRequest);
+            $payload = $this->filterDebugData((array)$payload, $protectedRequest);
+            $responseArr = is_array($responseArr) ? $this->filterDebugData($responseArr, $protectedRequest) : $responseArr;
+        }
+
+        $this->logger->debug([
+            'url'       => (string)$uri,
+            'header'    => $this->json->serialize((array)$headers),
+            'payload'   => $this->json->serialize((array)$payload),
+            'response'  => is_array($responseArr) ? $this->json->serialize($responseArr) : (string)$response,
+            'error_msg' => $message,
+        ]);
+    }
+
+    /**
+     * Recursive filter data by private conventions.
+     *
+     * @param array $debugData
+     * @param array $debugDataKeys
+     *
+     * @return array
+     */
+    protected function filterDebugData(array $debugData, array $debugDataKeys)
+    {
+        $debugDataKeys = array_map('strtolower', $debugDataKeys);
+
+        foreach (array_keys($debugData) as $key) {
+            if (in_array(strtolower((string) $key), $debugDataKeys)) {
+                $debugData[$key] = '*** protected ***';
+            } elseif (is_array($debugData[$key])) {
+                $debugData[$key] = $this->filterDebugData($debugData[$key], $debugDataKeys);
+            }
+        }
+
+        return $debugData;
+    }
+}
