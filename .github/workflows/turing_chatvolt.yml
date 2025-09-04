@@ -3,7 +3,7 @@ name: Turing to Chatvolt
 on:
   workflow_dispatch:
   schedule:
-    - cron: '30 */6 * * *'
+    - cron: '30 */3 * * *'
 
 jobs:
   turing-chatvolt:

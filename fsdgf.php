@@ -1,434 +1,380 @@
 <?php
-/**
- * Copyright © Getnet. All rights reserved.
- *
- * @author    Bruno Elisei <brunoelisei@o2ti.com>
- * See LICENSE for license details.
- */
+namespace Nectar\Cupom\Controller\Adminhtml\Report;
 
-declare(strict_types=1);
-
-namespace Getnet\PaymentMagento\Gateway\Http;
-
-use Exception;
-use Getnet\PaymentMagento\Gateway\Config\Config;
-use Getnet\PaymentMagento\Model\Cache\Type\GetnetCache;
-use Laminas\Http\Client\Adapter\Exception\TimeoutException;
-use Laminas\Http\ClientFactory;
-use Laminas\Http\Request;
-use Magento\Framework\App\Cache\Manager as CacheManager;
-use Magento\Framework\App\Cache\TypeListInterface;
-use Magento\Framework\App\CacheInterface;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Serialize\Serializer\Json;
-use Magento\Payment\Gateway\Http\TransferInterface;
-use Magento\Payment\Model\Method\Logger;
-use Magento\Framework\Event\ManagerInterface;
+use Magento\Backend\App\Action;
+use Magento\Framework\App\ActionInterface;
+use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\App\Response\Http\FileFactory;
+use Magento\Framework\DB\Select as DbSelect;
+use Magento\Framework\Session\SessionManagerInterface;
+use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
+use Magento\Sales\Model\ResourceModel\Order\Item\CollectionFactory as OrderItemCollection;
+use Magento\SalesRule\Model\ResourceModel\Coupon\CollectionFactory as CouponCollection;
+use Nectar\Cupom\Helper\GetTotalCupons;
+use Nectar\Cupom\Model\ResourceModel\CouponManagementPerSchool\Grid\CollectionFactory as CouponManagementPerSchoolCollection;
+use Nectar\EscolasAdmin\Model\ResourceModel\Escolas\CollectionFactory as SchoolsCollection;
 
 /**
- * Class Api - Connecting.
- *
- * @SuppressWarnings(PHPCPD)
+ * Exporta o relatório de cupons por escola em CSV.
  */
-class Api
+class ExportCouponManagementPerSchoolCsv implements ActionInterface
 {
-    /**
-     * @var Logger
-     */
-    protected $logger;
+    const ADMIN_RESOURCE = 'Magento_Logging::magento_logging_events';
 
-    /**
-     * @var ClientFactory
-     */
-    protected $httpClientFactory;
+    /** @var FileFactory */
+    protected $fileFactory;
+    /** @var DirectoryList */
+    protected $directoryList;
+    /** @var SessionManagerInterface */
+    protected $sessionManager;
+    /** @var TimezoneInterface */
+    protected $timezone;
 
-    /**
-     * @var Config
-     */
-    protected $config;
+    /** @var CouponManagementPerSchoolCollection */
+    protected $couponManagementPerSchoolCollection;
+    /** @var CouponCollection */
+    protected $couponCollection;
+    /** @var GetTotalCupons */
+    protected $getTotalCoupon;
+    /** @var OrderItemCollection */
+    protected $orderItemCollection;
+    /** @var SchoolsCollection */
+    protected $schoolCollection;
 
-    /**
-     * @var Json
-     */
-    protected $json;
+    // Caches e agregados pré-carregados
+    protected $schoolsCache = [];      // [code => nome]
+    protected $couponCountByRule = []; // [rule_id => qtd_cupons]
+    protected $totalsByRule = [];      // [rule_id => ['total'=>int,'used'=>int,'has_unlimited'=>bool]]
+    protected $orderItemCount = [];    // [order_id => qtd_itens]
 
-    /**
-     * @var CacheInterface
-     */
-    protected $cache;
-
-    /**
-     * @var TypeListInterface
-     */
-    protected $cacheTypeList;
-
-    /**
-     * @var CacheManager
-     */
-    protected $cacheManager;
-    private ManagerInterface $_eventManager;
-
-    /**
-     * @param Logger $logger
-     * @param ClientFactory $httpClientFactory
-     * @param Config $config
-     * @param Json $json
-     * @param CacheInterface $cache
-     * @param TypeListInterface $cacheTypeList
-     * @param CacheManager $cacheManager
-     * @param ManagerInterface $eventManager
-     */
     public function __construct(
-        Logger $logger,
-        ClientFactory $httpClientFactory,
-        Config $config,
-        Json $json,
-        CacheInterface $cache,
-        TypeListInterface $cacheTypeList,
-        CacheManager $cacheManager,
-        ManagerInterface $eventManager
+        Action\Context $context,
+        FileFactory $fileFactory,
+        DirectoryList $directoryList,
+        SessionManagerInterface $sessionManager,
+        TimezoneInterface $timezone,
+        CouponManagementPerSchoolCollection $couponManagementPerSchoolCollection,
+        CouponCollection $couponCollection,
+        GetTotalCupons $getTotalCoupon,
+        OrderItemCollection $orderItemCollection,
+        SchoolsCollection $schoolCollection
     ) {
-        $this->config = $config;
-        $this->httpClientFactory = $httpClientFactory;
-        $this->logger = $logger;
-        $this->json = $json;
-        $this->cache = $cache;
-        $this->cacheTypeList = $cacheTypeList;
-        $this->cacheManager = $cacheManager;
-        $this->_eventManager = $eventManager;
+        $this->fileFactory = $fileFactory;
+        $this->directoryList = $directoryList;
+        $this->sessionManager = $sessionManager;
+        $this->timezone = $timezone;
+        $this->couponManagementPerSchoolCollection = $couponManagementPerSchoolCollection;
+        $this->couponCollection = $couponCollection;
+        $this->getTotalCoupon = $getTotalCoupon;
+        $this->orderItemCollection = $orderItemCollection;
+        $this->schoolCollection = $schoolCollection;
     }
 
     /**
-     * Save Auth in Cache.
-     *
-     * @param string $auth
-     *
-     * @return void
+     * Gera o CSV e retorna o download.
      */
-    public function saveAuthInCache($auth)
+    public function execute()
     {
-        $cacheKey = GetnetCache::TYPE_IDENTIFIER;
-        $cacheTag = GetnetCache::CACHE_TAG;
-        $this->cacheTypeList->cleanType($cacheKey);
-        $this->cache->save($auth, $cacheKey, [$cacheTag], GetnetCache::CACHE_LIFETIME);
-    }
+        $fileName = 'relatorio-cupom.csv';
+        $filePath = $this->directoryList->getPath(DirectoryList::MEDIA) . '/' . $fileName;
 
-    /**
-     * Has Auth in Cache.
-     *
-     * @param int|null $storeId
-     *
-     * @return bool
-     */
-    public function hasAuthInCache()
-    {
-        $cacheKey = GetnetCache::TYPE_IDENTIFIER;
-        $cacheExiste = $this->cache->load($cacheKey) ?: false;
+        $handle = fopen($filePath, 'w');
+        if ($handle === false) {
+            // Fallback simples: não conseguiu abrir arquivo
+            throw new \RuntimeException('Não foi possível criar o arquivo CSV.');
+        }
 
-        return $cacheExiste;
-    }
+        // Cabeçalho do CSV
+        fputcsv($handle, [
+            'Nº do pedido',
+            'Código do Cupom',
+            'Escolas',
+            'Pedido criado em',
+            'Data utilização válido de',
+            'Válido até',
+            'CPF/CNPJ',
+            'Usos por cliente',
+            'Usos por cupom',
+            'Usos permitidos',
+            'Número de usos',
+            'Disponível',
+            'Qtd. itens no pedido',
+            'Descrição',
+            'Qtd. do Desconto',
+            'Tipo de desconto',
+        ]);
 
-    /**
-     * Get Auth.
-     *
-     * @param int|null $storeId
-     *
-     * @return string
-     */
-    public function getAuth($storeId)
-    {
-        $useCache = $this->config->useAuthInCache($storeId);
+        // Monta a collection base (respeitando filtros da UI)
+        $collection = $this->couponManagementPerSchoolCollection->create();
 
-        if ($useCache) {
-            $authByCache = $this->hasAuthInCache();
-
-            if ($authByCache) {
-                return $authByCache;
+        $filters = $this->sessionManager->getFilterToExportCouponManagementPerSchool();
+        if ($filters && is_array($filters)) {
+            foreach ($filters as $filter) {
+                $collection->addFieldToFilter($filter['field'], [$filter['condition'] => $filter['value']]);
             }
         }
 
-        $responseBody = null;
-        $uri = $this->config->getApiUrl($storeId);
-        $clientId = $this->config->getMerchantGatewayClientId($storeId);
-        $clientSecret = $this->config->getMerchantGatewayClientSecret($storeId);
-        $dataSend = [
-            'scope'      => 'oob',
-            'grant_type' => 'client_credentials',
-        ];
+        // Pré-carrega agregados (evita N+1 queries)
+        $this->preloadAggregates($collection);
 
-        $client = $this->httpClientFactory->create();
-        $client->setUri($uri.'auth/oauth/v2/token');
-        $client->setAuth($clientId, $clientSecret);
-        $client->setOptions(['maxredirects' => 0, 'timeout' => 35]);
-        $client->setHeaders(['content' => 'application/x-www-form-urlencoded']);
-        $client->setParameterPost($dataSend);
-        $client->setMethod(Request::METHOD_POST);
+        // Escreve linhas do CSV
+        foreach ($collection as $item) {
+            $ruleId = (int) $item->getRuleId();
+            $orderId = (int) $item->getEntityId();
 
-        try {
-            $result = $client->send()->getBody();
-            $responseBody = $this->json->unserialize($result);
-            $this->collectLogger(
-                $uri,
-                [
-                    'client_id'     => $clientId,
-                    'client_secret' => $clientSecret,
-                ],
-                $dataSend,
-                $responseBody,
-            );
-            $responseBody = $responseBody['access_token'];
-            $this->saveAuthInCache($responseBody);
-        } catch (LocalizedException $exc) {
-            $this->collectLogger(
-                $uri,
-                [
-                    'client_id'     => $clientId,
-                    'client_secret' => $clientSecret,
-                ],
-                $dataSend,
-                $client->request()->getBody(),
-                $exc->getMessage(),
-            );
+            $row = [
+                (string) $item->getIncrementId(),
+                (string) $item->getCode(),
+                (string) $this->getSchoolNameByCode($item->getSchoolSelect()),
+                (string) $item->getCreatedAt(),
+                (string) $item->getFromDate(),
+                (string) $item->getToDate(),
+                (string) $item->getTaxvat(),
+                (string) $item->getUsesPerCustomer(),
+                (string) $item->getUsesPerCoupon(),
+                (string) $this->getPermittedUses($ruleId, $item->getUsesPerCoupon()),
+                (string) $this->getTimesUsed($ruleId),
+                (string) $this->getAvailable($ruleId),
+                (string) ($this->orderItemCount[$orderId] ?? 0),
+                (string) $item->getDescription(),
+                (string) $item->getDiscountAmount(),
+                (string) $item->getSimpleAction(),
+            ];
+
+            fputcsv($handle, $row);
         }
 
-        return $responseBody;
-    }
+        fclose($handle);
 
-    /**
-     * Send Post Request.
-     *
-     * @param TransferInterface $transferObject
-     * @param string            $path
-     * @param array             $request
-     * @param string|null       $additional
-     *
-     * @return array
-     *
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function sendPostRequest($transferObject, $path, $request, $additional = null)
-    {
-        $storeId = $request['store_id'];
-        unset($request['store_id']);
-        $auth = $this->getAuth($storeId);
-
-        if (!$auth) {
-            // phpcs:ignore Magento2.Exceptions.DirectThrow
-            throw new LocalizedException(__('Authentication Failed, please try again.'));
-        }
-
-        $data = [];
-        $uri = $this->config->getApiUrl($storeId);
-        $sellerId = $this->config->getMerchantGatewaySellerId($storeId);
-        $headers = [
-            'Authorization'                 => 'Bearer ' . $auth,
-            'Content-Type'                  => 'application/json',
-            'Accept'                        => 'application/json',
-            'x-transaction-channel-entry'   => 'MG',
-            'seller_id'                     => $sellerId,
-            'x-seller-id'                   => $sellerId,
-        ];
-
-        if ($additional) {
-            $add = ['x-qrcode-expiration-time' => $request['pix_expiration']];
-            $headers = array_merge($headers, $add);
-            unset($request['pix_expiration']);
-        }
-
-        $uri .= $path;
-        $payload = $this->json->serialize($request);
-        $client = $this->httpClientFactory->create();
-
-        try {
-            $client->setUri($uri);
-            $client->setHeaders($headers);
-            $client->setRawBody($payload);
-            $client->setOptions(['maxredirects' => 0, 'timeout' => 35]);
-            $client->setMethod(\Laminas\Http\Request::METHOD_POST);
-
-            $response = $client->send();
-            $status   = (int) $response->getStatusCode();
-            $body     = (string) $response->getBody();
-
-            // Log sempre a resposta recebida
-            $this->collectLogger($uri, $headers, $request, $body);
-
-            // Tratar erros HTTP explícitos (não dependemos de exceção do cliente)
-            if ($status >= 400) {
-                $this->saveLogErrors((string)$status, 'HTTP error', $request, $body);
-                // phpcs:ignore Magento2.Exceptions.DirectThrow
-                throw new LocalizedException(__("Gateway error (%1).", $status));
-            }
-
-            // JSON seguro
-            try {
-                $data = $body !== '' ? $this->json->unserialize($body) : [];
-            } catch (\InvalidArgumentException $e) {
-                $this->saveLogErrors('400', 'Invalid JSON body', $request, $body);
-                // phpcs:ignore Magento2.Exceptions.DirectThrow
-                throw new LocalizedException(__('Invalid JSON was returned by the gateway.'));
-            }
-        } catch (\Laminas\Http\Client\Adapter\Exception\TimeoutException $exc) {
-            $this->saveLogErrors('408', $exc->getMessage(), $request, null);
-            $this->collectLogger($uri, $headers, $request, ['error' => 'Timeout occurred', 'message' => $exc->getMessage()]);
-            throw new \Exception('Request timed out');
-        } catch (LocalizedException $exc) {
-            // Já logado acima quando aplicável
-            throw $exc;
-        } catch (\Exception $exc) {
-            $this->saveLogErrors('500', $exc->getMessage(), $request, null);
-            $this->collectLogger($uri, $headers, $request, ['error' => 'Unhandled error', 'message' => $exc->getMessage()]);
-            throw $exc;
-        }
-
-        return $data;
-    }
-
-    protected function saveLogErrors($statusCode, $message, $request, $response = null): void
-    {
-        $email = $request['data']['additional_data']['customer']['email'] ?? 'email não informado';
-
-        $this->_eventManager->dispatch(
-            'bu_franchise_payment_logs_error',
-            [
-                'status_code'    => (string)$statusCode,
-                'message'        => (string)$message,
-                'customer_email' => (string)$email,
-                'response'       => is_string($response) ? $response : json_encode($response ?? []),
-                'referer'        => 'Sem ID de Pedido',
-                'method'         => 'GetNet',
-            ]
+        return $this->fileFactory->create(
+            $fileName,
+            ['type' => 'filename', 'value' => $fileName, 'rm' => true],
+            DirectoryList::MEDIA
         );
     }
 
     /**
-     * Send Get Request.
-     *
-     * @param TransferInterface $transferObject
-     * @param string            $path
-     * @param array             $request
-     *
-     * @return array
-     *
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * Pré-carrega agregados necessários para o relatório.
+     * - Regra (rule_id), Pedido (entity_id), Escolas (school_select)
+     * - Contagem de cupons por regra
+     * - Totais usados/gerados por regra
+     * - Itens por pedido
+     * - Cache de nomes de escolas
      */
-    public function sendGetRequest($transferObject, $path, $request)
+    protected function preloadAggregates($collection): void
     {
-        $storeId = $request['store_id'];
-        unset($request['store_id']);
-        $auth = $this->getAuth($storeId);
+        // Corrigido: qualifica colunas e usa aliases estáveis (evita 'main_table.rule_id' inexistente)
+        $rows = $this->getDistinctRows($collection, [
+            'rule_id'       => 'sr.rule_id',
+            'entity_id'     => 'main_table.entity_id',
+            'school_select' => 'main_table.school_select',
+        ]);
 
-        if (!$auth) {
-            // phpcs:ignore Magento2.Exceptions.DirectThrow
-            throw new LocalizedException(__('Authentication Failed, please try again.'));
+        $ruleIds = [];
+        $orderIds = [];
+        $schoolCodes = [];
+
+        foreach ($rows as $r) {
+            if (!empty($r['rule_id'])) {
+                $ruleIds[(int) $r['rule_id']] = (int) $r['rule_id'];
+            }
+            if (!empty($r['entity_id'])) {
+                $orderIds[(int) $r['entity_id']] = (int) $r['entity_id'];
+            }
+            if (!empty($r['school_select']) && $r['school_select'] !== 'empty') {
+                $codes = array_filter(array_map('trim', explode(',', (string) $r['school_select'])));
+                foreach ($codes as $c) {
+                    $schoolCodes[$c] = $c;
+                }
+            }
         }
 
-        $data = [];
-        $uri = $this->config->getApiUrl($storeId);
-        $headers = [
-            'Authorization'               => 'Bearer '.$auth,
-            'Content-Type'                => 'application/json',
-            'x-transaction-channel-entry' => 'MG',
-        ];
-        $uri .= $path;
+        // Contagem de cupons por rule_id
+        if ($ruleIds) {
+            $couponConn = $this->couponCollection->create()->getConnection();
+            $couponSel = clone $this->couponCollection->create()->getSelect();
+            $couponSel->reset(DbSelect::COLUMNS);
+            $couponSel->columns(['rule_id', 'cnt' => 'COUNT(*)']);
+            $couponSel->where('rule_id IN (?)', array_values($ruleIds));
+            $couponSel->group('rule_id');
 
-        /** @var LaminasClient $client */
-        $client = $this->httpClientFactory->create();
-
-        try {
-            $client->setUri($uri);
-            $client->setHeaders($headers);
-            $client->setMethod(Request::METHOD_GET);
-            $client->setOptions(['maxredirects' => 0, 'timeout' => 35]);
-            $client->setRawBody($this->json->serialize($request));
-            $responseBody = $client->send()->getBody();
-            $data = $this->json->unserialize($responseBody);
-            $this->collectLogger(
-                $uri,
-                $headers,
-                $request,
-                $client->send()->getBody(),
-            );
-        } catch (LocalizedException $exc) {
-            $this->collectLogger(
-                $uri,
-                $headers,
-                $request,
-                $client->send()->getBody(),
-                $exc->getMessage(),
-            );
-            // phpcs:ignore Magento2.Exceptions.DirectThrow
-            throw new LocalizedException('Invalid JSON was returned by the gateway');
+            $rows = $couponConn->fetchAll($couponSel);
+            foreach ($rows as $row) {
+                $this->couponCountByRule[(int) $row['rule_id']] = (int) $row['cnt'];
+            }
         }
 
-        return $data;
+        // Qtd de itens por pedido (exclui bundle)
+        if ($orderIds) {
+            $itemConn = $this->orderItemCollection->create()->getConnection();
+            $itemSel = clone $this->orderItemCollection->create()->getSelect();
+            $itemSel->reset(DbSelect::COLUMNS);
+            $itemSel->columns(['order_id', 'qty' => 'COUNT(item_id)']);
+            $itemSel->where('product_type <> ?', 'bundle');
+            $itemSel->where('order_id IN (?)', array_values($orderIds));
+            $itemSel->group('order_id');
+
+            $rows = $itemConn->fetchAll($itemSel);
+            foreach ($rows as $row) {
+                $this->orderItemCount[(int) $row['order_id']] = (int) $row['qty'];
+            }
+        }
+
+        // Totais por rule_id via GetTotalCupons::getTotals()
+        $this->totalsByRule = [];
+        $totals = $this->getTotalCoupon->getTotals();
+        foreach ($ruleIds as $rid) {
+            $data = $totals[$rid] ?? $totals[(string) $rid] ?? null;
+            $this->totalsByRule[$rid] = [
+                'total'         => (int) ($data['total'] ?? 0),
+                'used'          => (int) ($data['total usados'] ?? 0),
+                'has_unlimited' => false,
+            ];
+        }
+
+        // Detecta regras com cupons ilimitados (usage_limit IS NULL)
+        if ($ruleIds) {
+            $couponColl = $this->couponCollection->create();
+            $conn = $couponColl->getConnection();
+            $sel = clone $couponColl->getSelect();
+            $sel->reset(DbSelect::COLUMNS);
+            $sel->columns([
+                'rule_id',
+                'unlimited' => new \Zend_Db_Expr('SUM(CASE WHEN usage_limit IS NULL THEN 1 ELSE 0 END)'),
+            ]);
+            $sel->where('rule_id IN (?)', array_values($ruleIds));
+            $sel->group('rule_id');
+
+            $rows = $conn->fetchAll($sel);
+            foreach ($rows as $row) {
+                $rid = (int) $row['rule_id'];
+                if (!isset($this->totalsByRule[$rid])) {
+                    $this->totalsByRule[$rid] = ['total' => 0, 'used' => 0, 'has_unlimited' => false];
+                }
+                $this->totalsByRule[$rid]['has_unlimited'] = ((int) $row['unlimited']) > 0;
+            }
+        }
+
+        // Cache de nomes das escolas
+        if ($schoolCodes) {
+            $schools = $this->schoolCollection
+                ->create()
+                ->addFieldToFilter('code', ['in' => array_values($schoolCodes)]);
+
+            foreach ($schools as $s) {
+                $code = (string) $s->getData('code');
+                $this->schoolsCache[$code] = $s->getNome();
+            }
+        }
     }
 
     /**
-     * Collect Logger.
+     * Retorna linhas distintas qualificando colunas e resetando GROUP BY.
+     * Aceita:
+     * - ['alias' => 'tabela.coluna'] para colunas já qualificadas.
+     * - ['coluna', ...] e qualifica com 'main_table' quando aplicável.
      *
-     * @param string      $uri
-     * @param string      $headers
-     * @param array       $payload
-     * @param array       $response
-     * @param string|null $message
-     *
-     * @return void
+     * @return array<int, array<string, mixed>>
      */
-    public function collectLogger($uri, $headers, $payload, $response, $message = null)
+    private function getDistinctRows($collection, array $columns): array
     {
-        // Normaliza resposta para array quando possível; caso contrário, mantém string
-        $responseArr = null;
-        if (is_array($response)) {
-            $responseArr = $response;
-        } elseif (is_string($response)) {
-            try {
-                $responseArr = $this->json->unserialize($response);
-            } catch (\InvalidArgumentException $e) {
-                $responseArr = ['raw' => $response];
+        $conn = $collection->getConnection();
+        $select = clone $collection->getSelect();
+
+        $fromParts = $select->getPart(\Zend_Db_Select::FROM);
+        $baseAlias = isset($fromParts['main_table']) ? 'main_table' : (array_keys($fromParts)[0] ?? null);
+
+        // Monta especificação de colunas com alias estável
+        $isAssoc = array_keys($columns) !== range(0, count($columns) - 1);
+        $colsSpec = [];
+
+        if ($isAssoc) {
+            foreach ($columns as $alias => $expr) {
+                $colsSpec[$alias] = $expr;
             }
         } else {
-            $responseArr = ['raw' => $response];
-        }
-
-        $protectedRequest = $this->config->getPrivateKeys();
-        $env = $this->config->getEnvironmentMode();
-
-        if ($env === 'production') {
-            $headers = $this->filterDebugData((array)$headers, $protectedRequest);
-            $payload = $this->filterDebugData((array)$payload, $protectedRequest);
-            $responseArr = is_array($responseArr) ? $this->filterDebugData($responseArr, $protectedRequest) : $responseArr;
-        }
-
-        $this->logger->debug([
-            'url'       => (string)$uri,
-            'header'    => $this->json->serialize((array)$headers),
-            'payload'   => $this->json->serialize((array)$payload),
-            'response'  => is_array($responseArr) ? $this->json->serialize($responseArr) : (string)$response,
-            'error_msg' => $message,
-        ]);
-    }
-
-    /**
-     * Recursive filter data by private conventions.
-     *
-     * @param array $debugData
-     * @param array $debugDataKeys
-     *
-     * @return array
-     */
-    protected function filterDebugData(array $debugData, array $debugDataKeys)
-    {
-        $debugDataKeys = array_map('strtolower', $debugDataKeys);
-
-        foreach (array_keys($debugData) as $key) {
-            if (in_array(strtolower((string) $key), $debugDataKeys)) {
-                $debugData[$key] = '*** protected ***';
-            } elseif (is_array($debugData[$key])) {
-                $debugData[$key] = $this->filterDebugData($debugData[$key], $debugDataKeys);
+            foreach ($columns as $c) {
+                $colsSpec[$c] = (strpos($c, '.') !== false || !$baseAlias) ? $c : "{$baseAlias}.{$c}";
             }
         }
 
-        return $debugData;
+        // Limpa colunas e GROUP para evitar conflitos
+        $select->reset(DbSelect::COLUMNS);
+        $select->reset(DbSelect::GROUP);
+
+        // Seleciona e agrupa exatamente pelos mesmos exprs
+        $select->columns($colsSpec);
+        $select->group(array_values($colsSpec));
+
+        $rows = $conn->fetchAll($select);
+
+        // Normaliza chaves (quando usamos aliases, já estão corretas)
+        $normalized = [];
+        foreach ($rows as $r) {
+            $nr = [];
+            foreach ($r as $k => $v) {
+                $key = (strpos($k, '.') !== false) ? explode('.', $k)[1] : $k;
+                $nr[$key] = $v;
+            }
+            $normalized[] = $nr;
+        }
+
+        return $normalized;
+    }
+
+    /**
+     * Converte uma lista de códigos de escola em nomes, com cache.
+     */
+    public function getSchoolNameByCode($schoolSelect): string
+    {
+        if ($schoolSelect === 'empty' || $schoolSelect === null || $schoolSelect === '') {
+            return 'Todas as escolas';
+        }
+
+        $codes = array_filter(array_map('trim', explode(',', (string) $schoolSelect)));
+        $names = [];
+
+        foreach ($codes as $code) {
+            $names[] = $this->schoolsCache[$code] ?? $code;
+        }
+
+        return implode(', ', $names);
+    }
+
+    /**
+     * Usos permitidos = (qtd. cupons gerados para a regra) * (usos por cupom).
+     */
+    public function getPermittedUses(int $ruleId, $usesPerCoupon): string
+    {
+        $qty = $this->couponCountByRule[$ruleId] ?? 0;
+        return ($qty && $usesPerCoupon) ? (string) ($qty * (int) $usesPerCoupon) : '';
+    }
+
+    /**
+     * Número de usos acumulados (proveniente de GetTotalCupons).
+     */
+    public function getTimesUsed(int $ruleId): string
+    {
+        return (string) ($this->totalsByRule[$ruleId]['used'] ?? 0);
+    }
+
+    /**
+     * Disponível = total gerado - total usado.
+     * Se houver qualquer cupom ilimitado na regra, retorna vazio.
+     */
+    public function getAvailable(int $ruleId): string
+    {
+        if (!isset($this->totalsByRule[$ruleId])) {
+            return '';
+        }
+
+        if (!empty($this->totalsByRule[$ruleId]['has_unlimited'])) {
+            return '';
+        }
+
+        $total = (int) ($this->totalsByRule[$ruleId]['total'] ?? 0);
+        $used = (int) ($this->totalsByRule[$ruleId]['used'] ?? 0);
+
+        return (string) max(0, $total - $used);
     }
 }
