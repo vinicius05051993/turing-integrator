@@ -28,8 +28,6 @@ def main():
                     if ds["id"] != integration['id']
                 ]
 
-                integration['status'] = 1
-
                 match integration['status']:
                     case 1:
                         turing.send(spPost)
