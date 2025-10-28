@@ -12,6 +12,7 @@ REPO = "vinicius05051993/turing-integrator"
 BRANCH = "main"
 PASTA = "blob"
 GITHUB_TOKEN = os.environ.get("API_TOKEN")
+MAX_CDN_SIZE_MB = 50
 
 TURING_HOMOLOG = {
     'host': 'buscahml.maplebear.com.br',
@@ -223,10 +224,18 @@ def upload_file_to_github(file_bytes, filename, tipo="arquivo"):
     }
 
     response = requests.put(url, headers=headers, json=data)
-    if response.status_code in [200, 201]:
-        return f"https://raw.githubusercontent.com/{REPO}/{BRANCH}/{PASTA}/{filename}"
-    else:
+    if response.status_code not in [200, 201]:
         raise Exception(f"Erro ao enviar {filename}: {response.text}")
+
+    # Calcula o tamanho do arquivo em MB
+    tamanho_mb = len(file_bytes) / (1024 * 1024)
+
+    # Se o arquivo for menor que 50 MB, retorna o link via jsDelivr
+    if tamanho_mb <= MAX_CDN_SIZE_MB:
+        return f"https://cdn.jsdelivr.net/gh/{REPO}@{BRANCH}/{PASTA}/{filename}"
+    else:
+        # Caso contrário, retorna o link direto do GitHub (sem cache)
+        return f"https://raw.githubusercontent.com/{REPO}/{BRANCH}/{PASTA}/{filename}"
 
 def get_text_with_images_and_pdf(html: str, id) -> str:
     links_substituidos = {}
