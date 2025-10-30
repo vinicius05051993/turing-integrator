@@ -13,6 +13,10 @@ CHATVOLT_API_URL = 'https://api.chatvolt.ai/'
 DATASTORE_ID = 'cmabhzmjq030y6oa13bhycwdc'
 TOKEN = '47b65f10-d5c2-4cfb-bdbb-48ff58c557a1'
 
+#CHATVOLT_API_URL = 'https://api.chatvolt.ai/'
+#DATASTORE_ID = 'cmex8zvp208s4y9bghe91rpy5'
+#TOKEN = '3ce2a9ed-ceb8-4a9e-a6b4-122c5884ccfd'
+
 HEADERS_DESTINO = {
     'Content-Type': 'application/json',
     'Authorization': 'Bearer ' + TOKEN
@@ -29,6 +33,8 @@ def send(docFields : dict, generalAI):
                 sendFAQ(docFields)
             else:
                 sendManual(docFields)
+        case 'webpage':
+            sendWebpage(docFields)
 
 def sendPost(docFields : dict, generalAI):
     try:
@@ -134,6 +140,35 @@ def sendManual(docFields : dict):
         print('Manual enviado com sucesso:', resposta.status_code, json.dumps(payload))
     except requests.RequestException as e:
         print('Erro ao enviar manual:', e, json.dumps(payload))
+
+def sendWebpage(docFields: dict):
+    """
+    Envia o conteúdo extraído da webpage para o Chatvolt como um datasource do tipo 'file'.
+    Espera que docFields tenha pelo menos os campos 'title' e 'content'.
+    """
+    try:
+        # Limpa apenas caracteres especiais invisíveis, preservando espaços normais
+        content = docFields.get('content', '')
+        content = re.sub(r'[\u200c\u2000-\u200f\u2028-\u202f\u205f-\u206f]', '', content)
+        content = re.sub(r'\u00a0', ' ', content)  # Substitui non-breaking space por espaço normal
+        
+        payload = {
+           "name": docFields.get("title", "Webpage Content"),
+           "datastoreId": DATASTORE_ID,
+           "datasourceText": content,
+           "type": "file",
+           "config": {
+               "tags": ["newsletter"],
+               "source_url": docFields.get('url', ''),
+               "mime_type": "text/plain"
+           }
+        }
+
+        resposta = requests.post(CHATVOLT_API_URL + "datasources", json=payload, headers=HEADERS_DESTINO)
+        resposta.raise_for_status()
+        print('Webpage enviada com sucesso:', resposta.status_code, json.dumps(payload))
+    except requests.RequestException as e:
+        print('Erro ao enviar webpage:', e, json.dumps(payload))
 
 def getAll():
     url = (
@@ -248,3 +283,7 @@ def separar_perguntas_respostas(texto: str):
         })
 
     return resultado
+
+if __name__ == '__main__':
+    resultado = getAll()
+    print(resultado)

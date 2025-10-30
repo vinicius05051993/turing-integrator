@@ -4,6 +4,30 @@ import time
 from dateutil import parser
 import datetime
 from zoneinfo import ZoneInfo
+import requests
+
+def url_is_valid(url):
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/126.0 Safari/537.36"
+        )
+    }
+
+    try:
+        response = requests.get(url, headers=headers, allow_redirects=True, stream=True, timeout=10)
+
+        # Considera válida se retornou 200–399
+        if 200 <= response.status_code < 400:
+            return True
+        else:
+            return False
+
+    except requests.RequestException as e:
+        # opcional: logar o erro
+        print(f"Erro ao verificar {url}: {e}")
+        return False
 
 def converter_data(data_str):
     if not data_str:
@@ -200,7 +224,11 @@ def main():
                         turing.send(spPost, 'event')
 
     for postTuring in allPostsTuring[:100]:
-        turing.delete(postTuring['id'], True)
+        if "maplebear.activehosted.com" not in postTuring['id']:
+            turing.delete(postTuring['id'], True)
+        else:
+           if url_is_valid(postTuring['id']) is False:
+               turing.delete(postTuring['id'], True)
 
     for eventTuring in allEventsTuring[:100]:
         turing.delete(eventTuring['id'], False)
