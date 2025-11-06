@@ -3,7 +3,7 @@ name: Newsletters to Chatvolt
 on:
   workflow_dispatch:
   schedule:
-    - cron: '30 */5 * * *'
+    - cron: '*/20 * * * *'
 
 jobs:
   newsletters-chatvolt:
@@ -19,7 +19,7 @@ jobs:
           python-version: '3.11'
 
       - name: Instalar dependências
-        run: pip install -r requirements/turing_chatvolt.txt
+        run: pip install -r requirements/webpage_chatvolt.txt
 
       - name: Executar script Python
         run: python webpage_chatvolt.py
