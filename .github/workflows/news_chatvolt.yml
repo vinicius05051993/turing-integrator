@@ -3,7 +3,7 @@ name: Newsletters to Chatvolt
 on:
   workflow_dispatch:
   schedule:
-    - cron: '*/20 * * * *'
+    - cron: '30 */4 * * *'
 
 jobs:
   newsletters-chatvolt:
