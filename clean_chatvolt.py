@@ -7,7 +7,8 @@ def main():
 
     nomes_agrupados = defaultdict(list)
     for item in chatVoltDataSources:
-        nomes_agrupados[item['name']].append(item['id'])
+        if "maplebear.activehosted.com" not in item['name']:
+            nomes_agrupados[item['name']].append(item['id'])
 
     ids_para_excluir = []
     for nome, ids in nomes_agrupados.items():

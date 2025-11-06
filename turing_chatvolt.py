@@ -47,7 +47,8 @@ def main():
                         chatvolt.send(turingData['fields'], generalAI)
 
     for chatVoltData in chatVoltDataSources:
-        chatvolt.delete(chatVoltData['id'])
+        if "maplebear.activehosted.com" not in chatVoltData['name']:
+            chatvolt.delete(chatVoltData['id'])        
 
 if __name__ == '__main__':
     main()
