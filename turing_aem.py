@@ -28,7 +28,7 @@ def create_fragment(session: requests.Session):
 
     payload = {
         ":operation": "create",
-        ":name": fragment_name,
+        ":title": fragment_name,
         "jcr:primaryType": "dam:Asset",
         "jcr:content/jcr:primaryType": "dam:AssetContent",
         "jcr:content/contentFragment": "true",
