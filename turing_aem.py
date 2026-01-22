@@ -2,7 +2,7 @@ import requests
 import time
 
 author_url = "https://author-p120717-e1174076.adobeaemcloud.com"
-credentials = ("turing_user", "5DIzbK4@")
+credentials = ("oscar.rooij@sebsa.com.br", "adobeNectar321#")
 
 dam_folder = "/content/dam/maple-bear/manuais"
 
