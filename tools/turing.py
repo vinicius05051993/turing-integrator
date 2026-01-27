@@ -68,7 +68,7 @@ def integrationStatus(turingDatas, spPost):
     for turingData in turingDatas:
         if turingData['id'] == spPost['id']:
             dateTuring = parser.isoparse(turingData['publication_date'])
-            dateSpPost = datetime.fromtimestamp(spPost["lastActivityAt"] / 1000, tz=timezone.utc)
+            dateSpPost = parser.isoparse(spPost["data_modificacao"])
 
             if dateTuring < dateSpPost:
                 return {"status": 1, "id": turingData["id"]}
@@ -76,6 +76,56 @@ def integrationStatus(turingDatas, spPost):
                 return {"status": 3, "id": turingData["id"]}
 
     return {"status": 1, "id": None}
+
+def kbSend(kbPost):
+    headers = {
+        'Key': DATA_IN_USE['key'],
+        'Content-Type': 'application/json',
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "0"
+    }
+
+    content = get_only_texts(kbPost['content']['html'])
+
+    turingFields = {
+       'id': kbPost['metadata']['id'],
+       'title': kbPost['metadata']['title'],
+       'abstract': content,
+       'text': content,
+       'url': kbPost['metadata']['url'],
+       'mbtype': 'manual',
+       'area': get_tags_from_kb(kbPost['metadata']['category']['slug'], 'area'),
+       'theme': get_tags_from_kb(kbPost['metadata']['category']['slug'], 'theme'),
+       'functiontags': [],
+       'otherTags': [],
+       'notify': False,
+       'content_tags': [],
+       'publication_date': kbPost['metadata']['dates']['modified'],
+       'modification_date': kbPost['metadata']['dates']['modified'],
+       'openInNewTab': True,
+       'image': '',
+       'highlights': False,
+       'buttonText': '',
+       'description': content
+   }
+
+    data = {
+        'turingDocuments': [
+            {
+                'turSNJobAction': 'CREATE',
+                'locale': DATA_IN_USE['locale'],
+                'siteNames': [DATA_IN_USE['site']],
+                'attributes': turingFields
+            }
+        ]
+    }
+
+    response = requests.post(DATA_IN_USE['url_import'], json=data, headers=headers, verify=False)
+    response.raise_for_status()
+    print('Manual enviada com sucesso:', response.status_code, response.text, response.json(), json.dumps(data))
+
+    return turingFields
 
 def send(spPost, mbtype = 'manual'):
     headers = {
@@ -375,6 +425,44 @@ def get_tags_name(category_ids: list, tag_type: str) -> list:
         return []
 
     return [tag_relation[cat_id] for cat_id in category_ids if cat_id in tag_relation]
+
+def get_tags_from_kb(category, tag_type) -> list:
+    if tag_type == 'area':
+        tag_relation = {
+            'academico': "maple-bear:area/academico",
+            "administrativo": "maple-bear:area/administrativo-financeiro",
+            "marketing": "maple-bear:area/marketing",
+            "comercial": "maple-bear:area/comercial-vendas",
+            "gente": "maple-bear:area/gente",
+            "gestao-escolar": "maple-bear:area/gestaoescolar",
+            "tecnologia": "maple-bear:area/tecnologia"
+        }
+    elif tag_type == 'theme':
+        tag_relation = {
+            '67583dbae71a454adb45b281': "maple-bear:theme/estudos-de-mercado",
+            '67583ff2e71a454adb4a511a': "maple-bear:theme/edtech-sistemas",
+            '67584002e71a454adb4a7626': "maple-bear:theme/treinamentos",
+            '6758401ce71a454adb4aad04': "maple-bear:theme/enxoval-de-peças",
+            '67584556e71a454adb55c843': "maple-bear:theme/acoes-parcerias",
+            '67584560e71a454adb55e0bf': "maple-bear:theme/suporte",
+            '67584577e71a454adb560f2a': "maple-bear:theme/treinamentos-&-eventos",
+            '6758458de71a454adb563f81': "maple-bear:theme/arquitetura-expansao",
+            '6758459fe71a454adb5665a6': "maple-bear:theme/projetos-escolares",
+            '675845aee71a454adb5684d1': "maple-bear:theme/programas-maple-bear",
+            '675845c7e71a454adb56bc39': "maple-bear:theme/ecossistema-maple-bear",
+            '675845d5e71a454adb56da17': "maple-bear:theme/comunica--o",
+            '675845eae71a454adb570a17': "maple-bear:theme/matricula-rematricula",
+            '675845f9e71a454adb5727ca': "maple-bear:theme/gestao-escolar"
+        }
+    elif tag_type == 'function':
+        tag_relation = {
+            "owner": "maple-bear:function/owner"
+        }
+    else:
+        return []
+
+    tag = tag_relation.get(category)
+    return [tag] if tag else []
 
 def get_tags(category_ids: list, tag_type: str) -> list:
     if tag_type == 'area':
