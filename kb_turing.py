@@ -20,7 +20,7 @@ def main():
                 kbPost = kb.getPostDetails(kbPost)
                 turing.kbSend(kbPost)
 
-    for manualTuringToDelete in allManualsTuring:
+    for manualTuringToDelete in allManualsTuring[:1]:
         turing.delete(manualTuringToDelete['id'], True)
         
 
