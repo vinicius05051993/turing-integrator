@@ -77,11 +77,6 @@ def integrationStatus(turingDatas, spPost):
 
     return {"status": 1, "id": None}
 
-def decode_html(html: str) -> str:
-    if '\\u003C' in html or '\\"' in html:
-        return bytes(html, 'utf-8').decode('unicode_escape')
-    return html
-
 def kbSend(kbPost):
     headers = {
         'Key': DATA_IN_USE['key'],
@@ -113,7 +108,7 @@ def kbSend(kbPost):
        'highlights': False,
        'buttonText': '',
        'description': content,
-       'html': decode_html(kbPost['content']['html'])
+       'html': kbPost['content']['html']
    }
 
     data = {
