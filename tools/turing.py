@@ -92,7 +92,7 @@ def kbSend(kbPost):
        'id': kbPost['metadata']['id'],
        'title': kbPost['metadata']['title'],
        'abstract': content,
-       'text': content,
+       'text': get_text_with_images_and_pdf(kbPost['content']['html']),
        'url': kbPost['metadata']['url'],
        'mbtype': 'manual',
        'area': get_tags_from_kb(kbPost['metadata']['category']['slug'], 'area'),
@@ -142,8 +142,8 @@ def send(spPost, mbtype = 'manual'):
        'id': spPost['id'],
        'title': spPost['t'],
        'abstract': get_only_texts(spPost.get('abstract', '')),
-       'text': get_text_with_images_and_pdf(spPost['m'], spPost['id']),
-       'url': spPost.get('pathFragment') or getUrlWithAuth(spPost['path']),
+       'text': get_text_with_images_and_pdf(spPost['m']),
+       'url': spPost.get('pathFragment'),
        'mbtype': mbtype,
        'area': spPost.get('tagFragmentArea') or get_tags(spPost['categoryIds'], 'area'),
        'theme': spPost.get('tagFragmentTheme') or get_tags(spPost['categoryIds'], 'theme'),
@@ -189,9 +189,6 @@ def delete(id, remove_images = False):
         'Cookie': 'XSRF-TOKEN=7b04df8b-ac27-4e84-b1f2-ed227537aa5d'
     }
 
-    if remove_images:
-        remover_arquivos_do_github_por_id(id)
-
     data = {
         'turingDocuments': [
             {
@@ -207,10 +204,6 @@ def delete(id, remove_images = False):
     response.raise_for_status()
     print('Publicação deletada com sucesso:', response.status_code, json.dumps(data))
 
-def getUrlWithAuth(url):
-    url = "https://conhecimento-maplebear.sprinklr.com/articles/" + url
-    return DATA_IN_USE['auth'].replace("###", url)
-
 def get_only_texts(html: str) -> str:
     text_captured = ''
     matches = re.findall(r'<(?:span|p)[^>]*>(.*?)</(?:span|p)>', html, flags=re.IGNORECASE | re.DOTALL)
@@ -224,96 +217,15 @@ def get_only_texts(html: str) -> str:
 
     return text_captured.strip()
 
-def remover_arquivos_do_github_por_id(id):
-    url_tree = f"{GITHUB_API}/repos/{REPO}/git/trees/{BRANCH}?recursive=1"
-    headers = {
-        "Authorization": f"token {GITHUB_TOKEN}",
-        "Accept": "application/vnd.github.v3+json"
-    }
-
-    resposta = requests.get(url_tree, headers=headers)
-    if resposta.status_code != 200:
-        print(f"Erro ao listar arquivos: {resposta.text}")
-        return
-
-    arquivos = resposta.json().get("tree", [])
-    for arquivo in arquivos:
-        path = arquivo["path"]
-        if path.startswith(f"{PASTA}/{id}_"):  # Ex: blob/123_abc.png
-            filename = path.split("/")[-1]
-            url_delete = f"{GITHUB_API}/repos/{REPO}/contents/{path}"
-
-            get_res = requests.get(url_delete, headers=headers)
-            if get_res.status_code != 200:
-                print(f"Erro ao obter SHA de {path}: {get_res.text}")
-                continue
-
-            sha = get_res.json().get("sha")
-
-            delete_payload = {
-                "message": f"Remover arquivo {filename}",
-                "sha": sha,
-                "branch": BRANCH
-            }
-            delete_res = requests.delete(url_delete, headers=headers, json=delete_payload)
-            if delete_res.status_code == 200:
-                print(f"Arquivo {filename} removido com sucesso.")
-            else:
-                print(f"Erro ao remover {filename}: {delete_res.text}")
-
-def upload_file_to_github(file_bytes, filename, tipo="arquivo"):
-    url = f"{GITHUB_API}/repos/{REPO}/contents/{PASTA}/{filename}"
-    headers = {
-        "Authorization": f"token {GITHUB_TOKEN}",
-        "Accept": "application/vnd.github.v3+json"
-    }
-    data = {
-        "message": f"Adicionando {tipo} {filename}",
-        "branch": BRANCH,
-        "content": base64.b64encode(file_bytes).decode("utf-8")
-    }
-
-    response = requests.put(url, headers=headers, json=data)
-    if response.status_code not in [200, 201]:
-        raise Exception(f"Erro ao enviar {filename}: {response.text}")
-
-    # Calcula o tamanho do arquivo em MB
-    tamanho_mb = len(file_bytes) / (1024 * 1024)
-
-    # Se o arquivo for menor que 50 MB, retorna o link via jsDelivr
-    if tamanho_mb <= MAX_CDN_SIZE_MB:
-        return f"https://cdn.jsdelivr.net/gh/{REPO}@{BRANCH}/{PASTA}/{filename}"
-    else:
-        # Caso contrário, retorna o link direto do GitHub (sem cache)
-        return f"https://raw.githubusercontent.com/{REPO}/{BRANCH}/{PASTA}/{filename}"
-
-def get_text_with_images_and_pdf(html: str, id) -> str:
+def get_text_with_images_and_pdf(html: str) -> str:
     links_substituidos = {}
     contador = 0
-
-    remover_arquivos_do_github_por_id(id)
 
     def substituir_img(match):
         nonlocal contador
         src = unescape(match.group(1))
         marcador = f"__ARQ{contador}__"
-        try:
-            response = requests.get(src)
-            response.raise_for_status()
-            content_type = response.headers.get("Content-Type", "")
-            if "image" not in content_type:
-                raise Exception("Conteúdo não é imagem")
-
-            extension = src.split('.')[-1].split('?')[0].lower()
-            if not extension or len(extension) > 5:
-                extension = content_type.split('/')[-1] or "png"
-
-            filename = f"{id}_{contador}.{extension}"
-            github_url = upload_file_to_github(response.content, filename, tipo="imagem")
-            links_substituidos[marcador] = f"[{github_url}]"
-        except Exception as e:
-            print(f"Erro ao processar imagem {src}: {e}")
-            links_substituidos[marcador] = "[" + src + "]"
+        links_substituidos[marcador] = "[" + src + "]"   
         contador += 1
         return marcador
 
@@ -321,18 +233,7 @@ def get_text_with_images_and_pdf(html: str, id) -> str:
         nonlocal contador
         href = unescape(match.group(1))
         marcador = f"__ARQ{contador}__"
-        try:
-            response = requests.get(href)
-            response.raise_for_status()
-            if "application/pdf" not in response.headers.get("Content-Type", ""):
-                raise Exception("Conteúdo não é PDF")
-
-            filename = f"{id}_{contador}.pdf"
-            github_url = upload_file_to_github(response.content, filename, tipo="PDF")
-            links_substituidos[marcador] = f"[{github_url}]"
-        except Exception as e:
-            print(f"Erro ao processar PDF {href}: {e}")
-            links_substituidos[marcador] = "[" + href + "]"
+        links_substituidos[marcador] = "[" + href + "]"
         contador += 1
         return marcador
 
