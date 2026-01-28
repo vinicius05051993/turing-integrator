@@ -107,7 +107,8 @@ def kbSend(kbPost):
        'image': '',
        'highlights': False,
        'buttonText': '',
-       'description': content
+       'description': content,
+       'html': kbPost['content']['html']
    }
 
     data = {
