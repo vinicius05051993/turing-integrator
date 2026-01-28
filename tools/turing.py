@@ -77,6 +77,9 @@ def integrationStatus(turingDatas, spPost):
 
     return {"status": 1, "id": None}
 
+def decode_html(html: str) -> str:
+    return json.loads(f'"{html}"')
+
 def kbSend(kbPost):
     headers = {
         'Key': DATA_IN_USE['key'],
@@ -108,7 +111,7 @@ def kbSend(kbPost):
        'highlights': False,
        'buttonText': '',
        'description': content,
-       'html': kbPost['content']['html'].encode('utf-8').decode('unicode_escape')
+       'html': decode_html(kbPost['content']['html'])
    }
 
     data = {
