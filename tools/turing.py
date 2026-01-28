@@ -108,7 +108,7 @@ def kbSend(kbPost):
        'highlights': False,
        'buttonText': '',
        'description': content,
-       'html': kbPost['content']['html']
+       'html': kbPost['content']['html'].encode('utf-8').decode('unicode_escape')
    }
 
     data = {
