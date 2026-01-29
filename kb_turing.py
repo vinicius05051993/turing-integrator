@@ -17,8 +17,9 @@ def main():
 
         match integration['status']:
             case 1:
+                urlRenderAddress = kbPost['url_body_content']
                 kbPost = kb.getPostDetails(kbPost)
-                turing.kbSend(kbPost)
+                turing.kbSend(kbPost, urlRenderAddress)
 
     for manualTuringToDelete in allManualsTuring[:1]:
         turing.delete(manualTuringToDelete['id'], True)

@@ -77,7 +77,7 @@ def integrationStatus(turingDatas, spPost):
 
     return {"status": 1, "id": None}
 
-def kbSend(kbPost):
+def kbSend(kbPost, urlContentAddress):
     headers = {
         'Key': DATA_IN_USE['key'],
         'Content-Type': 'application/json',
@@ -108,7 +108,7 @@ def kbSend(kbPost):
        'highlights': False,
        'buttonText': '',
        'description': content,
-       'html': kbPost['content']['html']
+       'html': urlContentAddress
    }
 
     data = {
