@@ -33,7 +33,7 @@ def converter_data(data_str):
     if not data_str:
         return ''
     dt = parser.parse(data_str).replace(tzinfo=None)
-    dt = dt + datetime.timedelta(hours=3)
+    # dt = dt + datetime.timedelta(hours=3)
     return dt.strftime('%Y-%m-%dT%H:%M:%S') + '+00:00'
 
 def main():
