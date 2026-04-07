@@ -17,8 +17,11 @@ def isEvent(path):
 def isNewsletter(path):
     return '/content/dam/maple-bear/posts/posts-newsletter' in path
 
-def isPost(path):
-    return '/content/maple-bear/posts' in path
+def isPost(path: str) -> bool:
+    return (
+        '/content/maple-bear/posts/' in path
+        and '/content/maple-bear/posts/posts-newsletter/' not in path
+    )
 
 def getPathByName(name, type = 'posts'):
     return f"{public_url_base}/{type}/{name}"
