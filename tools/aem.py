@@ -32,6 +32,7 @@ def integrationStatus(allPostsTuring, contentFragment):
             dateTuring = parser.isoparse(postTuring['publication_date'])
             dateSpPost = datetime.fromtimestamp(contentFragment["lastModified"] / 1000, tz=timezone.utc)
 
+            print(f"Comparando datas para {dateSpPost}:{dateTuring}")
             if dateTuring < dateSpPost:
                 return {"status": 1, "id": contentFragment['path']}
             else:
