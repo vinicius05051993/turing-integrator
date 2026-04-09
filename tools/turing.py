@@ -178,7 +178,6 @@ def send(spPost, mbtype = 'manual'):
     }
 
     response = requests.post(DATA_IN_USE['url_import'], json=data, headers=headers, verify=False)
-    response.raise_for_status()
     print(mbtype + ' enviada com sucesso:', response.status_code, response.text, response.json(), json.dumps(data))
 
     return turingFields
@@ -202,7 +201,6 @@ def delete(id, remove_images = False):
     }
 
     response = requests.post(DATA_IN_USE['url_import'], json=data, headers=headers, verify=False)
-    response.raise_for_status()
     print('Publicação deletada com sucesso:', response.status_code, json.dumps(data))
 
 def get_only_texts(html: str) -> str:
