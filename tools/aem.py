@@ -30,8 +30,8 @@ def integrationStatus(allPostsTuring, contentFragment):
     for postTuring in allPostsTuring:
         print(f"Comparando ids para {contentFragment['path']}:{ postTuring['id']}")
         if contentFragment['path'] == postTuring['id']:
-            dateTuring = parser.isoparse(postTuring['publication_date'])
-            dateSpPost = datetime.fromtimestamp(contentFragment["lastModified"] / 1000, tz=timezone.utc)
+            dateTuring = parser.isoparse(postTuring['modification_date']).replace(microsecond=0)
+            dateSpPost = datetime.fromtimestamp(contentFragment["lastModified"] / 1000, tz=timezone.utc).replace(microsecond=0)
 
             print(f"Comparando datas para {dateSpPost}:{dateTuring}")
             if dateTuring < dateSpPost:
