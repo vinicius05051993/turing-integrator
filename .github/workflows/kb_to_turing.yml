@@ -3,7 +3,7 @@ name: KB to Turing
 on:
   workflow_dispatch:
   schedule:
-    - cron: '10 */12 * * *'
+    - cron: '*/17 * * * *'
 
 jobs:
   kb-turing:
