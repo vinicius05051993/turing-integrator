@@ -66,12 +66,10 @@ def getAllTuringIds(type='all'):
 
 def integrationStatus(turingDatas, spPost):
     for turingData in turingDatas:
-        print(f"Verificando integração para ID {spPost['id']} com Turing ID {turingData['id']}")
         if int(turingData['id']) == int(spPost['id']):
             dateTuring = parser.isoparse(turingData['modification_date']).replace(microsecond=0)
             dateSpPost = parser.isoparse(spPost["data_modificacao"]).replace(microsecond=0)
 
-            print(f"Comparando datas para ID {spPost['id']}: Turing({dateTuring}) x SP({dateSpPost})")
             if dateTuring < dateSpPost:
                 return {"status": 1, "id": turingData["id"]}
             else:
