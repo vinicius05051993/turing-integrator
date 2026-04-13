@@ -87,12 +87,16 @@ def kbSend(kbPost, urlContentAddress):
     }
 
     content = get_only_texts(kbPost['content']['html'])
+    content = ' '.join(content.split())
+
+    contextTextImagePdf = get_text_with_images_and_pdf(kbPost['content']['html'])
+    contextTextImagePdf = ' '.join(contextTextImagePdf.split())
 
     turingFields = {
        'id': kbPost['metadata']['id'],
        'title': kbPost['metadata']['title'],
        'abstract': content,
-       'text': get_text_with_images_and_pdf(kbPost['content']['html']),
+       'text': contextTextImagePdf,
        'url': kbPost['metadata']['url'],
        'mbtype': 'manual',
        'area': get_tags_from_kb(kbPost['metadata']['category']['slug'], 'area'),
