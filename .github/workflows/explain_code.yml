@@ -1,0 +1,71 @@
+name: Explain Code
+
+on:
+  push:
+    paths:
+      - "**.py"
+
+jobs:
+  explain:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y python3 python3-pip wget
+          pip install opencode llama-cpp-python
+
+      - name: Download model
+        run: |
+          wget https://huggingface.co/TheBloke/OpenHermes-2.5-Mistral-7B-GGUF/resolve/main/openhermes-2.5-mistral-7b.Q4_K_M.gguf -O model.gguf
+
+      - name: Get changed files
+        run: |
+          git diff --name-only HEAD~1 HEAD > files.txt || git ls-files "*.py" > files.txt
+
+      - name: Generate explanations with OpenCode
+        run: |
+          mkdir -p docs
+          while IFS= read -r file; do
+            if [[ $file == *.py ]]; then
+              
+              if [ ! -f "$file" ]; then
+                continue
+              fi
+
+              if [ $(wc -c < "$file") -gt 40000 ]; then
+                echo "Skipping large file: $file"
+                continue
+              fi
+
+              mkdir -p "docs/$(dirname "$file")"
+
+              opencode explain "$file" \
+                --model model.gguf \
+                --prompt "Explique este código Python de forma clara, incluindo:
+                - objetivo do código
+                - funcionamento geral
+                - funções principais
+                - pontos importantes" \
+                > "docs/${file}.md"
+
+            fi
+          done < files.txt
+
+      - name: Commit explanations
+        run: |
+          git config user.name "bot"
+          git config user.email "bot@github.com"
+          git add docs/
+
+          if git diff --cached --quiet; then
+            echo "no changes"
+          else
+            git commit -m "auto: explain code"
+            git push
+          fi
