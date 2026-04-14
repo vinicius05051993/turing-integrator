@@ -70,6 +70,7 @@ def get_webpage_data(url):
 
 def main():
     try:
+        print("Inicio do processo de extração e envio de newsletters para ChatVolt")
         chatVoltDatas = chatvolt.getAll()
         chatVoltDataSources = chatVoltDatas.get("datasources", {})
 
