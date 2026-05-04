@@ -182,11 +182,7 @@ def send(spPost, mbtype = 'manual'):
     }
 
     response = requests.post(DATA_IN_USE['url_import'], json=data, headers=headers, verify=False)
-    try:
-        response_json = response.json()
-    except ValueError:
-        response_json = None
-    print(mbtype + ' enviada com sucesso:', response.status_code, response.text, response_json, json.dumps(data))
+    print(mbtype + ' enviada com sucesso:', response.status_code, response.text, response.json(), json.dumps(data))
 
     return turingFields
 
