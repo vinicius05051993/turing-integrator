@@ -7,10 +7,9 @@ from socket import timeout
 
 import requests
 
-
 DATA_IN_USE = {
     'host': os.environ.get('KNOWLEDGE_HUB_HOST') or os.environ.get('KNOWLEDGE_HUB_API_HOST', 'https://ca-indexadormaple-prd.ambitiousbush-dac46abd.centralus.azurecontainerapps.io'),
-    'api_key': os.environ.get('KNOWLEDGE_HUB_API_KEY', ''),
+    'api_key': os.environ.get('KNOWLEDGE_HUB_API_KEY'),
     'upsert_path': '/documents/upsert',
     'search_path': os.environ.get('KNOWLEDGE_HUB_SEARCH_PATH', '/search'),
     'delete_path': os.environ.get('KNOWLEDGE_HUB_DELETE_PATH', '/documents'),
