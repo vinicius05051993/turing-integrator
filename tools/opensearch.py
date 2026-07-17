@@ -307,8 +307,13 @@ def get_text_with_images_and_pdf(html: str) -> str:
     def substituir_img(match):
         nonlocal contador
         src = unescape(match.group(1))
+
+        # Ignora imagens embutidas em Base64
+        if src.lower().startswith("data:image/"):
+            return ""
+
         marcador = f"__ARQ{contador}__"
-        links_substituidos[marcador] = "[" + src + "]"   
+        links_substituidos[marcador] = f"[{src}]"
         contador += 1
         return marcador
 
