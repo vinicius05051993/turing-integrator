@@ -174,7 +174,7 @@ def getAllOpenSearchIds(mbtype: str = 'all'):
     ids = []
     limit = 100
 
-    for page in range(0, 100):
+    for page in range(0, 3):
         offset = page * limit
         try:
             datas = get_all_opensearch(offset, limit, mbtype)
