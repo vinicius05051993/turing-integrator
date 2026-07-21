@@ -174,7 +174,7 @@ def getAllOpenSearchIds(mbtype: str = 'all'):
     ids = []
     limit = 100
 
-    for page in range(0, 3):
+    for page in range(0, 10):
         offset = page * limit
         try:
             datas = get_all_opensearch(offset, limit, mbtype)
@@ -222,6 +222,9 @@ def getAllOpenSearchIds(mbtype: str = 'all'):
                     'modification_date': modification_date,
                 }
             )
+
+            if len(documents) < limit: 
+                break
 
     return ids
 
