@@ -129,22 +129,41 @@ def upsert_documents(
     return response
 
 
-def get_all_opensearch(offset: int, limit: int, mbtype: str = 'all', host: str | None = None, api_key: str | None = None, timeout: int | None = None):
+def get_all_opensearch(
+    offset: int,
+    limit: int,
+    mbtype: str = "all",
+    host: str | None = None,
+    api_key: str | None = None,
+    timeout: int | None = None,
+):
     payload = {
-        'query': '',
-        'offset': offset,
-        'limit': limit,
+        "query": "",
+        "offset": offset,
+        "limit": limit,
     }
 
-    if mbtype != 'all':
-        payload['filters'] = {'mbtype': mbtype}
-        payload['filter_type'] = 'and'
+    if mbtype != "all":
+        payload["filter_type"] = "and"
+        payload["filters"] = [
+            {
+                "field": "mbtype",
+                "operator": "eq",
+                "value": mbtype,
+                "value_type": "string",
+            }
+        ]
 
     headers = get_headers(api_key)
-    base_timeout = timeout or DATA_IN_USE['timeout']
+    base_timeout = timeout or DATA_IN_USE["timeout"]
     url = get_search_url(host)
 
-    response = requests.post(url, json=payload, headers=headers, timeout=base_timeout)
+    response = requests.post(
+        url,
+        json=payload,
+        headers=headers,
+        timeout=base_timeout,
+    )
     response.raise_for_status()
     return response.json()
 
