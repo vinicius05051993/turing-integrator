@@ -33,10 +33,12 @@ def integrationStatus(allPostsTuring, contentFragment):
             dateSpPost = datetime.fromtimestamp(contentFragment["lastModified"] / 1000, tz=timezone.utc).replace(microsecond=0)
 
             if dateTuring < dateSpPost:
+                print('Validacao 1:', contentFragment['path'], dateTuring, dateSpPost)
                 return {"status": 1, "id": contentFragment['path']}
             else:
                 return {"status": 3, "id": contentFragment['path']}
 
+    print('Validacao 1 none:', contentFragment['path'])
     return {"status": 1, "id": None}
 
 def getOriginProprieties(id, params):
