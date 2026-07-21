@@ -170,63 +170,77 @@ def get_all_opensearch(
     return response.json()
 
 
-def getAllOpenSearchIds(mbtype: str = 'all'):
+def getAllOpenSearchIds(mbtype: str = "all"):
     ids = []
     limit = 100
+    page = 0
+    default_date = datetime.now(timezone.utc).isoformat()
 
-    for page in range(0, 10):
+    while True:
         offset = page * limit
+
         try:
             datas = get_all_opensearch(offset, limit, mbtype)
         except requests.RequestException as error:
-            print('Erro ao buscar dados do OpenSearch:', error)
+            print(f"Erro ao buscar dados do OpenSearch: {error}")
             break
 
         documents = _extract_documents(datas)
+
+        print(
+            f"Página={page} Offset={offset} "
+            f"Documentos={len(documents)}"
+        )
+
         if not documents:
             break
 
         for document in documents:
-            payload = document.get('payload', {}) if isinstance(document, dict) else {}
-            item_mbtype = payload.get('mbtype', document.get('mbtype') if isinstance(document, dict) else None)
+            if not isinstance(document, dict):
+                continue
 
-            if mbtype != 'all' and item_mbtype != mbtype:
-                print("Ignorando documento com mbtype diferente:", item_mbtype)
+            payload = document.get("payload", {})
+
+            item_mbtype = payload.get("mbtype") or document.get("mbtype")
+            if mbtype != "all" and item_mbtype != mbtype:
                 continue
 
             document_id = (
-                payload.get('id')
-                or document.get('external_id')
-                or document.get('id')
+                payload.get("id")
+                or document.get("external_id")
+                or document.get("id")
             )
-            if document_id is None:
+
+            if not document_id:
                 continue
 
             publication_date = (
-                payload.get('publication_date')
-                or document.get('publication_date')
-                or document.get('created_at')
-                or datetime.now(timezone.utc).isoformat()
+                payload.get("publication_date")
+                or document.get("publication_date")
+                or document.get("created_at")
+                or default_date
             )
+
             modification_date = (
-                payload.get('modification_date')
-                or document.get('modification_date')
-                or document.get('updated_at')
+                payload.get("modification_date")
+                or document.get("modification_date")
+                or document.get("updated_at")
                 or publication_date
             )
 
-            ids.append(
-                {
-                    'id': str(document_id),
-                    'publication_date': publication_date,
-                    'modification_date': modification_date,
-                }
-            )
+            ids.append({
+                "id": str(document_id),
+                "publication_date": publication_date,
+                "modification_date": modification_date,
+            })
 
-            print('limit documents', len(documents), 'limit', limit, 'offset', offset, 'page', page, 'mbtype', mbtype)
-            if len(documents) < limit: 
-                break
+        # terminou a última página
+        if len(documents) < limit:
+            break
 
+        page += 1
+
+    print(f"Total de IDs encontrados: {len(ids)}")
     return ids
 
 
