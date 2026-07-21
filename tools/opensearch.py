@@ -223,6 +223,7 @@ def getAllOpenSearchIds(mbtype: str = 'all'):
                 }
             )
 
+            print('limit documents', len(documents), 'limit', limit, 'offset', offset, 'page', page, 'mbtype', mbtype)
             if len(documents) < limit: 
                 break
 
