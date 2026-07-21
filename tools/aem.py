@@ -28,6 +28,7 @@ def getPathByName(name, type = 'posts'):
 
 def integrationStatus(allPostsTuring, contentFragment):
     for postTuring in allPostsTuring:
+        print('Validacao 1 before:', contentFragment['path'], postTuring['id'])
         if contentFragment['path'] == postTuring['id']:
             dateTuring = parser.isoparse(postTuring.get('modification_date', '2020-01-01T12:41:02.936+00:00')).replace(microsecond=0)
             dateSpPost = datetime.fromtimestamp(contentFragment["lastModified"] / 1000, tz=timezone.utc).replace(microsecond=0)
