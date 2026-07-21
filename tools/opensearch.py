@@ -185,6 +185,7 @@ def getAllOpenSearchIds(mbtype: str = 'all'):
             break
 
         for document in documents:
+            print('Validacao 1 before:', document)
             payload = document.get('payload', {}) if isinstance(document, dict) else {}
             item_mbtype = payload.get('mbtype', document.get('mbtype') if isinstance(document, dict) else None)
 
