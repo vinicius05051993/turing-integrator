@@ -223,9 +223,6 @@ def getAllOpenSearchIds(mbtype: str = 'all'):
                 }
             )
 
-        if len(documents) < limit:
-            break
-
     return ids
 
 
