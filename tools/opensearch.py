@@ -143,6 +143,8 @@ def get_all_opensearch(
         "limit": limit,
     }
 
+    print(f"Buscando documentos do OpenSearch com offset={offset}, limit={limit}, mbtype={mbtype}")
+
     if mbtype != "all":
         payload["filter_type"] = "and"
         payload["filters"] = [
@@ -170,7 +172,7 @@ def get_all_opensearch(
 
 def getAllOpenSearchIds(mbtype: str = 'all'):
     ids = []
-    limit = 200
+    limit = 100
 
     for page in range(0, 100):
         offset = page * limit
@@ -185,7 +187,6 @@ def getAllOpenSearchIds(mbtype: str = 'all'):
             break
 
         for document in documents:
-            print('Validacao 1 before:', document)
             payload = document.get('payload', {}) if isinstance(document, dict) else {}
             item_mbtype = payload.get('mbtype', document.get('mbtype') if isinstance(document, dict) else None)
 
