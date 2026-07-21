@@ -2,8 +2,9 @@ import json
 import os
 import re
 from datetime import datetime, timezone
-from html import parser, unescape
+from html import unescape
 from socket import timeout
+from dateutil.parser import isoparse
 
 import requests
 
@@ -451,18 +452,19 @@ def get_tags_from_kb(category, tag_type) -> list:
     tag = tag_relation.get(category)
     return [tag] if tag else []
 
-def integrationStatus(opensearchDatas, spPost):
-    for opensearchData in opensearchDatas:
-        if int(opensearchData['id']) == int(spPost['id']):
-            dateOpensearch = parser.isoparse(opensearchData['modification_date']).replace(microsecond=0)
-            dateSpPost = parser.isoparse(spPost["data_modificacao"]).replace(microsecond=0)
+def integrationStatus(opensearchIndex, spPost):
+    opensearchData = opensearchIndex.get(str(spPost["id"]))
 
-            if dateOpensearch < dateSpPost:
-                return {"status": 1, "id": opensearchData["id"]}
-            else:
-                return {"status": 3, "id": opensearchData["id"]}
+    if opensearchData is None:
+        return {"status": 1, "id": None}
 
-    return {"status": 1, "id": None}
+    date_opensearch = isoparse(opensearchData["modification_date"]).replace(microsecond=0)
+    date_sp = isoparse(spPost["data_modificacao"]).replace(microsecond=0)
+
+    if date_opensearch < date_sp:
+        return {"status": 1, "id": opensearchData["id"]}
+
+    return {"status": 3, "id": opensearchData["id"]}
 
 def kbSend(kbPost, urlContentAddress):
     content = get_only_texts(kbPost['content']['html'])
