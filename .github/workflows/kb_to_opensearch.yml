@@ -3,7 +3,7 @@ name: KB to Opensearch
 on:
   workflow_dispatch:
   schedule:
-    - cron: '*/17 * * * *'
+    - cron: '30 12-21 * * *'
 
 jobs:
   kb-opensearch:
